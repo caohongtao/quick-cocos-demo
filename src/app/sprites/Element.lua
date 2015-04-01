@@ -8,10 +8,8 @@ function Element:ctor()
     
     self.m_type = ''
     self.m_mode = ''
-    
-    self.m_isNeedRemove = false
-    self.m_ignoreCheck = false
 
+    self.m_supported = true
 end
 
 function Element:create(row, col)
@@ -29,20 +27,56 @@ function Element:create(row, col)
     return self; 
 end
 
-function Element:getElementSize()
-	ElementSize = nil
-    if (nil == ElementSize) then
-        local sprite = display.newSprite('#'..res.elementTexture.fire.normal)
-        ElementSize = sprite:getContentSize()
+local shakeSpeed = 1
+local dropSpeed = 0.2
+--方块摇动动画
+function Element:shakeAndDrop(step)
+
+    --shack
+    self.shaked = true
+    self.dropStep = step
+    if self.shakAction ~=nil then transition.removeAction(self.shakAction) end
+    local arr = {}    
+    
+    table.insert(arr,cc.RotateTo:create( 0.05*shakeSpeed, -10))
+    for i =1,5 do
+        table.insert(arr,cc.RotateTo:create(0.1 *shakeSpeed, 10))
+        table.insert(arr,cc.RotateTo:create( 0.1*shakeSpeed, -10))
     end
-    return ElementSize;
+    table.insert(arr,cc.RotateTo:create( 0.05*shakeSpeed, 0))
+
+    table.insert(arr,cc.CallFunc:create(function()
+        self.shaked = false
+    end))
+    
+    self.shakAction = cc.Sequence:create(arr)
+
+    local dropAction = cc.CallFunc:create(function() self:drop(step) end)
+    
+    self:runAction(cc.Sequence:create(self.shakAction, dropAction))
 end
 
-function Element:setMode(mode)
-    self.m_mode = mode
-    local textureName = '#'..self.m_type..'_'..mode..'.png'
-    textureName = res.elementTexture[self.m_type][self.m_mode]
-    print("Element:setDisplayMode,"..textureName)
-    local frame = cc.SpriteFrameCache:getInstance():getSpriteFrame(textureName)
-	self:setSpriteFrame(frame)
+--停止摇动
+function Element:stopShake()
+    if self.shaked then
+        if self.shakAction ~= nil then transition.stopTarget(self) end
+        self.shaked = false
+        self:runAction(cc.RotateTo:create(0, 0))
+        self:drop(self.dropStep)
+    end
+end
+
+function Element:drop(step)
+    local arr = {}   
+    table.insert(arr, cc.MoveBy:create(dropSpeed,step))
+    
+    local function onComplete()
+    	if not self.m_supported then
+            self:drop(step, onComplete)
+        end
+    end
+    --没有支撑，就继续往下掉
+    table.insert(arr,cc.CallFunc:create(onComplete))
+    
+    self:runAction(cc.Sequence:create(arr))
 end
