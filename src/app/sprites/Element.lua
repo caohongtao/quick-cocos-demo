@@ -79,7 +79,8 @@ end
 local shakeSpeed = 1
 --方块摇动动画
 function Element:shake()
-
+    cc.Director:getInstance():getActionManager():removeAllActionsFromTarget(self)
+    
     --shack
     self.shaked = true
     self.originX = self:getPositionX()

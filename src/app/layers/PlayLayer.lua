@@ -1,17 +1,20 @@
 PlayLayer = class("PlayLayer",  function()
-    return display.newScene("PlayLayer")
+    return display.newLayer("PlayLayer")
 end)
 
 local MAP_WIDTH = 9
-local MAP_HEIGHT = 12
+local MAP_HEIGHT = 6
 
 function PlayLayer:ctor()
     self.mapSize = cc.p(MAP_WIDTH,MAP_HEIGHT)
     self.mapOriginPoint = cc.p(0,0)
+    
+    self.elOriginSize = nil
     self.elSize = nil
 
     self.m_elements = {}
     self.m_droppingElements = {}
+    
     self:init()
 end
 
@@ -20,7 +23,12 @@ function PlayLayer:init()
     cc.SpriteFrameCache:getInstance():addSpriteFrames('sprite/elements.plist', 'sprite/elements.png')
     
     self:initMap()    
-    self:initTouchListener()
+
+
+    local addLineListener = cc.EventListenerCustom:create("add_line", handler(self,self.addLine))
+    local digListener = cc.EventListenerCustom:create("dig_at", handler(self,self.digAt))
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(addLineListener, self)
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(digListener, self)
 
     local scheduler = cc.Director:getInstance():getScheduler()
     scheduler:scheduleScriptFunc(handler(self, self.checkDroppingElements), 1.0 / 60.0, false)
@@ -47,11 +55,13 @@ function PlayLayer:showElementInfo()
 end
 
 function PlayLayer:initMap()
+
     --以宽度为基准缩放
     local elActualWidth = (display.width - self.mapOriginPoint.x * 2) / self.mapSize.x
     local elOriginSize = display.newSprite('#'..res.elementTexture.fire.normal):getContentSize()
     local scaleFactor = elActualWidth/elOriginSize.width
 
+    self.elOriginSize = elOriginSize
     self.elSize = {width = elActualWidth, height = elOriginSize.height * scaleFactor}
 
     for row=1, self.mapSize.y do
@@ -75,39 +85,11 @@ function PlayLayer:initMap()
     self.m_droppingElements[0], self.m_droppingElements[self.mapSize.y + 1] = {}, {}
 end
 
-function PlayLayer:initTouchListener()
-
-    --------------------------------------------
-    local function onTouchBegan(touch, event)
-        local location = self:convertToNodeSpace(cc.p(touch:getLocation()))
-        local row,col = self:positionToMatrix(location.x, location.y)
-        local el = self.m_elements[row][col]
-        self:removeElement(el)
-        return true
-    end
-
-    --------------------------------------------
-    local function onTouchMoved(touch, event)
-    end
-
-    --------------------------------------------
-    local function onTouchEnded(touch, event)
-    end 
-
-    --------------------------------------------
-    local touchListener = cc.EventListenerTouchOneByOne:create()
-    touchListener:registerScriptHandler(onTouchBegan, cc.Handler.EVENT_TOUCH_BEGAN)
-    touchListener:registerScriptHandler(onTouchMoved, cc.Handler.EVENT_TOUCH_MOVED)
-    touchListener:registerScriptHandler(onTouchEnded, cc.Handler.EVENT_TOUCH_ENDED)
-    local dispatcher = cc.Director:getInstance():getEventDispatcher()
-    dispatcher:addEventListenerWithSceneGraphPriority(touchListener, self)
-end
 
 function PlayLayer:removeElement(el)
     if not el then return end
 
     for _, element in ipairs(self:getBlock(el)) do
-        --      print("("..element.m_row..','..element.m_col..")")
 
         self.m_elements[element.m_row][element.m_col] = nil
         element:removeFromParent(true)
@@ -254,8 +236,7 @@ function PlayLayer:getNeighbours(el)
 end
 
 function PlayLayer:refreshPosInDroppingMatrix(el)
-    local elPos = self:convertToNodeSpace(cc.p(el:getPosition()))
-    local row, col = self:positionToMatrix(elPos.x, elPos.y)
+    local row, col = self:positionToMatrix(el:getPosition())
 
     --下方的如果还没变为nil，暂不设置，等下方移动后，再设，避免重叠。
     if row ~= el.m_row and self.m_droppingElements[row][col] == nil then
@@ -266,7 +247,7 @@ function PlayLayer:refreshPosInDroppingMatrix(el)
 end
 
 function PlayLayer:checkNeedSupported(el)
-    local elPos = self:convertToNodeSpace(cc.p(el:getPosition()))
+    local elPos = cc.p(el:getPosition())
     local row, col
     local judgeRange = 6 -- 跟相邻元素相交或者相距在一定的范围内，都认为紧贴相邻。
 
@@ -321,7 +302,6 @@ function PlayLayer:checkNeedSupported(el)
         self.m_elements[curr.m_row][curr.m_col] = curr
         curr.m_supported = true
         curr:setRotation(0)
---        curr:loadOn(cc.p(self:matrixToPosition(curr.m_row,curr.m_col)))
         
         local destPos = cc.p(self:matrixToPosition(curr.m_row,curr.m_col))
         curr.fsm_:doEvent("support", destPos)
@@ -409,6 +389,66 @@ function PlayLayer:forEachElementOfMatrix(matrix, callback, userData)
     end
 end
 
+function PlayLayer:moveMapTo(dest)
+    local moveSpeed = 100 --每秒移动100像素，跟元素块掉落的速度一样。
+    local duration = (dest.y - self:getPositionY()) / 100
+
+    local moveAction = cc.Sequence:create(
+        cc.MoveTo:create(duration,dest),
+        cc.CallFunc:create(function()
+            local eventDispatcher = cc.Director:getInstance():getEventDispatcher()
+            eventDispatcher:dispatchEvent(cc.EventCustom:new("enable_dig"))
+        end))
+    
+    self:runAction(moveAction)
+end
+
+function PlayLayer:addLine(event)
+    local cnt = event.cnt
+    
+    self:forEachElementOfMatrix(self.m_elements, function(el) el.m_row = el.m_row + cnt end)
+    self:forEachElementOfMatrix(self.m_droppingElements, function(el) el.m_row = el.m_row + cnt end)
+    self.mapOriginPoint.y = self.mapOriginPoint.y - cnt * self.elSize.height
+    self.mapSize.y = self.mapSize.y + cnt
+    
+    local scaleFactor = self.elSize.width/self.elOriginSize.width
+    for row=1, cnt do
+        local newLine = {}
+        for col=1, self.mapSize.x do
+            local el = Element:new():create(row, col)
+            el:setPosition(cc.p(self:matrixToPosition(row,col)))
+            el:setScale(scaleFactor)
+            el:addTo(self)
+            newLine[col] = el
+        end
+        table.insert(self.m_elements,row,newLine)
+        table.insert(self.m_droppingElements,row,{})
+    end
+end
+
+function PlayLayer:digAt(event)
+    local playerPos = event.playerPos
+    local digDir = event.digDir
+	
+    local pos = self:convertToNodeSpace(playerPos)
+    local row,col = self:positionToMatrix(pos.x, pos.y)
+    
+    local el
+    if digDir == 'down' then
+    	el = self.m_elements[row-1][col]
+    elseif digDir == 'left' then
+        el = self.m_elements[row][col-1]
+    elseif digDir == 'right' then
+        el = self.m_elements[row][col+1]
+    end
+    self:removeElement(el)
+    
+    for i=row, 1, -1 do
+    	if self.m_elements[row][col] then
+            self:moveMapTo(cc.p(self:matrixToPosition(i,col)))  break
+    	end
+    end
+end
 function PlayLayer:matrixToPosition(row, col)
     local x = self.mapOriginPoint.x + self.elSize.width * (col - 1 + 0.5)
     local y = self.mapOriginPoint.y + self.elSize.height * (row - 1 + 0.5)
