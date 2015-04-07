@@ -2,7 +2,7 @@ Player = class("Player",  function()
     return display.newSprite()
 end)
 
-function Player:ctor()
+function Player:ctor(size)
     self.digEnabled = true
     
     self:initTouchListener()
@@ -14,6 +14,8 @@ function Player:ctor()
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(moveListener, self)
     
     self:setTexture('res/sprite/bingbing.png')
+    self:setScale(size.width/self:getContentSize().width)
+    self:setAnchorPoint(0.5,0.5)
     self:setPosition(display.cx, display.cy)
 --    self:test()
 end
@@ -26,16 +28,24 @@ function Player:initTouchListener()
 
     --------------------------------------------
     local function onTouchBegan(touch, event)
-        local location = cc.p(touch:getLocation())
+        if not self.digEnabled then return end
+        
+        local touchPos = cc.p(touch:getLocation())
         
         --TODO:还有人物的移动呢，不只是dig
-        local playerPos
+        local playerPos = self:convertToWorldSpaceAR(cc.p(0,0))
         local digDir
+        if touchPos.y < playerPos.y - 180 then digDir = 'down'
+        elseif touchPos.x < playerPos.x then digDir = 'left'
+        else digDir = 'right'
+        end
         
         local event = cc.EventCustom:new("dig_at")
         event.playerPos = playerPos
         event.digDir = digDir
         cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
+        
+        print(event.answer)
         self.digEnabled = false
         return true
     end

@@ -6,6 +6,7 @@ local MAP_WIDTH = 9
 local MAP_HEIGHT = 6
 
 function PlayLayer:ctor()
+    self.map = cc.Node:create()
     self.mapSize = cc.p(MAP_WIDTH,MAP_HEIGHT)
     self.mapOriginPoint = cc.p(0,0)
     
@@ -22,12 +23,15 @@ function PlayLayer:init()
 
     cc.SpriteFrameCache:getInstance():addSpriteFrames('sprite/elements.plist', 'sprite/elements.png')
     
-    self:initMap()    
-
-
-    local addLineListener = cc.EventListenerCustom:create("add_line", handler(self,self.addLine))
+    self:initMap()
+    self:addChild(self.map)
+    
+    local player = Player.new(self.elSize)
+    self:addChild(player)
+    
+--    local addLineListener = cc.EventListenerCustom:create("add_line", handler(self,self.addLine))
     local digListener = cc.EventListenerCustom:create("dig_at", handler(self,self.digAt))
-    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(addLineListener, self)
+--    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(addLineListener, self)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(digListener, self)
 
     local scheduler = cc.Director:getInstance():getScheduler()
@@ -70,7 +74,7 @@ function PlayLayer:initMap()
             local el = Element:new():create(row, col)
             el:setPosition(cc.p(self:matrixToPosition(row,col)))
             el:setScale(scaleFactor)
-            el:addTo(self)
+            el:addTo(self.map)
             self.m_elements[row][col] = el
         end
     end
@@ -389,22 +393,29 @@ function PlayLayer:forEachElementOfMatrix(matrix, callback, userData)
     end
 end
 
-function PlayLayer:moveMapTo(dest)
-    local moveSpeed = 100 --每秒移动100像素，跟元素块掉落的速度一样。
-    local duration = (dest.y - self:getPositionY()) / 100
+function PlayLayer:moveMapBy(lines)
+    
+    self:addLines(lines)
+    local diff = cc.p(0, lines*self.elSize.height)
+    local moveSpeed = 0.4 --移动100像素用时，跟元素块掉落的速度一样。
+    local duration = diff.y / 100 * 0.4
 
     local moveAction = cc.Sequence:create(
-        cc.MoveTo:create(duration,dest),
+        cc.MoveBy:create(duration,diff),
         cc.CallFunc:create(function()
             local eventDispatcher = cc.Director:getInstance():getEventDispatcher()
             eventDispatcher:dispatchEvent(cc.EventCustom:new("enable_dig"))
+            self:removeLines()
         end))
     
-    self:runAction(moveAction)
+    self.map:runAction(moveAction)
 end
 
-function PlayLayer:addLine(event)
-    local cnt = event.cnt
+function PlayLayer:addLines(cnt)
+    local screenLeftDown = self.map:convertToNodeSpace(cc.p(0,0))
+    local LinesUnderScreen, _ = self:positionToMatrix(screenLeftDown.x, screenLeftDown.y)
+    cnt = cnt > LinesUnderScreen and cnt-LinesUnderScreen or 0
+    assert(LinesUnderScreen<10,'LinesUnderScreen'..LinesUnderScreen..' is bigger than 2')
     
     self:forEachElementOfMatrix(self.m_elements, function(el) el.m_row = el.m_row + cnt end)
     self:forEachElementOfMatrix(self.m_droppingElements, function(el) el.m_row = el.m_row + cnt end)
@@ -418,7 +429,7 @@ function PlayLayer:addLine(event)
             local el = Element:new():create(row, col)
             el:setPosition(cc.p(self:matrixToPosition(row,col)))
             el:setScale(scaleFactor)
-            el:addTo(self)
+            el:addTo(self.map)
             newLine[col] = el
         end
         table.insert(self.m_elements,row,newLine)
@@ -426,11 +437,35 @@ function PlayLayer:addLine(event)
     end
 end
 
+function PlayLayer:removeLines()
+    local screenLeftUp = self.map:convertToNodeSpace(cc.p(0,display.height))
+    local row, _ = self:positionToMatrix(screenLeftUp.x, screenLeftUp.y)
+    local LinesOverScreen = self.mapSize.y - row
+    cnt = LinesOverScreen > 0 and LinesOverScreen or 0
+    assert(LinesOverScreen<10,'LinesOverScreen'..LinesOverScreen..' is bigger than 2')
+    
+    for row = self.mapSize.y, self.mapSize.y - (cnt-1), -1 do
+        for col=1, self.mapSize.x do
+            if self.m_elements[row][col] then
+                self.m_elements[row][col]:removeFromParent(true)
+            end
+            if self.m_droppingElements[row][col] then
+                self.m_droppingElements[row][col]:removeFromParent(true)
+            end
+
+        end
+        table.remove(self.m_elements, row)
+        table.remove(self.m_droppingElements, row)
+    end
+
+    self.mapSize.y = self.mapSize.y - cnt
+end
+
 function PlayLayer:digAt(event)
     local playerPos = event.playerPos
     local digDir = event.digDir
 	
-    local pos = self:convertToNodeSpace(playerPos)
+    local pos = self.map:convertToNodeSpace(playerPos)
     local row,col = self:positionToMatrix(pos.x, pos.y)
     
     local el
@@ -443,11 +478,15 @@ function PlayLayer:digAt(event)
     end
     self:removeElement(el)
     
-    for i=row, 1, -1 do
-    	if self.m_elements[row][col] then
-            self:moveMapTo(cc.p(self:matrixToPosition(i,col)))  break
+    local lines = 0
+    for i=row-1, 1, -1 do
+    	if self.m_elements[i][col] then
+            break
+        else
+            lines = lines + 1
     	end
     end
+    self:moveMapBy(lines)
 end
 function PlayLayer:matrixToPosition(row, col)
     local x = self.mapOriginPoint.x + self.elSize.width * (col - 1 + 0.5)
@@ -458,14 +497,14 @@ end
 function PlayLayer:positionToMatrix(x, y)
     local row = math.ceil((y - self.mapOriginPoint.y) / self.elSize.height)
     local col = math.ceil((x - self.mapOriginPoint.x) / self.elSize.width)
-
-    if row > self.mapSize.y or row < 1 then
-        row = 0
-    end
-
-    if col > self.mapSize.x or col < 1 then
-        col = 0
-    end
+--
+--    if row > self.mapSize.y or row < 1 then
+--        row = 0
+--    end
+--
+--    if col > self.mapSize.x or col < 1 then
+--        col = 0
+--    end
 
     return row, col
 end

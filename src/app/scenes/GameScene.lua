@@ -8,9 +8,7 @@ end)
 
 function GameScene:ctor()
     local playLayer = PlayLayer.new()
-    local player = Player.new()
     self:addChild(playLayer)
-    self:addChild(player)
 end
 
 function GameScene:onEnter()
