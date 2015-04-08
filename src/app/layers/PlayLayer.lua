@@ -38,7 +38,7 @@ function PlayLayer:init()
 
     local scheduler = cc.Director:getInstance():getScheduler()
     scheduler:scheduleScriptFunc(handler(self, self.checkDroppingElements), 1.0 / 60.0, false)
-    --    self:scheduleUpdateWithPriorityLua(handler(self, self.showElementInfo), 0);
+--    self:scheduleUpdateWithPriorityLua(handler(self, self.showElementInfo), 0);
 end
 
 function PlayLayer:showElementInfo()
@@ -51,12 +51,12 @@ function PlayLayer:showElementInfo()
             showSupportedLabel:setName('support')
             el:addChild(showSupportedLabel)
         end
-        showSupportedLabel:setString(el.m_supported and 'true' or 'false')
+        showSupportedLabel:setString(el:getState())
     end)
 
     self:forEachElementOfMatrix(self.m_droppingElements, function (el)
         local showSupportedLabel = el:getChildByName('support')
-        showSupportedLabel:setString(el.m_supported and 'true' or 'false')
+        showSupportedLabel:setString(el:getState())
     end)
 end
 
@@ -94,20 +94,54 @@ end
 
 function PlayLayer:removeElement(el)
     if not el then return end
+    local block = self:getBlock(el)
+    
+    --1.标记依赖于el的unsupported的元素。
+    --递归地把周围同色元素及上方元素都认为失去支点，需要掉落。可能会有个别元素误判，会在checkDroppingElements时修正，很快从idle->shake->idle。
+    
+    self:forEachElementOfMatrix(self.m_elements, function (el) el.touched = false end)
+    local unSupportedQueue = {el}
+    while #unSupportedQueue > 0 do
+        local curr = unSupportedQueue[1]
+        table.remove(unSupportedQueue,1)
 
-    for _, element in ipairs(self:getBlock(el)) do
+        if not curr.touched then
+            local neighbours = {
+                up =  self.m_elements[curr.m_row+1][curr.m_col],
+                down = self.m_elements[curr.m_row-1][curr.m_col],
+                left = self.m_elements[curr.m_row][curr.m_col-1],
+                right = self.m_elements[curr.m_row][curr.m_col+1]
+            }
 
-        self.m_elements[element.m_row][element.m_col] = nil
-        element:removeFromParent(true)
+            for key, neighbour in pairs(neighbours) do
+                if neighbour then
+
+                    --                neighbour.touched = true
+                    if (key == 'up') or
+                        (key ~= 'up' and neighbour.m_type == curr.m_type) then
+
+                        table.insert(unSupportedQueue,neighbour)
+                    end
+                end
+            end
+
+            --处理当前元素
+            self.m_elements[curr.m_row][curr.m_col] = nil
+            self.m_droppingElements[curr.m_row][curr.m_col] = curr
+            curr.touched = true
+            curr.fsm_:doEvent("unSupport")
+        end
     end
-
-
-
-    self:checkUnSupported()
-    self:dropUnSupported()
+    
+    --2.删除整片
+    for _, element in ipairs(block) do
+        self.m_elements[element.m_row][element.m_col] = nil
+        self.m_droppingElements[element.m_row][element.m_col] = nil
+        element.fsm_:doEvent("destroy")
+    end
 end
 
-function PlayLayer:checkUnSupported()
+function PlayLayer:markUnSupported()
     --先全部置为 unsupported
     self:forEachElementOfMatrix(self.m_elements, function(el) el.m_supported = false end)
 
@@ -127,41 +161,37 @@ function PlayLayer:checkUnSupported()
         end
     end
 
-    --对所有块进行检查，每个块中有一个为supported，则整块为supported
-    local blocks = self:divideIntoBlocks()
-    for _, block in ipairs(blocks) do
-        local blockSupported = false
-        
-        for _, el in ipairs(block) do
-            if el.m_supported then
-                blockSupported = true break
-          end
-      end
-      
-        if blockSupported then
-            for _, el in ipairs(block) do
-                el.m_supported = true
-            end
-      end
-    end
+--    --对所有块进行检查，每个块中有一个为supported，则整块为supported
+--    local blocks = self:divideIntoBlocks()
+--    for _, block in ipairs(blocks) do
+--        local blockSupported = false
+--        
+--        for _, el in ipairs(block) do
+--            if el.m_supported then
+--                blockSupported = true break
+--          end
+--      end
+--      
+--        if blockSupported then
+--            for _, el in ipairs(block) do
+--                el.m_supported = true
+--            end
+--      end
+--    end
 
     --个别元素自身为unsupported,但其下方有supported的元素。应该当作supported处理。
     --此处认为此种元素应该掉落，下一次做掉落判断时，认为其落在了下方元素上.以此做简化处理。
 end
 
 function PlayLayer:dropUnSupported()
-
+    self:markUnSupported()
+    
     self:forEachElementOfMatrix(self.m_elements, function(el)
         if el.m_supported then return end
 
         --摇动结束后，才认为不是支撑点。 否则会在摇晃时，跟正在掉落的元素重叠。
         self.m_elements[el.m_row][el.m_col] = nil
         self.m_droppingElements[el.m_row][el.m_col] = el
---        el.startDropPos = cc.p(el:getPosition()) -- 记录掉落时的位置，找到支点后，检查移动距离，判断是否播放着陆缓冲动作。
---        el:shakeAndDrop(cc.p(0, -self.elSize.height), function()
---
---            end)
-
         el.fsm_:doEvent("unSupport")
     end)
 end
@@ -298,39 +328,61 @@ function PlayLayer:checkNeedSupported(el)
 
     self:forEachElementOfMatrix(self.m_droppingElements, function (el) el.reached = false end)
     local supportedQueue = {el}
-    el.reached = true
     
     while #supportedQueue > 0 do
         local curr = supportedQueue[1]
         table.remove(supportedQueue,1)
-        --处理当前元素
-        self.m_droppingElements[curr.m_row][curr.m_col] = nil
-        self.m_elements[curr.m_row][curr.m_col] = curr
-        curr:setRotation(0)
-        local destPos = cc.p(self:matrixToPosition(curr.m_row,curr.m_col))
-        curr.fsm_:doEvent("support", destPos)
         
-        local droppingNeighbours = {
-            up =  self.m_droppingElements[curr.m_row+1][curr.m_col],
-            down = self.m_droppingElements[curr.m_row-1][curr.m_col],
-            left = self.m_droppingElements[curr.m_row][curr.m_col-1],
-            right = self.m_droppingElements[curr.m_row][curr.m_col+1]
-        }
+        if not curr.reached then
+            local droppingNeighbours = {
+                up =  self.m_droppingElements[curr.m_row+1][curr.m_col],
+                down = self.m_droppingElements[curr.m_row-1][curr.m_col],
+                left = self.m_droppingElements[curr.m_row][curr.m_col-1],
+                right = self.m_droppingElements[curr.m_row][curr.m_col+1]
+            }
 
-        for key, neighbour in pairs(droppingNeighbours) do
-            if neighbour and not neighbour.reached then
-            
-                neighbour.reached = true
-                if (key == 'up' and not neighbour:isStable()) or
-                   (key ~= 'up' and not neighbour:isStable() and neighbour.m_type == curr.m_type) then
-                   
-                    table.insert(supportedQueue,neighbour)
+            for key, neighbour in pairs(droppingNeighbours) do
+                if neighbour then
+
+                    if (key == 'up' and not neighbour:isStable()) or
+                        (key ~= 'up' and not neighbour:isStable() and neighbour.m_type == curr.m_type) then
+
+                        table.insert(supportedQueue,neighbour)
+                    end
                 end
             end
 
+            --处理当前元素
+            self.m_droppingElements[curr.m_row][curr.m_col] = nil
+            self.m_elements[curr.m_row][curr.m_col] = curr
+            curr:setRotation(0)
+            curr.reached = true
+            local destPos = cc.p(self:matrixToPosition(curr.m_row,curr.m_col))
+            curr.fsm_:doEvent("support", destPos)   --drop to load
         end
-
     end
+end
+
+function PlayLayer:checkNeedRemove(el)
+    if not el.needCheckRemove then return end
+    
+    local block = self:getBlock(el)
+    if #block < 4 then
+        --需要检查，个数却不足3，则标志置为false，避免下次检查
+        for _, element in ipairs(self:getBlock(el)) do
+            element.needCheckRemove = false
+        end
+        return
+     end
+    
+    self:removeElement(el)
+--    for _, element in ipairs(self:getBlock(el)) do
+--        self.m_elements[element.m_row][element.m_col] = nil
+--        self.m_droppingElements[element.m_row][element.m_col] = nil
+--        element.fsm_:doEvent("destroy")
+--    end
+    
+--    self.needDropUnSupported = true
 end
 
 function PlayLayer:checkNeedPushBelow(el)
@@ -349,7 +401,18 @@ function PlayLayer:checkDroppingElements()
         self:refreshPosInDroppingMatrix(el)
         self:checkNeedSupported(el)
         if not el:isStable() then self:checkNeedPushBelow(el) end
+        --        self:checkNeedRemove(el)    有的元素已经在checkNeedSupported时移除m_droppingElements了，会导致消除不了。因此放在下面的循环做
     end)
+    
+    self:forEachElementOfMatrix(self.m_elements, function (el)
+        self:checkNeedRemove(el)
+    end)
+--    
+--    --若有消除了的元素，则需要重新drop相关元素。
+--    if self.needDropUnSupported == true then
+--        self:dropUnSupported()
+--        self.needDropUnSupported = false
+--    end
 end
 
 function PlayLayer:forEachElementOfMatrix(matrix, callback, userData)
@@ -497,20 +560,7 @@ function PlayLayer:digAt(event)
     end
     
     self:removeElement(el)
-    
-    
---    
---    if el then
---        self:removeElement(el)
---        event.result = 'element'
---    elseif (digDir == 'left' and 1 == col) or
---           (digDir == 'right' and self.mapSize.x == col) then
---        event.result = 'wall'
---    else
---        event.result = 'empty'
---    end
---
---    self:rollMap(event)
+--    self:dropUnSupported()
 end
 
 function PlayLayer:matrixToPosition(row, col)

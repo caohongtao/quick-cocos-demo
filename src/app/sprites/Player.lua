@@ -79,7 +79,7 @@ function Player:move()
 end
 
 function Player:die()
-    print("dead")
+--    print("dead")
 end
 
 function Player:handleTouch()
