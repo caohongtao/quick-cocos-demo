@@ -3,7 +3,7 @@ PlayLayer = class("PlayLayer",  function()
 end)
 
 local MAP_WIDTH = 9
-local MAP_HEIGHT = 8
+local MAP_HEIGHT = 1
 
 function PlayLayer:ctor()
     self.map = cc.Node:create()
@@ -367,12 +367,11 @@ function PlayLayer:rollMap(event)
     local pos = self.map:convertToNodeSpace(playerPos)
     local row,col = self:positionToMatrix(pos.x, pos.y)
     
-    local lines = 0
-    for i=row-1, 1, -1 do
+    local lines = row - 1
+    for i=row-1 < self.mapSize.y and row-1 or self.mapSize.y, 1, -1 do
         if self.m_elements[i][col] or (self.m_droppingElements[i][col]) then-- and "SHAKE" == self.m_droppingElements[i][col]:getState()) then
+            lines = (row-1) - i
             break
-        else
-            lines = lines + 1
         end
     end
     if 0 == lines then return end
@@ -456,20 +455,24 @@ function PlayLayer:detectMap(event)
     local row,col = self:positionToMatrix(pos.x, pos.y)
     event.env = {}
     
-    if 1 == col then event.env.left = 'wall'
+    if row > self.mapSize.y + 1 then    --人物born的特殊情况，防止m_elements一维越界，产生异常。
+        event.env.down = 'empty' 
+        return
+    end
+    
+    if col <= 1 then event.env.left = 'wall'
     elseif self.m_elements[row][col-1] then event.env.left = 'element'
     else event.env.left = 'empty'
     end
     
-    if self.mapSize.x == col then event.env.right = 'wall'
+    if col >= self.mapSize.x then event.env.right = 'wall'
     elseif self.m_elements[row][col+1] then event.env.right = 'element'
     else event.env.right = 'empty'
     end
 
     if self.m_elements[row-1][col] or (self.m_droppingElements[row-1][col]) then-- and "SHAKE" == self.m_droppingElements[row-1][col]:getState()) then
         event.env.down = 'element'
-    else
-        event.env.down = 'empty'
+    else event.env.down = 'empty'
     end
     
     if self.m_elements[row][col] or self.m_elements[row][col] then event.env.center = 'element'

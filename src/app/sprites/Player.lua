@@ -1,7 +1,7 @@
 Player = class("Player",  function()
     return display.newSprite()
 end)
-
+local BORN_HEIGHT = 5.5  --人物诞生时候的位置，BORN_HEIGHT个元素的高度。确保出生在某个元素位置。则移动，降落时都按照整行整列计算，就能保确保人物位置一直在某元素的位置。
 function Player:ctor(size)
     self.moving = false
     self.dropping = false
@@ -18,7 +18,7 @@ function Player:ctor(size)
     self:setTexture('res/sprite/bingbing.png')
     self:setScale(size.width/self:getContentSize().width)
     self:setAnchorPoint(0.5,0.5)
-    self:setPosition(display.cx, display.cy)
+    self:setPosition(display.cx, size.height * BORN_HEIGHT)
     
     scheduler:scheduleScriptFunc(handler(self, self.update), 1.0 / 60.0, false)
 --    self:test()
