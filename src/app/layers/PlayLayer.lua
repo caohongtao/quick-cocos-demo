@@ -3,7 +3,7 @@ PlayLayer = class("PlayLayer",  function()
 end)
 
 local MAP_WIDTH = 9
-local MAP_HEIGHT = 6
+local MAP_HEIGHT = 8
 
 function PlayLayer:ctor()
     self.map = cc.Node:create()
@@ -29,10 +29,12 @@ function PlayLayer:init()
     local player = Player.new(self.elSize)
     self:addChild(player)
     
---    local addLineListener = cc.EventListenerCustom:create("add_line", handler(self,self.addLine))
+    local detectListener = cc.EventListenerCustom:create("detect_map", handler(self,self.detectMap))
     local digListener = cc.EventListenerCustom:create("dig_at", handler(self,self.digAt))
---    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(addLineListener, self)
+    local rollMapListener = cc.EventListenerCustom:create("roll_map", handler(self,self.rollMap))
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(detectListener, self)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(digListener, self)
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(rollMapListener, self)
 
     local scheduler = cc.Director:getInstance():getScheduler()
     scheduler:scheduleScriptFunc(handler(self, self.checkDroppingElements), 1.0 / 60.0, false)
@@ -125,23 +127,23 @@ function PlayLayer:checkUnSupported()
         end
     end
 
-    --    --对所有块进行检查，每个块中有一个为supported，则整块为supported
-    --    local blocks = self:divideIntoBlocks()
-    --    for _, block in ipairs(blocks) do
-    --        local blockSupported = false
-    --        
-    --        for _, el in ipairs(block) do
-    --            if el.m_supported then
-    --                blockSupported = true break
-    --          end
-    --      end
-    --      
-    --        if blockSupported then
-    --            for _, el in ipairs(block) do
-    --                el.m_supported = true
-    --            end
-    --      end
-    --    end
+    --对所有块进行检查，每个块中有一个为supported，则整块为supported
+    local blocks = self:divideIntoBlocks()
+    for _, block in ipairs(blocks) do
+        local blockSupported = false
+        
+        for _, el in ipairs(block) do
+            if el.m_supported then
+                blockSupported = true break
+          end
+      end
+      
+        if blockSupported then
+            for _, el in ipairs(block) do
+                el.m_supported = true
+            end
+      end
+    end
 
     --个别元素自身为unsupported,但其下方有supported的元素。应该当作supported处理。
     --此处认为此种元素应该掉落，下一次做掉落判断时，认为其落在了下方元素上.以此做简化处理。
@@ -272,19 +274,19 @@ function PlayLayer:checkNeedSupported(el)
 
     --2.下方有supported的元素，或者左,右,上有supported的且type一样的元素，都停止掉落
     local isSopported = false
-    if left and left.m_type == el.m_type and (left.m_supported or left.fsm_:getState() == 'SHAKE')then
+    if left and left.m_type == el.m_type and left:isStable()then
         isSopported = true
     end
 
-    if right and right.m_type == el.m_type and (right.m_supported or right.fsm_:getState() == 'SHAKE') then
+    if right and right.m_type == el.m_type and right:isStable() then
         isSopported = true
     end
 
-    if up and up.m_type == el.m_type and (up.m_supported or up.fsm_:getState() == 'SHAKE') then
+    if up and up.m_type == el.m_type and up:isStable() then
         isSopported = true
     end
 
-    if down and (down.m_supported or down.fsm_:getState() == 'SHAKE') then
+    if down and down:isStable() then
         isSopported = true
     end
 
@@ -304,9 +306,7 @@ function PlayLayer:checkNeedSupported(el)
         --处理当前元素
         self.m_droppingElements[curr.m_row][curr.m_col] = nil
         self.m_elements[curr.m_row][curr.m_col] = curr
-        curr.m_supported = true
         curr:setRotation(0)
-        
         local destPos = cc.p(self:matrixToPosition(curr.m_row,curr.m_col))
         curr.fsm_:doEvent("support", destPos)
         
@@ -319,55 +319,24 @@ function PlayLayer:checkNeedSupported(el)
 
         for key, neighbour in pairs(droppingNeighbours) do
             if neighbour and not neighbour.reached then
-        	
+            
                 neighbour.reached = true
-                if (key == 'up' and not neighbour.m_supported) or
-                   (key ~= 'up' and not neighbour.m_supported and neighbour.m_type == curr.m_type) then
+                if (key == 'up' and not neighbour:isStable()) or
+                   (key ~= 'up' and not neighbour:isStable() and neighbour.m_type == curr.m_type) then
                    
                     table.insert(supportedQueue,neighbour)
                 end
-        	end
+            end
 
         end
 
---        --增加可能的supported元素
---        if not curr.reached then
---            local up = self.m_droppingElements[curr.m_row+1][curr.m_col]
---            if up and not up.m_supported then
---                table.insert(queue,up)
---            end
---    
---            local down = self.m_droppingElements[curr.m_row-1][curr.m_col]
---            if down and not down.m_supported and down.m_type == curr.m_type then
---                table.insert(queue,down)
---            end
---    
---            local left = self.m_droppingElements[curr.m_row][curr.m_col-1]
---            if left and not left.m_supported and left.m_type == curr.m_type then
---                table.insert(queue,left)
---            end
---    
---            local right = self.m_droppingElements[curr.m_row][curr.m_col+1]
---            if right and not right.m_supported and right.m_type == curr.m_type then
---                table.insert(queue,right)
---            end
---    
---            --处理当前元素
---            self.m_droppingElements[curr.m_row][curr.m_col] = nil
---            self.m_elements[curr.m_row][curr.m_col] = curr
---            curr.m_supported = true
---            curr:setRotation(0)
---            --        curr:setPosition(cc.p(self:matrixToPosition(curr.m_row,curr.m_col)))
---            cc.Director:getInstance():getActionManager():removeAllActionsFromTarget(curr)
---            curr:loadOn(cc.p(self:matrixToPosition(curr.m_row,curr.m_col)))
---        end
     end
 end
 
 function PlayLayer:checkNeedPushBelow(el)
     --正在drop的元素，下方有shaking的元素，需要让其停止shake，直接drop
     local down = self.m_droppingElements[el.m_row-1][el.m_col]
-    if down and down.fsm_:getState() == 'SHAKE' and el.fsm_:getState() == 'DROP' then
+    if down and down:getState() == 'SHAKE' and el:getState() == 'DROP' then
         if el:getPositionY() - down:getPositionY() < self.elSize.height then
             down.fsm_:doEvent("push")
         end
@@ -379,7 +348,7 @@ function PlayLayer:checkDroppingElements()
     self:forEachElementOfMatrix(self.m_droppingElements, function (el)
         self:refreshPosInDroppingMatrix(el)
         self:checkNeedSupported(el)
-        if not el.m_supported then self:checkNeedPushBelow(el) end
+        if not el:isStable() then self:checkNeedPushBelow(el) end
     end)
 end
 
@@ -393,18 +362,38 @@ function PlayLayer:forEachElementOfMatrix(matrix, callback, userData)
     end
 end
 
-function PlayLayer:moveMapBy(lines)
+function PlayLayer:rollMap(event)
+    local playerPos = event.playerPos
+    local pos = self.map:convertToNodeSpace(playerPos)
+    local row,col = self:positionToMatrix(pos.x, pos.y)
+    
+    local lines = 0
+    for i=row-1, 1, -1 do
+        if self.m_elements[i][col] or (self.m_droppingElements[i][col]) then-- and "SHAKE" == self.m_droppingElements[i][col]:getState()) then
+            break
+        else
+            lines = lines + 1
+        end
+    end
+    if 0 == lines then return end
     
     self:addLines(lines)
     local diff = cc.p(0, lines*self.elSize.height)
     local moveSpeed = 0.4 --移动100像素用时，跟元素块掉落的速度一样。
     local duration = diff.y / 100 * 0.4
 
+    local eventDispatcher = cc.Director:getInstance():getEventDispatcher()
+    local dropEvent = cc.EventCustom:new("Dropping")
+    dropEvent.active = true
+    eventDispatcher:dispatchEvent(dropEvent)
+    
     local moveAction = cc.Sequence:create(
         cc.MoveBy:create(duration,diff),
         cc.CallFunc:create(function()
-            local eventDispatcher = cc.Director:getInstance():getEventDispatcher()
-            eventDispatcher:dispatchEvent(cc.EventCustom:new("enable_dig"))
+            local dropEvent = cc.EventCustom:new("Dropping")
+            dropEvent.active = false
+            eventDispatcher:dispatchEvent(dropEvent)
+            
             self:removeLines()
         end))
     
@@ -461,33 +450,66 @@ function PlayLayer:removeLines()
     self.mapSize.y = self.mapSize.y - cnt
 end
 
+function PlayLayer:detectMap(event)
+    local playerPos = event.playerPos
+    local pos = self.map:convertToNodeSpace(playerPos)
+    local row,col = self:positionToMatrix(pos.x, pos.y)
+    event.env = {}
+    
+    if 1 == col then event.env.left = 'wall'
+    elseif self.m_elements[row][col-1] then event.env.left = 'element'
+    else event.env.left = 'empty'
+    end
+    
+    if self.mapSize.x == col then event.env.right = 'wall'
+    elseif self.m_elements[row][col+1] then event.env.right = 'element'
+    else event.env.right = 'empty'
+    end
+
+    if self.m_elements[row-1][col] or (self.m_droppingElements[row-1][col]) then-- and "SHAKE" == self.m_droppingElements[row-1][col]:getState()) then
+        event.env.down = 'element'
+    else
+        event.env.down = 'empty'
+    end
+    
+    if self.m_elements[row][col] or self.m_elements[row][col] then event.env.center = 'element'
+    else event.env.center = 'empty'
+    end
+end
+
 function PlayLayer:digAt(event)
     local playerPos = event.playerPos
     local digDir = event.digDir
-	
+    
     local pos = self.map:convertToNodeSpace(playerPos)
     local row,col = self:positionToMatrix(pos.x, pos.y)
     
     local el
     if digDir == 'down' then
-    	el = self.m_elements[row-1][col]
+        el = self.m_elements[row-1][col]
     elseif digDir == 'left' then
         el = self.m_elements[row][col-1]
     elseif digDir == 'right' then
         el = self.m_elements[row][col+1]
     end
+    
     self:removeElement(el)
     
-    local lines = 0
-    for i=row-1, 1, -1 do
-    	if self.m_elements[i][col] then
-            break
-        else
-            lines = lines + 1
-    	end
-    end
-    self:moveMapBy(lines)
+    
+--    
+--    if el then
+--        self:removeElement(el)
+--        event.result = 'element'
+--    elseif (digDir == 'left' and 1 == col) or
+--           (digDir == 'right' and self.mapSize.x == col) then
+--        event.result = 'wall'
+--    else
+--        event.result = 'empty'
+--    end
+--
+--    self:rollMap(event)
 end
+
 function PlayLayer:matrixToPosition(row, col)
     local x = self.mapOriginPoint.x + self.elSize.width * (col - 1 + 0.5)
     local y = self.mapOriginPoint.y + self.elSize.height * (row - 1 + 0.5)

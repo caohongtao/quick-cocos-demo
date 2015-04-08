@@ -153,3 +153,13 @@ function Element:load(dest)
     transition.execute(self, transition.sequence({goDest, bouceUp, backDest, loadOverNotify}))
     
 end
+
+function Element:getState()
+    return self.fsm_:getState()
+end
+
+function Element:isStable()
+    return self.fsm_:getState() == "IDLE" or
+--           self.fsm_:getState() == "SHAKE" or
+           self.fsm_:getState() == "LOAD"
+end
