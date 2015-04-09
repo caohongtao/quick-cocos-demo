@@ -34,7 +34,8 @@ function Element:createFSM()
             {name = "unSupport",    from = "LOAD",      to = "SHAKE"},
             {name = "destroy",      from = "IDLE",      to = "DIE"  },  --dig
             {name = "destroy",      from = "LOAD",      to = "DIE"  },  --着陆后消除
-            {name = "destroy",      from = "SHAKE",     to = "DIE"  },  --removeElement不好处理，出现的特殊情况。
+            {name = "destroy",      from = "SHAKE",     to = "DIE"  },  --1.removeElement不好处理，出现的特殊情况。    2.掉落到正在摇晃的元素后，往下挖
+            {name = "destroy",      from = "DROP",      to = "DIE"  },  --挖侧面的正在掉落的元素
         },
 
         callbacks = {

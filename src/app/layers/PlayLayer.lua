@@ -519,50 +519,63 @@ function PlayLayer:detectMap(event)
     event.env = {}
     
     if row > self.mapSize.y + 1 then    --人物born的特殊情况，防止m_elements一维越界，产生异常。
-        event.env.down = 'empty' 
+        event.env.down = nil 
         return
     end
     
     if col <= 1 then event.env.left = 'wall'
-    elseif self.m_elements[row][col-1] then event.env.left = 'element'
-    else event.env.left = 'empty'
+    elseif self.m_elements[row][col-1] then event.env.left = self.m_elements[row][col-1]
+    elseif self.m_droppingElements[row][col-1] then event.env.left = self.m_droppingElements[row][col-1]
+    else event.env.left = nil
     end
     
     if col >= self.mapSize.x then event.env.right = 'wall'
-    elseif self.m_elements[row][col+1] then event.env.right = 'element'
-    else event.env.right = 'empty'
+    elseif self.m_elements[row][col+1] then event.env.right = self.m_elements[row][col+1]
+    elseif self.m_droppingElements[row][col+1] then event.env.right = self.m_droppingElements[row][col+1]
+    else event.env.right = nil
     end
 
-    if self.m_elements[row-1][col] or (self.m_droppingElements[row-1][col]) then-- and "SHAKE" == self.m_droppingElements[row-1][col]:getState()) then
-        event.env.down = 'element'
-    else event.env.down = 'empty'
+    if self.m_elements[row-1][col] then event.env.down = self.m_elements[row-1][col] --or (self.m_droppingElements[row-1][col]) then-- and "SHAKE" == self.m_droppingElements[row-1][col]:getState()) then
+    elseif self.m_droppingElements[row-1][col] then event.env.down = self.m_droppingElements[row-1][col]
+    else event.env.down = nil
     end
     
-    if self.m_elements[row][col] or self.m_elements[row][col] then event.env.center = 'element'
-    else event.env.center = 'empty'
+    if self.m_elements[row][col] then event.env.center = self.m_elements[row][col]
+    elseif self.m_droppingElements[row][col] then event.env.center = self.m_droppingElements[row][col]
+    else event.env.center = nil
     end
 end
 
 function PlayLayer:digAt(event)
-    local playerPos = event.playerPos
-    local digDir = event.digDir
-    
-    local pos = self.map:convertToNodeSpace(playerPos)
-    local row,col = self:positionToMatrix(pos.x, pos.y)
-    
-    local el
-    if digDir == 'down' then
-        el = self.m_elements[row-1][col]
-    elseif digDir == 'left' then
-        el = self.m_elements[row][col-1]
-    elseif digDir == 'right' then
-        el = self.m_elements[row][col+1]
-    elseif digDir == 'center' then
-        el = self.m_elements[row][col]
+--    local playerPos = event.playerPos
+--    local digDir = event.digDir
+--    
+--    local pos = self.map:convertToNodeSpace(playerPos)
+--    local row,col = self:positionToMatrix(pos.x, pos.y)
+--    
+--    local el
+--    if digDir == 'down' then
+--        el = self.m_elements[row-1][col]
+--    elseif digDir == 'left' then
+--        el = self.m_elements[row][col-1]
+--    elseif digDir == 'right' then
+--        el = self.m_elements[row][col+1]
+--    elseif digDir == 'center' then
+--        el = self.m_elements[row][col]
+--    end
+--    
+--    self:removeElement(el)
+
+    local target = event.target
+    if target:isStable() then --self.m_elements[target.m_row][target.m_col] then
+        --地面上的元素
+        self:removeElement(target)
+    else
+        --正在shake或者drop的元素
+        self.m_elements[target.m_row][target.m_col] = nil
+        self.m_droppingElements[target.m_row][target.m_col] = nil
+        target.fsm_:doEvent("destroy")
     end
-    
-    self:removeElement(el)
---    self:dropUnSupported()
 end
 
 function PlayLayer:matrixToPosition(row, col)

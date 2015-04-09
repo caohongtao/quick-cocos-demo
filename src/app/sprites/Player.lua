@@ -36,9 +36,8 @@ end
 
 function Player:update()
     local env = self:detectMap()
-    if env.down == 'empty' then self:drop() end
-    if env.center == 'element' then self:die() end
-     
+    if env.down == nil then self:drop() end
+    if env.center ~= nil then self:die() end
 end
 
 function Player:drop()
@@ -50,12 +49,12 @@ function Player:drop()
     end
 end
 
-function Player:dig()
-    assert(not self.digging,'player should\'nt digging')
+function Player:dig(target)
+    if self.digging then return end
     
     local event = cc.EventCustom:new("dig_at")
-    event.playerPos = self:convertToWorldSpaceAR(cc.p(0,0))
-    event.digDir = self.touchDir
+--    event.playerPos = self:convertToWorldSpaceAR(cc.p(0,0))
+    event.target = target
     cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
     
     self.digging = true
@@ -83,7 +82,10 @@ end
 function Player:die()
     if self.dead then return end
     
+    print('die')
     self.dead = true
+    cc.Director:getInstance():getEventDispatcher():removeEventListener(self.touchListener)
+    
     self:runAction(cc.Spawn:create(
                         cc.ScaleTo:create(0.1,1,0.1),
                         cc.JumpBy:create(0.1,cc.p(0,-35),16,6)
@@ -92,13 +94,16 @@ function Player:die()
 end
 
 function Player:rebirth()
+    if not self.dead then return end
+    
     print('rebirth')
     self.dead = false
-    
+--    cc.Director:getInstance():getEventDispatcher():addEventListenerWithSceneGraphPriority(self.touchListener, self)
+    self:initTouchListener()
 
-    self.touchDir = 'center'
-    self:dig()
-    
+    local env = self:detectMap()
+    if env.center then self:dig(env.center) end
+
     self:runAction(cc.Spawn:create(
         cc.ScaleTo:create(0.1,1,self.playerSize.height/self:getContentSize().height),
         cc.JumpBy:create(0.3,cc.p(0,35),16,6)
@@ -111,8 +116,12 @@ function Player:showSettlement()
 
         local function btnCallback(node, type)
             if type == cc.CONTROL_EVENTTYPE_TOUCH_DOWN then
-                self.restartBtn:runAction(cc.EaseBounceIn:create(cc.MoveBy:create(1,cc.p(0,600))))
-                self:rebirth()
+                print('HideSettlement')
+                node:setEnabled(false)
+                self.restartBtn:runAction(cc.Sequence:create(cc.EaseBounceIn:create(cc.MoveBy:create(1,cc.p(0,600))),
+                                                            cc.CallFunc:create(function()
+                                                                self:rebirth()
+                                                            end)))
             end
         end
 
@@ -133,6 +142,7 @@ function Player:showSettlement()
 --        end)))
         
     print('showSettlement')
+    self.restartBtn:setEnabled(true)
     self.restartBtn:runAction(cc.EaseBounceOut:create(cc.MoveBy:create(1,cc.p(0,-600))))
 --    var actionTo = cc.MoveTo.create(2, cc.p(winsize.width-200, winsize.height-220)).easing(cc.easeElasticOut());
 end
@@ -145,21 +155,15 @@ function Player:handleTouch()
     
     local env = self:detectMap()
     if 'left' == self.touchDir then
-        if env.left == "element" then
-        	self:dig()
-        elseif env.left == "empty" then
-            self:move()
+        if env.left == nil then self:move()
+        else self:dig(env.left)
         end
     elseif 'right' == self.touchDir then
-        if env.right == "element" then
-            self:dig()
-        elseif env.right == "empty" then
-            self:move()
-        end
+        if env.right == nil then self:move()
+        else self:dig(env.right) end
     elseif 'down' == self.touchDir then
-        self:dig()
+        self:dig(env.down)
     end 
-    
     
     
 --    local event = cc.EventCustom:new("dig_at")
@@ -240,6 +244,7 @@ function Player:initTouchListener()
     touchListener:registerScriptHandler(onTouchBegan, cc.Handler.EVENT_TOUCH_BEGAN)
     touchListener:registerScriptHandler(onTouchMoved, cc.Handler.EVENT_TOUCH_MOVED)
     touchListener:registerScriptHandler(onTouchEnded, cc.Handler.EVENT_TOUCH_ENDED)
+    self.touchListener = touchListener
     local dispatcher = cc.Director:getInstance():getEventDispatcher()
     dispatcher:addEventListenerWithSceneGraphPriority(touchListener, self)
 end
