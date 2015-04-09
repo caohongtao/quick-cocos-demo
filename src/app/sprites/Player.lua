@@ -6,6 +6,8 @@ function Player:ctor(size)
     self.moving = false
     self.dropping = false
     self.digging = false
+    self.dead = false
+    self.playerSize = size
     
     self:initTouchListener()
     
@@ -66,7 +68,7 @@ function Player:move()
     assert(not self.moving,'player should\'nt moving')
     
     local delta
-    local playerWidth = self:getContentSize().width*self:getScale()
+    local playerWidth = self.playerSize.width
     if 'left' == self.touchDir then
         delta = cc.p(-playerWidth,0)
     elseif 'right' == self.touchDir then
@@ -79,7 +81,60 @@ function Player:move()
 end
 
 function Player:die()
---    print("dead")
+    if self.dead then return end
+    
+    self.dead = true
+    self:runAction(cc.Spawn:create(
+                        cc.ScaleTo:create(0.1,1,0.1),
+                        cc.JumpBy:create(0.1,cc.p(0,-35),16,6)
+                        ))
+    self:showSettlement()
+end
+
+function Player:rebirth()
+    print('rebirth')
+    self.dead = false
+    
+
+    self.touchDir = 'center'
+    self:dig()
+    
+    self:runAction(cc.Spawn:create(
+        cc.ScaleTo:create(0.1,1,self.playerSize.height/self:getContentSize().height),
+        cc.JumpBy:create(0.3,cc.p(0,35),16,6)
+    ))
+
+end
+
+function Player:showSettlement()
+    if not self.restartBtn then
+
+        local function btnCallback(node, type)
+            if type == cc.CONTROL_EVENTTYPE_TOUCH_DOWN then
+                self.restartBtn:runAction(cc.EaseBounceIn:create(cc.MoveBy:create(1,cc.p(0,600))))
+                self:rebirth()
+            end
+        end
+
+        local btn = cc.ControlButton:create("RESTART","Times New Roman",60)
+        btn:setPosition(display.cx,display.cy+600)
+        self:getParent():addChild(btn)
+        self.restartBtn = btn
+
+        -- 按钮事件回调
+        btn:registerControlEventHandler(btnCallback,cc.CONTROL_EVENTTYPE_TOUCH_DOWN)
+        btn:registerControlEventHandler(btnCallback,cc.CONTROL_EVENTTYPE_DRAG_INSIDE)
+        btn:registerControlEventHandler(btnCallback,cc.CONTROL_EVENTTYPE_TOUCH_UP_INSIDE)
+    end
+
+--    self.restartBtn:runAction(cc.Sequence:create(cc.EaseOut:create(cc.MoveBy:create(1,cc.p(0,-600)),1),
+--        cc.CallFunc:create(function()
+--            self:rebirth()
+--        end)))
+        
+    print('showSettlement')
+    self.restartBtn:runAction(cc.EaseBounceOut:create(cc.MoveBy:create(1,cc.p(0,-600))))
+--    var actionTo = cc.MoveTo.create(2, cc.p(winsize.width-200, winsize.height-220)).easing(cc.easeElasticOut());
 end
 
 function Player:handleTouch()

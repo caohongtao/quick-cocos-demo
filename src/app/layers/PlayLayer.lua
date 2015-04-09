@@ -557,6 +557,8 @@ function PlayLayer:digAt(event)
         el = self.m_elements[row][col-1]
     elseif digDir == 'right' then
         el = self.m_elements[row][col+1]
+    elseif digDir == 'center' then
+        el = self.m_elements[row][col]
     end
     
     self:removeElement(el)
