@@ -2,13 +2,10 @@ PlayLayer = class("PlayLayer",  function()
     return display.newLayer("PlayLayer")
 end)
 
-local MAP_WIDTH = 9
-local MAP_HEIGHT = 1
-
 function PlayLayer:ctor()
     self.map = cc.Node:create()
     self.mapSize = cc.p(MAP_WIDTH,MAP_HEIGHT)
-    self.mapOriginPoint = cc.p(0,0)
+    self.mapOriginPoint = cc.p(display.left+MAP_START_X, display.bottom+MAP_START_Y)
     
     self.elOriginSize = nil
     self.elSize = nil
