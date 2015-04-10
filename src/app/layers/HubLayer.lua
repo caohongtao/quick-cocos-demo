@@ -1,3 +1,7 @@
+local score = 0
+local deepth = 0
+
+
 HubLayer = class("HubLayer",  function()
     return display.newLayer("HubLayer")
 end)
@@ -14,7 +18,7 @@ local UP_BAR = {
             pos = {x=90,y=display.height-78},
         },
         label = {
-            text        = "12345/20000",
+            text        = "0",
             font        = "Times New Roman",
             size        = 30,
             color       = display.COLOR_WHITE,
@@ -28,7 +32,7 @@ local UP_BAR = {
             pos = {x=336,y=display.height-74},
         },
         label = {
-            text        = "12345",
+            text        = "0",
             font        = "Times New Roman",
             size        = 30,
             color       = display.COLOR_WHITE,
@@ -42,7 +46,7 @@ local UP_BAR = {
             pos = {x=490,y=display.height-74},
         },
         label = {
-            text        = "12345",
+            text        = "0",
             font        = "Times New Roman",
             size        = 30,
             color       = display.COLOR_WHITE,
@@ -83,6 +87,10 @@ local BOTTOM_BAR = {
 function HubLayer:ctor()
     self:createUpBar()
     self:createBottomBar()
+    self:setTouchSwallowEnabled(false)
+    
+    local updateHubListener = cc.EventListenerCustom:create("update hub", handler(self,self.updateDate))
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(updateHubListener, self)
 end
 
 function HubLayer:createUpBar()
@@ -90,13 +98,18 @@ function HubLayer:createUpBar()
                             pressed = UP_BAR.pause.pressed,
                             scale9 = true,})
         :align(display.LEFT_BOTTOM, UP_BAR.pause.pos.x, UP_BAR.pause.pos.y)
+        :onButtonClicked(function(event)
+            print("pause game")
+            local pauseEvent = cc.EventCustom:new("pause game")
+            cc.Director:getInstance():getEventDispatcher():dispatchEvent(pauseEvent)
+        end)
         :addTo(self)
 
 
     cc.ui.UIImage.new(UP_BAR.score.image[1])
         :align(display.LEFT_BOTTOM, UP_BAR.score.image.pos.x, UP_BAR.score.image.pos.y)
         :addTo(self)
-    cc.ui.UILabel.new(UP_BAR.score.label)
+    self.scoreLabel = cc.ui.UILabel.new(UP_BAR.score.label)
         :align(display.LEFT_BOTTOM)
         :addTo(self)
         
@@ -104,7 +117,7 @@ function HubLayer:createUpBar()
     cc.ui.UIImage.new(UP_BAR.deepth.image[1])
         :align(display.LEFT_BOTTOM, UP_BAR.deepth.image.pos.x, UP_BAR.deepth.image.pos.y)
         :addTo(self)
-    cc.ui.UILabel.new(UP_BAR.deepth.label)
+    self.deepthLabel = cc.ui.UILabel.new(UP_BAR.deepth.label)
         :align(display.LEFT_BOTTOM)
         :addTo(self)
         
@@ -112,7 +125,7 @@ function HubLayer:createUpBar()
     cc.ui.UIImage.new(UP_BAR.money.image[1])
         :align(display.LEFT_BOTTOM, UP_BAR.money.image.pos.x, UP_BAR.money.image.pos.y)
         :addTo(self)
-    cc.ui.UILabel.new(UP_BAR.money.label)
+    self.moneyLabel = cc.ui.UILabel.new(UP_BAR.money.label)
         :align(display.LEFT_BOTTOM)
         :addTo(self)
 end
@@ -151,4 +164,17 @@ function HubLayer:createBottomBar()
             end)
         :align(display.LEFT_BOTTOM, BOTTOM_BAR.buy.pos.x, BOTTOM_BAR.buy.pos.y)
         :addTo(self)
+end
+
+function HubLayer:updateDate(event)
+    if event.type == 'score' then
+        score = score + event.data
+        self.scoreLabel:setString(string.format("%d/%d", score, GameData.highestScore))
+    elseif event.type == 'deepth' then
+        deepth = deepth + event.data
+        self.deepthLabel:setString(string.format("%d", deepth))
+    else
+    
+    end
+
 end

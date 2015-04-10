@@ -16,6 +16,10 @@ function Player:ctor(size)
     
     local moveListener = cc.EventListenerCustom:create("Dropping", function(event) self.dropping = event.active end)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(moveListener, self)
+    local pauseListener = cc.EventListenerCustom:create("pause game", handler(self,self.disableTouchListener))
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(pauseListener, self)
+    local resumeListener = cc.EventListenerCustom:create("resume game", handler(self,self.initTouchListener))
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(resumeListener, self)
     
     self:setTexture('res/sprite/bingbing.png')
     self:setScale(size.width/self:getContentSize().width)
@@ -36,8 +40,8 @@ end
 
 function Player:update()
     local env = self:detectMap()
-    if env.down == nil then self:drop() end
-    if env.center ~= nil then self:die() end
+    if env and env.down == nil then self:drop() end
+    if env and env.center ~= nil then self:die() end
 end
 
 function Player:drop()
@@ -75,7 +79,7 @@ function Player:move()
     end
     self.moving = true
     self:runAction(cc.Sequence:create(
-        cc.MoveBy:create(0.2,delta),
+        cc.MoveBy:create(0.4,delta),
         cc.CallFunc:create(function() self.moving = false end)))
 end
 
@@ -84,7 +88,7 @@ function Player:die()
     
     print('die')
     self.dead = true
-    cc.Director:getInstance():getEventDispatcher():removeEventListener(self.touchListener)
+    self:disableTouchListener()
     
     self:runAction(cc.Spawn:create(
                         cc.ScaleTo:create(0.1,1,0.1),
@@ -144,6 +148,7 @@ function Player:showSettlement()
     print('showSettlement')
     self.restartBtn:setEnabled(true)
     self.restartBtn:runAction(cc.EaseBounceOut:create(cc.MoveBy:create(1,cc.p(0,-600))))
+    
 --    var actionTo = cc.MoveTo.create(2, cc.p(winsize.width-200, winsize.height-220)).easing(cc.easeElasticOut());
 end
 
@@ -203,8 +208,13 @@ function Player:handleTouch()
 --    end
 end
 
-function Player:initTouchListener()
+function Player:disableTouchListener()
+    print('disableTouchListener')
+    cc.Director:getInstance():getEventDispatcher():removeEventListener(self.touchListener)
+end
 
+function Player:initTouchListener()
+    print('initTouchListener')
     --------------------------------------------
     local function onTouchBegan(touch, event)
 --        self.moving = true

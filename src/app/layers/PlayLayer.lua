@@ -460,6 +460,17 @@ function PlayLayer:rollMap(event)
 end
 
 function PlayLayer:addLines(cnt)
+    --更新界面
+    local event = cc.EventCustom:new("update hub")
+    event.type = 'score'
+    event.data = cnt*10
+    cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
+    local event = cc.EventCustom:new("update hub")
+    event.type = 'deepth'
+    event.data = cnt
+    cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
+
+    --在下方增加层
     local screenLeftDown = self.map:convertToNodeSpace(cc.p(0,0))
     local LinesUnderScreen, _ = self:positionToMatrix(screenLeftDown.x, screenLeftDown.y)
     cnt = cnt > LinesUnderScreen and cnt-LinesUnderScreen or 0

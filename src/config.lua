@@ -57,3 +57,9 @@ res = {
         }
     }
 }
+
+initialGameData = {
+    coins = 0,
+    diamond = 0,
+    highestScore = 0,
+}
