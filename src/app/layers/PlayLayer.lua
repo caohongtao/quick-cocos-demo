@@ -61,7 +61,7 @@ function PlayLayer:initMap()
 
     --以宽度为基准缩放
     local elActualWidth = (display.width - self.mapOriginPoint.x * 2) / self.mapSize.x
-    local elOriginSize = display.newSprite('#'..res.elementTexture.fire.normal):getContentSize()
+    local elOriginSize = display.newSprite('#'..res.elementTexture.red):getContentSize()
     local scaleFactor = elActualWidth/elOriginSize.width
 
     self.elOriginSize = elOriginSize

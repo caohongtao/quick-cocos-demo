@@ -35,26 +35,11 @@ MAP_START_Y = 0
 
 res = {
     elementTexture = {
-        fire = {
-            normal = "fire_normal.png",
-            horizontal = "fire_horizontal.png",
-            vertical = "fire_vertical.png"
-        },
-        light = {
-            normal = "light_normal.png",
-            horizontal = "light_horizontal.png",
-            vertical = "light_vertical.png"
-        },
-        water = {
-            normal = "water_normal.png",
-            horizontal = "water_horizontal.png",
-            vertical = "water_vertical.png"
-        },
-        wind = {
-            normal = "wind_normal.png",
-            horizontal = "wind_horizontal.png",
-            vertical = "wind_vertical.png"
-        }
+        blue = "blue.png",
+        green = "green.png",
+        orange = "orange.png",
+        purple = "purple.png",
+        red = "red.png",
     }
 }
 

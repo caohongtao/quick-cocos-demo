@@ -91,7 +91,7 @@ function Player:die()
     self:disableTouchListener()
     
     self:runAction(cc.Spawn:create(
-                        cc.ScaleTo:create(0.1,1,0.1),
+                        cc.ScaleTo:create(0.1,self.playerSize.width/self:getContentSize().width,0.1),
                         cc.JumpBy:create(0.1,cc.p(0,-35),16,6)
                         ))
     self:showSettlement()
@@ -109,7 +109,7 @@ function Player:rebirth()
     if env.center then self:dig(env.center) end
 
     self:runAction(cc.Spawn:create(
-        cc.ScaleTo:create(0.1,1,self.playerSize.height/self:getContentSize().height),
+        cc.ScaleTo:create(0.1,self.playerSize.width/self:getContentSize().width,self.playerSize.height/self:getContentSize().height),
         cc.JumpBy:create(0.3,cc.p(0,35),16,6)
     ))
 

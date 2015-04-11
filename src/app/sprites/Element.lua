@@ -7,7 +7,6 @@ function Element:ctor()
     self.m_col = 0
 
     self.m_type = ''
-    self.m_mode = ''
 
 --    self.m_supported = true
 
@@ -77,9 +76,8 @@ function Element:create(row, col)
     local randomType = eTypes[math.random(1,table.maxn(eTypes))]
 
     self.m_type = randomType
-    self.m_mode = 'normal'
 
-    self:setSpriteFrame(res.elementTexture[randomType].normal)
+    self:setSpriteFrame(res.elementTexture[randomType])
     self:createFSM()
     return self; 
 end

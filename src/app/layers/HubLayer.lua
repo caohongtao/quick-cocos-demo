@@ -87,7 +87,7 @@ local BOTTOM_BAR = {
 function HubLayer:ctor()
     self:createUpBar()
     self:createBottomBar()
-    self:setTouchSwallowEnabled(false)
+    self:setTouchSwallowEnabled(true)
     
     local updateHubListener = cc.EventListenerCustom:create("update hub", handler(self,self.updateDate))
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(updateHubListener, self)
