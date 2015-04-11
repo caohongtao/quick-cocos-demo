@@ -7,7 +7,7 @@
             <key>blue.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{222,426},{53,53}}</string>
+                <string>{{2,414},{53,53}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -20,7 +20,7 @@
             <key>bomb.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{259,286},{123,138}}</string>
+                <string>{{274,2},{123,138}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -33,7 +33,7 @@
             <key>box.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,151},{141,114}}</string>
+                <string>{{397,286},{141,114}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -46,7 +46,7 @@
             <key>coin.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{283,151},{133,133}}</string>
+                <string>{{2,151},{133,133}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -59,7 +59,7 @@
             <key>cola.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{384,286},{117,135}}</string>
+                <string>{{399,2},{117,135}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -69,10 +69,23 @@
                 <key>sourceSize</key>
                 <string>{117,135}</string>
             </dict>
+            <key>gem.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{274,286},{121,116}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{121,116}}</string>
+                <key>sourceSize</key>
+                <string>{121,116}</string>
+            </dict>
             <key>goldenDrill.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{295,2},{144,126}}</string>
+                <string>{{128,286},{144,126}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -85,7 +98,7 @@
             <key>green.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{167,426},{53,53}}</string>
+                <string>{{167,414},{53,53}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -98,7 +111,7 @@
             <key>mushroom.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{145,151},{136,128}}</string>
+                <string>{{137,151},{136,128}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -111,7 +124,7 @@
             <key>nut.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,286},{129,128}}</string>
+                <string>{{275,151},{129,128}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -124,7 +137,7 @@
             <key>orange.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{112,426},{53,53}}</string>
+                <string>{{112,414},{53,53}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -150,7 +163,7 @@
             <key>purple.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{57,426},{53,53}}</string>
+                <string>{{222,414},{53,53}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -163,7 +176,7 @@
             <key>red.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,426},{53,53}}</string>
+                <string>{{57,414},{53,53}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -176,7 +189,7 @@
             <key>silverDrill.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{149,2},{144,126}}</string>
+                <string>{{406,151},{144,126}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -186,10 +199,23 @@
                 <key>sourceSize</key>
                 <string>{144,126}</string>
             </dict>
+            <key>timebomb.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{149,2},{123,138}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{123,138}}</string>
+                <key>sourceSize</key>
+                <string>{123,138}</string>
+            </dict>
             <key>toy.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{133,286},{124,126}}</string>
+                <string>{{2,286},{124,126}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -207,9 +233,9 @@
             <key>realTextureFileName</key>
             <string>elements.png</string>
             <key>size</key>
-            <string>{503,481}</string>
+            <string>{552,469}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:ce15cf13e91b2a2588f95448b3b717c7:db51cada8b1071ba2aa9d52dad0240bb:cc4d159020aeb80598522deed8e12f2e$</string>
+            <string>$TexturePacker:SmartUpdate:eaf9971de018eeae9dc8917bc38cec19:f04a53789fda950577097f6220286ef7:cc4d159020aeb80598522deed8e12f2e$</string>
             <key>textureFileName</key>
             <string>elements.png</string>
         </dict>

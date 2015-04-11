@@ -7,7 +7,6 @@ function PlayLayer:ctor()
     self.mapSize = cc.p(MAP_WIDTH,MAP_HEIGHT)
     self.mapOriginPoint = cc.p(display.left+MAP_START_X, display.bottom+MAP_START_Y)
     
-    self.elOriginSize = nil
     self.elSize = nil
 
     self.m_elements = {}
@@ -60,19 +59,15 @@ end
 function PlayLayer:initMap()
 
     --以宽度为基准缩放
-    local elActualWidth = (display.width - self.mapOriginPoint.x * 2) / self.mapSize.x
-    local elOriginSize = display.newSprite('#'..res.elementTexture.red):getContentSize()
-    local scaleFactor = elActualWidth/elOriginSize.width
-
-    self.elOriginSize = elOriginSize
-    self.elSize = {width = elActualWidth, height = elOriginSize.height * scaleFactor}
+    local elActualSize = (display.width - self.mapOriginPoint.x * 2) / self.mapSize.x
+    self.elSize = {width = elActualSize, height = elActualSize}
 
     for row=1, self.mapSize.y do
         self.m_elements[row] = {}
         for col=1, self.mapSize.x do
             local el = Element:new():create(row, col)
             el:setPosition(cc.p(self:matrixToPosition(row,col)))
-            el:setScale(scaleFactor)
+            el:setScale(self.elSize.width/el:getContentSize().width, self.elSize.height/el:getContentSize().height)
             el:addTo(self.map)
             self.m_elements[row][col] = el
         end
@@ -299,7 +294,7 @@ function PlayLayer:checkNeedSupported(el)
     row, col = self:positionToMatrix(elPos.x, elPos.y - self.elSize.height / 2 - judgeRange)
     local down = self.m_elements[row][col]
 
-    --2.下方有supported的元素，或者左,右,上有supported的且type一样的元素，都停止掉落
+    --2.下方有supported的元素，或者左,右,上有supported的且type一样的元素，或已经掉到最后一行，都停止掉落
     local isSopported = false
     if left and left.m_type == el.m_type and left:isStable()then
         isSopported = true
@@ -314,6 +309,10 @@ function PlayLayer:checkNeedSupported(el)
     end
 
     if down and down:isStable() then
+        isSopported = true
+    end
+    
+    if el.m_row == 1 then
         isSopported = true
     end
 
@@ -481,13 +480,12 @@ function PlayLayer:addLines(cnt)
     self.mapOriginPoint.y = self.mapOriginPoint.y - cnt * self.elSize.height
     self.mapSize.y = self.mapSize.y + cnt
     
-    local scaleFactor = self.elSize.width/self.elOriginSize.width
     for row=1, cnt do
         local newLine = {}
         for col=1, self.mapSize.x do
             local el = Element:new():create(row, col)
             el:setPosition(cc.p(self:matrixToPosition(row,col)))
-            el:setScale(scaleFactor)
+            el:setScale(self.elSize.width/el:getContentSize().width, self.elSize.height/el:getContentSize().height)
             el:addTo(self.map)
             newLine[col] = el
         end

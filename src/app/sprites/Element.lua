@@ -72,14 +72,31 @@ function Element:create(row, col)
     self.m_row = row
     self.m_col = col
 
-    local eTypes = table.keys(res.elementTexture)
-    local randomType = eTypes[math.random(1,table.maxn(eTypes))]
+    local eType = self:getTypeAccordProbability()
 
-    self.m_type = randomType
-
-    self:setSpriteFrame(res.elementTexture[randomType])
+    self.m_type = eType
+    self:setSpriteFrame(eType.texture)
     self:createFSM()
     return self; 
+end
+
+function Element:getTypeAccordProbability()
+    if not totalProbability then
+        totalProbability = 0
+        for _, element in pairs(elements) do
+            totalProbability = totalProbability + element.probability
+            element.IntervalEnd = totalProbability
+		end
+	end
+	
+    local random = math.random(0,totalProbability)
+    for _, element in pairs(elements) do
+        if random <= element.IntervalEnd then
+        	return element
+        end
+    end
+    
+    return elements[#elements] --不可能执行到这里，以防万一
 end
 
 local shakeSpeed = 1
