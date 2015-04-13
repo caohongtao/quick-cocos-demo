@@ -9,10 +9,12 @@ function Player:ctor(size)
     self.dead = false
     self.playerSize = size
     
-    self:initTouchListener()
+    self.oxygenVol = GameData.oxgenVol
+    self.coins = 0
+    self.diamond = 0,
+
     
-    local scheduler = cc.Director:getInstance():getScheduler()
-    scheduler:scheduleScriptFunc(handler(self, self.update), 1.0 / 60.0, false)
+    self:initTouchListener()
     
     local moveListener = cc.EventListenerCustom:create("Dropping", function(event) self.dropping = event.active end)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(moveListener, self)
@@ -26,22 +28,63 @@ function Player:ctor(size)
     self:setAnchorPoint(0.5,0.5)
     self:setPosition(display.cx, size.height * BORN_HEIGHT)
     
+
+    local scheduler = cc.Director:getInstance():getScheduler()
     scheduler:scheduleScriptFunc(handler(self, self.update), 1.0 / 60.0, false)
---    self:test()
+    local co = coroutine.create(handler(self,self.reduceOxygen))
+    coroutine.resume(co)
 end
 
-function Player:detectMap()
+function Player:detectMap(dir)
     local event = cc.EventCustom:new("detect_map")
     event.playerPos = self:convertToWorldSpaceAR(cc.p(0,0))
+    event.direction = dir
     cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
     
-    return event.env
+    return event.result, event.element
 end
 
 function Player:update()
-    local env = self:detectMap()
-    if env and env.down == nil then self:drop() end
-    if env and env.center ~= nil then self:die() end
+    local down, el = self:detectMap('down')
+    if down == 'empty' or (down == 'element' and el.m_type.canThrough) then self:drop() end
+    
+    local center, el = self:detectMap('center')
+    if center == 'element' then
+        if el.m_type.isBrick then
+            self:die()
+        else
+            self:gainProp(el)
+        end
+    end
+end
+
+function Player:gainProp(el)
+	print(el.m_type)
+
+    
+    local event = cc.EventCustom:new("remove_element")
+    event.el = el
+    cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
+    
+end
+
+function Player:reduceOxygen()
+    local current = coroutine.running()
+    
+    while true do
+        self:performWithDelay(function()
+            coroutine.resume(current)
+        end, 1.0/player.oxgenReduceRate)
+    
+        self.oxygenVol = self.oxygenVol - 1
+        local event = cc.EventCustom:new("update hub")
+        event.type = 'oxygen'
+        event.data = self.oxygenVol
+        cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
+        
+        coroutine.yield()
+    end
+
 end
 
 function Player:drop()
@@ -67,14 +110,14 @@ function Player:dig(target)
         cc.CallFunc:create(function() self.digging = false end)))
 end
 
-function Player:move()
+function Player:move(dir)
     assert(not self.moving,'player should\'nt moving')
     
     local delta
     local playerWidth = self.playerSize.width
-    if 'left' == self.touchDir then
+    if 'left' == dir then
         delta = cc.p(-playerWidth,0)
-    elseif 'right' == self.touchDir then
+    elseif 'right' == dir then
         delta = cc.p(playerWidth,0)
     end
     self.moving = true
@@ -105,8 +148,8 @@ function Player:rebirth()
 --    cc.Director:getInstance():getEventDispatcher():addEventListenerWithSceneGraphPriority(self.touchListener, self)
     self:initTouchListener()
 
-    local env = self:detectMap()
-    if env.center then self:dig(env.center) end
+    local center, element = self:detectMap('center')
+    if center ~= 'empty' then self:dig(element) end
 
     self:runAction(cc.Spawn:create(
         cc.ScaleTo:create(0.1,self.playerSize.width/self:getContentSize().width,self.playerSize.height/self:getContentSize().height),
@@ -146,6 +189,11 @@ function Player:showSettlement()
 --        end)))
         
     print('showSettlement')
+    GameData.coins = GameData.coins + self.coins
+    GameData.diamond = GameData.diamond + self.diamond
+--    highestScore
+    gameState.save(GameData)
+    
     self.restartBtn:setEnabled(true)
     self.restartBtn:runAction(cc.EaseBounceOut:create(cc.MoveBy:create(1,cc.p(0,-600))))
     
@@ -158,54 +206,16 @@ function Player:handleTouch()
         return
     end
     
-    local env = self:detectMap()
-    if 'left' == self.touchDir then
-        if env.left == nil then self:move()
-        else self:dig(env.left)
+    local type, element = self:detectMap(self.touchDir)
+    if type == 'empty' then
+        self:move(self.touchDir)
+    elseif type == 'element' then
+        if element.m_type.canThrough then
+            self:move(self.touchDir)
+        else
+        	self:dig(element)
         end
-    elseif 'right' == self.touchDir then
-        if env.right == nil then self:move()
-        else self:dig(env.right) end
-    elseif 'down' == self.touchDir then
-        self:dig(env.down)
-    end 
-    
-    
---    local event = cc.EventCustom:new("dig_at")
---    event.playerPos = self:convertToWorldSpaceAR(cc.p(0,0))
---    event.digDir = self.touchDir
---    cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
-    
---    if 'empty' == event.result then
---        local delta
---        local playerWidth = self:getContentSize().width*self:getScale()
---        if 'left' == self.touchDir then
---            delta = cc.p(-playerWidth,0)
---        elseif 'right' == self.touchDir then
---            delta = cc.p(playerWidth,0)
-----        elseif 'down' == self.touchDir then
-----            delta = cc.p(0,-12)
---        end
---        self.moving = true
---        self:runAction(cc.Sequence:create(
---            cc.MoveBy:create(0.2,delta),
---            cc.CallFunc:create(function()
---                self.moving = false
-----            
-----                local event = cc.EventCustom:new("roll_map")
-----                event.playerPos = self:convertToWorldSpaceAR(cc.p(0,0))
-----                cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
---            end)))
---        
---    elseif 'element' == event.result then
---        --播放动画
---        self.digging = true
---        self:runAction(cc.Sequence:create(
---            cc.JumpBy:create(0.2, cc.p(0,0), 12, 6),
---            cc.CallFunc:create(function() self.digging = false end)))
---    elseif 'wall' == event.result then
---        
---    end
+    end
 end
 
 function Player:disableTouchListener()

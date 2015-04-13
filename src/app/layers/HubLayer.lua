@@ -63,6 +63,14 @@ local BOTTOM_BAR = {
 --        image = "ui/AirRuler.png",
 --        pos = {x=display.left+1,y=display.bottom+112},
 --    },
+    oxygenLabel = {
+        text        = GameData.oxgenVol,
+        font        = "Times New Roman",
+        size        = 60,
+        color       = cc.c3b(0, 0, 160),
+        x           = 50,
+        y           = 50,
+    },
     skill1 = {
         normal = "ui/jineng1.png",
         pressed = "ui/jineng2.png",
@@ -143,6 +151,9 @@ function HubLayer:createBottomBar()
         end)
         :align(display.LEFT_BOTTOM, BOTTOM_BAR.skill1.pos.x, BOTTOM_BAR.skill1.pos.y)
         :addTo(self)
+    self.oxygenLabel = cc.ui.UILabel.new(BOTTOM_BAR.oxygenLabel)
+        :align(display.CENTER)
+        :addTo(self)
         
     cc.ui.UIPushButton.new({normal = BOTTOM_BAR.skill2.normal,
                             pressed = BOTTOM_BAR.skill2.pressed,
@@ -172,7 +183,9 @@ function HubLayer:updateDate(event)
         self.scoreLabel:setString(string.format("%d/%d", score, GameData.highestScore))
     elseif event.type == 'deepth' then
         deepth = deepth + event.data
-        self.deepthLabel:setString(string.format("%d", deepth))
+        self.deepthLabel:setString(deepth)
+    elseif event.type == 'oxygen' then
+        self.oxygenLabel:setString(event.data)
     else
     
     end

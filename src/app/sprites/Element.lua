@@ -7,7 +7,7 @@ function Element:ctor()
     self.m_col = 0
 
     self.m_type = ''
-
+    
 --    self.m_supported = true
 
     self.needCheckRemove = false    --drop到load后，需要检查此，标志，看是否需要消除。
@@ -71,7 +71,7 @@ end
 function Element:create(row, col)
     self.m_row = row
     self.m_col = col
-
+    
     local eType = self:getTypeAccordProbability()
 
     self.m_type = eType

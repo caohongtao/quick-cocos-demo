@@ -37,81 +37,110 @@ elements = {
     blue = {
         texture = "blue.png",
         probability = 100,
+        canThrough = false,
+        isBrick = true,
     },
     green = {
         texture = "green.png",
         probability = 100,
+        canThrough = false,
+        isBrick = true,
     },
     orange = {
         texture = "orange.png",
         probability = 100,
+        canThrough = false,
+        isBrick = true,
     },
     purple = {
         texture = "purple.png",
         probability = 100,
+        canThrough = false,
+        isBrick = true,
     },
     red = {
         texture = "red.png",
         probability = 100,
+        canThrough = false,
+        isBrick = true,
     },
 
 
     oxygen = {
         texture = "oxygen.png",
         probability = 1,
+        canThrough = true,
     },
     silverDrill = {
         texture = "silverDrill.png",
         probability = 1,
+        canThrough = true,
     },
     goldenDrill = {
         texture = "goldenDrill.png",
         probability = 1,
+        canThrough = true,
     },
     box = {
         texture = "box.png",
         probability = 1,
+        canThrough = true,
+        
     },
     coin = {
         texture = "coin.png",
         probability = 1,
+        canThrough = true,
     },
     gem = {
         texture = "gem.png",
         probability = 1,
+        canThrough = true,
     },
     bomb = {
         texture = "bomb.png",
         probability = 1,
+        canThrough = false,
     },
     timebomb = {
         texture = "timebomb.png",
         probability = 1,
+        canThrough = false,
     },
     
     
     mushroom = {
         texture = "mushroom.png",
         probability = 1,
+        canThrough = true,
     },
     nut = {
         texture = "nut.png",
         probability = 1,
+        canThrough = true,
     },
     cola = {
         texture = "cola.png",
         probability = 1,
+        canThrough = true,
     },
     
 
     toy = {
         texture = "toy.png",
         probability = 1,
+        canThrough = false,
     },
+}
+
+player = {
+    oxgenReduceRate = 2,
 }
 
 initialGameData = {
     coins = 0,
     diamond = 0,
     highestScore = 0,
+    
+    oxgenVol = 100,
 }
