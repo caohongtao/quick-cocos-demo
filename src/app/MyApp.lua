@@ -46,7 +46,7 @@ function MyApp:run()
     cc.FileUtils:getInstance():addSearchPath("res/")
     cc.Director:getInstance():setContentScaleFactor(480 / CONFIG_SCREEN_WIDTH)
 --    display:setDesignResolutionSize()
-    self:enterScene("GameScene")
+    self:enterScene("MainScene")
 end
 
 return MyApp

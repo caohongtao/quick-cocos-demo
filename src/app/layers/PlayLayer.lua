@@ -434,7 +434,7 @@ function PlayLayer:rollMap(event)
     
     local lines = row - 1
     for i=row-1 < self.mapSize.y and row-1 or self.mapSize.y, 1, -1 do
-        if (self.m_elements[i][col] and not self.m_elements[i][col].m_type.canThrough) or (self.m_droppingElements[i][col]) then
+        if (self.m_elements[i][col] and self.m_elements[i][col].m_needDigTime > 0) or (self.m_droppingElements[i][col]) then
             lines = (row-1) - i
             break
         end

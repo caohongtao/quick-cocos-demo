@@ -7,8 +7,7 @@ function Element:ctor()
     self.m_col = 0
 
     self.m_type = ''
-    
---    self.m_supported = true
+    self.m_needDigTime = 0
 
     self.needCheckRemove = false    --drop到load后，需要检查此，标志，看是否需要消除。
 end
@@ -75,6 +74,7 @@ function Element:create(row, col)
     local eType = self:getTypeAccordProbability()
 
     self.m_type = eType
+    self.m_needDigTime = eType.needDigTime
     self:setSpriteFrame(eType.texture)
     self:createFSM()
     return self; 

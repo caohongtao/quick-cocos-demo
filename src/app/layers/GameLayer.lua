@@ -5,11 +5,11 @@ require("app.layers.HubLayer")
 require("app.sprites.Element")
 require("app.sprites.Player")
 
-local GameScene = class("GameScene", function()
-    return display.newScene("GameScene")
+local GameLayer = class("GameLayer", function()
+    return display.newLayer("GameLayer")
 end)
 
-function GameScene:ctor()
+function GameLayer:ctor()
     local backgroudLayer = BackgroundLayer.new()
     backgroudLayer:setPosition(display.left,display.bottom)
     backgroudLayer:setAnchorPoint(0,0)
@@ -29,7 +29,7 @@ function GameScene:ctor()
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(pauseListener, self)
 end
 
-function GameScene:pauseGame()
+function GameLayer:pauseGame()
     local queue = {self}
     while #queue > 0 do
         local nodes = queue[1]:getChildren()
@@ -45,4 +45,4 @@ function GameScene:pauseGame()
     end
 end
 
-return GameScene
+return GameLayer

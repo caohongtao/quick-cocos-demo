@@ -7,13 +7,14 @@ function Player:ctor(size)
     self.dropping = false
     self.digging = false
     self.dead = false
+    
     self.playerSize = size
     
     self.oxygenVol = GameData.oxgenVol
     self.coins = 0
-    self.diamond = 0,
+    self.diamond = 0
+    self.digForce = GameData.digForce
 
-    
     self:initTouchListener()
     
     local moveListener = cc.EventListenerCustom:create("Dropping", function(event) self.dropping = event.active end)
@@ -45,9 +46,12 @@ function Player:detectMap(dir)
 end
 
 function Player:update()
-    local down, el = self:detectMap('down')
-    if down == 'empty' or (down == 'element' and el.m_type.canThrough) then self:drop() end
     
+    --是否需要掉落
+    local down, el = self:detectMap('down')
+    if down == 'empty' or (down == 'element' and el.m_needDigTime == 0) then self:drop() end
+    
+    --是否获取到道具或者被砖块砸到
     local center, el = self:detectMap('center')
     if center == 'element' then
         if el.m_type.isBrick then
@@ -59,8 +63,38 @@ function Player:update()
 end
 
 function Player:gainProp(el)
-	print(el.m_type)
+    if el.m_type == elements.oxygen then
+        self.oxygenVol = self.oxygenVol + 10
+        self.oxygenVol = GameData.oxgenVol < self.oxygenVol and GameData.oxgenVol or self.oxygenVol
+        local event = cc.EventCustom:new("update hub")
+        event.type = 'oxygen'
+        event.data = self.oxygenVol
+        cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
+    elseif el.m_type == elements.silverDrill then
+        self.digForce = self.digForce * 2
+        self:performWithDelay(function() self.digForce = self.digForce / 2 end, 10)
+    elseif el.m_type == elements.goldenDrill then
+        self.digForce = self.digForce * 4
+        self:performWithDelay(function() self.digForce = self.digForce / 4 end, 10)
+    elseif el.m_type == elements.box then
+    
+    elseif el.m_type == elements.coin then
+    
+    elseif el.m_type == elements.gem then
+    
+    elseif el.m_type == elements.bomb then
+    
+    elseif el.m_type == elements.timebomb then
+    
+    elseif el.m_type == elements.mushroom then
+    
+    elseif el.m_type == elements.nut then
 
+    elseif el.m_type == elements.cola then
+    
+    elseif el.m_type == elements.toy then
+    
+    end
     
     local event = cc.EventCustom:new("remove_element")
     event.el = el
@@ -76,7 +110,13 @@ function Player:reduceOxygen()
             coroutine.resume(current)
         end, 1.0/player.oxgenReduceRate)
     
-        self.oxygenVol = self.oxygenVol - 1
+        if self.oxygenVol >= 1 then
+            self.oxygenVol = self.oxygenVol - 1
+        else
+            self.oxygenVol = 0
+            self:die()
+        end
+        
         local event = cc.EventCustom:new("update hub")
         event.type = 'oxygen'
         event.data = self.oxygenVol
@@ -99,15 +139,20 @@ end
 function Player:dig(target)
     if self.digging then return end
     
-    local event = cc.EventCustom:new("dig_at")
---    event.playerPos = self:convertToWorldSpaceAR(cc.p(0,0))
-    event.target = target
-    cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
-    
+
     self.digging = true
     self:runAction(cc.Sequence:create(
         cc.JumpBy:create(0.2, cc.p(0,0), 12, 6),
         cc.CallFunc:create(function() self.digging = false end)))
+        
+    target.m_needDigTime = target.m_needDigTime - self.digForce
+    if target.m_needDigTime > 0 then return end
+    
+    local event = cc.EventCustom:new("dig_at")
+--    event.playerPos = self:convertToWorldSpaceAR(cc.p(0,0))
+    event.target = target
+    cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
+
 end
 
 function Player:move(dir)
@@ -145,6 +190,8 @@ function Player:rebirth()
     
     print('rebirth')
     self.dead = false
+    self.oxygenVol = GameData.oxgenVol
+    
 --    cc.Director:getInstance():getEventDispatcher():addEventListenerWithSceneGraphPriority(self.touchListener, self)
     self:initTouchListener()
 
@@ -210,7 +257,7 @@ function Player:handleTouch()
     if type == 'empty' then
         self:move(self.touchDir)
     elseif type == 'element' then
-        if element.m_type.canThrough then
+        if element.m_needDigTime == 0 then
             self:move(self.touchDir)
         else
         	self:dig(element)

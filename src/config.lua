@@ -37,31 +37,31 @@ elements = {
     blue = {
         texture = "blue.png",
         probability = 100,
-        canThrough = false,
+        needDigTime = 1,
         isBrick = true,
     },
     green = {
         texture = "green.png",
         probability = 100,
-        canThrough = false,
+        needDigTime = 1,
         isBrick = true,
     },
     orange = {
         texture = "orange.png",
         probability = 100,
-        canThrough = false,
+        needDigTime = 1,
         isBrick = true,
     },
     purple = {
         texture = "purple.png",
         probability = 100,
-        canThrough = false,
+        needDigTime = 1,
         isBrick = true,
     },
     red = {
         texture = "red.png",
         probability = 100,
-        canThrough = false,
+        needDigTime = 1,
         isBrick = true,
     },
 
@@ -69,72 +69,72 @@ elements = {
     oxygen = {
         texture = "oxygen.png",
         probability = 1,
-        canThrough = true,
+        needDigTime = 0,
     },
     silverDrill = {
         texture = "silverDrill.png",
         probability = 1,
-        canThrough = true,
+        needDigTime = 0,
     },
     goldenDrill = {
         texture = "goldenDrill.png",
         probability = 1,
-        canThrough = true,
+        needDigTime = 0,
     },
     box = {
         texture = "box.png",
         probability = 1,
-        canThrough = true,
+        needDigTime = 0,
         
     },
     coin = {
         texture = "coin.png",
         probability = 1,
-        canThrough = true,
+        needDigTime = 0,
     },
     gem = {
         texture = "gem.png",
         probability = 1,
-        canThrough = true,
+        needDigTime = 0,
     },
     bomb = {
         texture = "bomb.png",
         probability = 1,
-        canThrough = false,
+        needDigTime = 0,
     },
     timebomb = {
         texture = "timebomb.png",
         probability = 1,
-        canThrough = false,
+        needDigTime = 0,
     },
     
     
     mushroom = {
         texture = "mushroom.png",
         probability = 1,
-        canThrough = true,
+        needDigTime = 0,
     },
     nut = {
         texture = "nut.png",
         probability = 1,
-        canThrough = true,
+        needDigTime = 0,
     },
     cola = {
         texture = "cola.png",
         probability = 1,
-        canThrough = true,
+        needDigTime = 0,
     },
     
 
     toy = {
         texture = "toy.png",
         probability = 1,
-        canThrough = false,
+        needDigTime = 0,
     },
 }
 
 player = {
-    oxgenReduceRate = 2,
+    oxgenReduceRate = 1,
 }
 
 initialGameData = {
@@ -142,5 +142,8 @@ initialGameData = {
     diamond = 0,
     highestScore = 0,
     
+    moveSpeed = 1,
+    digForce = 1,
     oxgenVol = 100,
+    fortune = 1,
 }
