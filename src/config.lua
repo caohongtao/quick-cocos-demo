@@ -83,7 +83,7 @@ elements = {
     },
     box = {
         texture = "box.png",
-        probability = 1,
+        probability = 100,
         needDigTime = 0,
         
     },
@@ -124,6 +124,11 @@ elements = {
         probability = 1,
         needDigTime = 0,
     },
+    punish = {--只会在挖宝箱时概率出现。
+        texture = "bomb.png",
+        probability = 0,
+        needDigTime = 0,
+    },
     
 
     toy = {
@@ -131,4 +136,10 @@ elements = {
         probability = 1,
         needDigTime = 0,
     },
+}
+
+
+gamePara = {
+    lifeReduceRate = 1,--掉一格所用时
+    dropSpeed = 0.4,--移动100像素用时
 }

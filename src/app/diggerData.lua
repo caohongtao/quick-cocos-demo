@@ -65,29 +65,29 @@ s_data.achivement = {
 }
 
 s_data.level = {
-{lv=1,speed=0.5,power=1,hp=10,luck=0.1,},
-{lv=2,speed=1,power=2,hp=20,luck=0.15,},
-{lv=3,speed=1.5,power=3,hp=30,luck=0.2,},
-{lv=4,speed=2,power=4,hp=50,luck=0.25,},
-{lv=5,speed=2.5,power=5,hp=70,luck=0.3,},
+{lv=1,speed=0.5,power=1,hp=110,luck=0.1,},
+{lv=2,speed=1,power=2,hp=120,luck=0.15,},
+{lv=3,speed=1.5,power=3,hp=130,luck=0.2,},
+{lv=4,speed=2,power=4,hp=150,luck=0.25,},
+{lv=5,speed=2.5,power=5,hp=170,luck=0.3,},
 }
 
 s_data.quest = {
-{id=10001,type=1,sum=2,group=1,award1=10,award2=0,bounds=10,desc="每天完成游戏@局",},
-{id=10002,type=1,sum=10,group=2,award1=20,award2=0,bounds=20,desc="每天完成游戏@局",},
-{id=10003,type=1,sum=30,group=3,award1=30,award2=0,bounds=30,desc="每天完成游戏@局",},
-{id=10004,type=2,sum=100,group=1,award1=10,award2=0,bounds=10,desc="每天达成@米距离",},
-{id=10005,type=2,sum=500,group=2,award1=20,award2=0,bounds=20,desc="每天达成@米距离",},
-{id=10006,type=2,sum=1000,group=3,award1=30,award2=0,bounds=30,desc="每天达成@米距离",},
-{id=10007,type=3,sum=1,group=4,award1=10,award2=0,bounds=5,desc="使用蘑菇@",},
-{id=10008,type=4,sum=1,group=4,award1=10,award2=0,bounds=5,desc="使用栗子@",},
-{id=10009,type=5,sum=1,group=4,award1=10,award2=0,bounds=5,desc="使用可乐@",},
-{id=10010,type=6,sum=1,group=0,award1=10,award2=0,bounds=0,desc="击晕boss@次",},
-{id=10011,type=7,sum=1,group=0,award1=10,award2=0,bounds=0,desc="击退boss@次",},
-{id=10012,type=8,sum=3,group=0,award1=5,award2=0,bounds=0,desc="营救动物@个",},
-{id=10013,type=8,sum=10,group=0,award1=10,award2=0,bounds=0,desc="营救动物@个",},
+{id=10001,type=1,sum=2,group=1,award1=2,award2=0,bounds=2,desc="每天完成游戏@局",},
+{id=10002,type=1,sum=10,group=2,award1=2,award2=0,bounds=2,desc="每天完成游戏@局",},
+{id=10003,type=1,sum=30,group=3,award1=5,award2=0,bounds=5,desc="每天完成游戏@局",},
+{id=10004,type=2,sum=100,group=1,award1=2,award2=0,bounds=2,desc="每天达成@米距离",},
+{id=10005,type=2,sum=500,group=2,award1=2,award2=0,bounds=2,desc="每天达成@米距离",},
+{id=10006,type=2,sum=1000,group=3,award1=5,award2=0,bounds=5,desc="每天达成@米距离",},
+{id=10007,type=3,sum=1,group=4,award1=2,award2=0,bounds=5,desc="使用蘑菇@",},
+{id=10008,type=4,sum=1,group=4,award1=2,award2=0,bounds=5,desc="使用栗子@",},
+{id=10009,type=5,sum=1,group=4,award1=2,award2=0,bounds=5,desc="使用可乐@",},
+{id=10010,type=6,sum=1,group=0,award1=2,award2=0,bounds=0,desc="击晕boss@次",},
+{id=10011,type=7,sum=1,group=0,award1=2,award2=0,bounds=0,desc="击退boss@次",},
+{id=10012,type=8,sum=3,group=0,award1=2,award2=0,bounds=0,desc="营救动物@个",},
+{id=10013,type=8,sum=10,group=0,award1=5,award2=0,bounds=0,desc="营救动物@个",},
+{id=10014,type=8,sum=30,group=0,award1=10,award2=0,bounds=0,desc="营救动物@个",},
+{id=10015,type=9,sum=5000,award1=2,desc="每天达到@分",},
+{id=10016,type=9,sum=50000,award1=5,desc="每天达到@分",},
 }
 
-s_data.other = {
-    lifeReduceRate = 1,--掉一格所用时
-}

@@ -446,7 +446,7 @@ function PlayLayer:rollMap(event)
     
     self:addLines(lines)
     local diff = cc.p(0, lines*self.elSize.height)
-    local moveSpeed = 0.4 --移动100像素用时，跟元素块掉落的速度一样。
+    local moveSpeed = gamePara.dropSpeed
     local duration = diff.y / 100 * 0.4
 
     local eventDispatcher = cc.Director:getInstance():getEventDispatcher()

@@ -60,18 +60,18 @@ function Element:createFSM()
                 self:die()
             end,
 
---            onchangestate = function(event) print(self.m_type.."("..self.m_row..","..self.m_col..") STATE: " .. event.from .. " to " .. event.to) end,
+--            onchangestate = function(event) print("("..self.m_row..","..self.m_col..") STATE: " .. event.from .. " to " .. event.to) end,
         },
     })
 
     self.fsm_:doEvent("start")
 end
 
-function Element:create(row, col)
+function Element:create(row, col ,type)
     self.m_row = row
     self.m_col = col
     
-    local eType = self:getTypeAccordProbability()
+    local eType = type ~= nil and type or self:getTypeAccordProbability()
 
     self.m_type = eType
     self.m_needDigTime = eType.needDigTime
@@ -129,11 +129,10 @@ function Element:shake()
 
 end
 
-local dropSpeed = 0.4 --移动100像素所用时
 function Element:drop()
     cc.Director:getInstance():getActionManager():removeAllActionsFromTarget(self)
     local arr = {}   
-    table.insert(arr, cc.MoveBy:create(dropSpeed,cc.p(0,-100)))
+    table.insert(arr, cc.MoveBy:create(gamePara.dropSpeed,cc.p(0,-100)))
 
     local function onComplete()
         if self:getState() == 'DROP' then
@@ -152,7 +151,7 @@ function Element:load(dest)
 
     self.needCheckRemove = true --刚刚着陆的需要检查是否消除
 
-    local goDest = transition.moveTo(self,{x = dest.x, y = dest.y, time = dropSpeed * math.abs(dest.y - self:getPositionY()) / 100})
+    local goDest = transition.moveTo(self,{x = dest.x, y = dest.y, time = gamePara.dropSpeed * math.abs(dest.y - self:getPositionY()) / 100})
     local bouceUp = transition.moveTo(self,{x = dest.x, y = dest.y+6, time = 0.1})
     local backDest = transition.newEasing(cc.MoveTo:create(0.1, dest), {easing = 'elasticOut'})
     local loadOverNotify = cc.CallFunc:create(function()
@@ -165,10 +164,34 @@ end
 
 function Element:die()
     cc.Director:getInstance():getActionManager():removeAllActionsFromTarget(self)
-    self:runAction(cc.Sequence:create(cc.FadeOut:create(0.6),
+    
+    local function createFakeAndMoveTo(dest)
+        local fake = display.newSprite('#'..self.m_type.texture)
+
+        local curPos = self:convertToWorldSpaceAR(cc.p(0,0))
+        fake:setPosition(curPos.x,curPos.y)
+        fake:setScale(self:getScaleX(),self:getScaleY())
+        fake:addTo(cc.Director:getInstance():getRunningScene())
+
+        fake:runAction(cc.Sequence:create(
+            cc.Spawn:create(cc.EaseIn:create(cc.MoveTo:create(1,dest), 0.5),cc.ScaleTo:create(1,0.1)),
+            cc.CallFunc:create(function()
+                fake:removeFromParent(true)
+            end)))
+
+        self:removeFromParent(true)
+    end
+    
+    if self.m_type == elements.coin then
+        createFakeAndMoveTo(cc.p(display.right-35, display.top-45))
+    elseif self.m_type == elements.gem then
+        createFakeAndMoveTo(cc.p(display.right-190,display.bottom+50))
+    else
+        self:runAction(cc.Sequence:create(cc.FadeOut:create(0.6),
         cc.CallFunc:create(function()
             self:removeFromParent(true)
         end)))
+    end
 end
 
 function Element:getState()

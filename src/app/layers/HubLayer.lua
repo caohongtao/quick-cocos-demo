@@ -40,7 +40,7 @@ local UP_BAR = {
             y           = display.height-70,
         },
     },
-    money = {
+    coin = {
         image = {
             "ui/money.png",
             pos = {x=490,y=display.height-74},
@@ -90,6 +90,14 @@ local BOTTOM_BAR = {
         pressed = "ui/plusdown.png",
         pos = {x=560,y=11},
     },
+    gemLabel = {
+        font        = "Times New Roman",
+        text        = "0",
+        size        = 30,
+        color       = display.COLOR_WHITE,
+        x           = 500,
+        y           = 25,
+    },
 }
 function HubLayer:ctor()
     self:createUpBar()
@@ -120,7 +128,6 @@ function HubLayer:createUpBar()
         :align(display.LEFT_BOTTOM)
         :addTo(self)
         
-        
     cc.ui.UIImage.new(UP_BAR.deepth.image[1])
         :align(display.LEFT_BOTTOM, UP_BAR.deepth.image.pos.x, UP_BAR.deepth.image.pos.y)
         :addTo(self)
@@ -129,10 +136,10 @@ function HubLayer:createUpBar()
         :addTo(self)
         
         
-    cc.ui.UIImage.new(UP_BAR.money.image[1])
-        :align(display.LEFT_BOTTOM, UP_BAR.money.image.pos.x, UP_BAR.money.image.pos.y)
+    cc.ui.UIImage.new(UP_BAR.coin.image[1])
+        :align(display.LEFT_BOTTOM, UP_BAR.coin.image.pos.x, UP_BAR.coin.image.pos.y)
         :addTo(self)
-    self.moneyLabel = cc.ui.UILabel.new(UP_BAR.money.label)
+    self.coinLabel = cc.ui.UILabel.new(UP_BAR.coin.label)
         :align(display.LEFT_BOTTOM)
         :addTo(self)
 end
@@ -175,6 +182,10 @@ function HubLayer:createBottomBar()
             end)
         :align(display.LEFT_BOTTOM, BOTTOM_BAR.buy.pos.x, BOTTOM_BAR.buy.pos.y)
         :addTo(self)
+        
+    self.gemLabel = cc.ui.UILabel.new(BOTTOM_BAR.gemLabel)
+        :align(display.LEFT_BOTTOM)
+        :addTo(self)
 end
 
 function HubLayer:updateDate(event)
@@ -184,8 +195,10 @@ function HubLayer:updateDate(event)
         self.deepthLabel:setString(event.data)
     elseif event.type == 'oxygen' then
         self.oxygenLabel:setString(event.data)
-    else
-    
+    elseif event.type == 'coin' then
+        self.coinLabel:setString(event.data)
+    elseif event.type == 'gem' then
+        self.gemLabel:setString(event.data)
     end
 
 end

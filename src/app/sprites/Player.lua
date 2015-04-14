@@ -70,6 +70,7 @@ end
 
 function Player:gainProp(el)
     if el.m_type == elements.oxygen then
+        print('oxygen')
         self.oxygenVol = self.oxygenVol + 10
         local topVol = s_data.level[DataManager.get(DataManager.HPLV) + 1].hp
         self.oxygenVol = topVol < self.oxygenVol and topVol or self.oxygenVol
@@ -78,19 +79,40 @@ function Player:gainProp(el)
         event.data = self.oxygenVol
         cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
     elseif el.m_type == elements.silverDrill then
+        print('silverDrill')
         self.digForce = self.digForce * 2
         self:performWithDelay(function() self.digForce = self.digForce / 2 end, 10)
     elseif el.m_type == elements.goldenDrill then
+        print('goldenDrill')
         self.digForce = self.digForce * 4
         self:performWithDelay(function() self.digForce = self.digForce / 4 end, 10)
     elseif el.m_type == elements.box then
-    
+        print('box')
+        local fakeBox = Element.new():create(el.m_row, el.m_col, elements.box)
+        fakeBox.fsm_:doEvent("destroy")
+        
+        local types = {elements.coin, elements.gem, elements.goldenDrill, elements.oxygen, elements.punish}
+        el.m_type = types[math.random(1,#types)]
+        el:setSpriteFrame(el.m_type.texture)
+        self:gainProp(el)
+
+        return
     elseif el.m_type == elements.coin then
-    
+        print('coin')
+        self.coins = self.coins + 1
+        local event = cc.EventCustom:new("update hub")
+        event.type = 'coin'
+        event.data = self.coins
+        cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
     elseif el.m_type == elements.gem then
-    
+        print('gem')
+        self.gems = self.gems + 1
+        local event = cc.EventCustom:new("update hub")
+        event.type = 'gem'
+        event.data = self.gems
+        cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
     elseif el.m_type == elements.bomb then
-    
+        cc.BezierTo:create(t,points)
     elseif el.m_type == elements.timebomb then
     
     elseif el.m_type == elements.mushroom then
@@ -240,11 +262,12 @@ end
 
 function Player:increaseDeepth()
     local current = coroutine.running()
+    local perFloorDuration = gamePara.dropSpeed / 100 * self.playerSize.height
     
     while true do
         self:performWithDelay(function()
             coroutine.resume(current)
-        end, 0.1)
+        end, perFloorDuration)
         
         if self.dropping then
             self.deepth = self.deepth+1
