@@ -132,18 +132,3 @@ elements = {
         needDigTime = 0,
     },
 }
-
-player = {
-    oxgenReduceRate = 1,
-}
-
-initialGameData = {
-    coins = 0,
-    diamond = 0,
-    highestScore = 0,
-    
-    moveSpeed = 1,
-    digForce = 1,
-    oxgenVol = 100,
-    fortune = 1,
-}

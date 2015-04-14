@@ -29,6 +29,8 @@ local PAUSE_PANEL = {
 }
 
 function PauseLayer:ctor()
+    cc(self):addComponent("components.behavior.EventProtocol"):exportMethods()
+    
     cc.ui.UIImage.new(PAUSE_PANEL.frame[1])
         :align(PAUSE_PANEL.frame.align, PAUSE_PANEL.frame.pos.x, PAUSE_PANEL.frame.pos.y)
         :addTo(self)
@@ -64,6 +66,7 @@ function PauseLayer:ctor()
         scale9 = true,})
         :onButtonClicked(function(event)
             print('restart')
+            cc.Director:getInstance():getRunningScene():dispatchEvent({name = "GAME_START"})   
         end)
         :align(PAUSE_PANEL.restart.align, PAUSE_PANEL.restart.pos.x, PAUSE_PANEL.restart.pos.y)
         :addTo(self)

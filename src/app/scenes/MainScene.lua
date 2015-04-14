@@ -1,11 +1,10 @@
-local DataManager = require("app.DataManager")
+require("app.DataManager")
+require ("app.diggerData")
 local MainUILayer = require("app.layers.MainUILayer")
 local AchivementLayer = require("app.layers.AchivementLayer")
 local LevelLayer = require("app.layers.LevelLayer")
 local QuestLayer = require("app.layers.QuestLayer")
 local GameLayer = require("src.app.layers.GameLayer")
-
-local diggerData = require "app.diggerData"
 
 local MainScene   = class("MainScene", function()
     return display.newScene("MainScene")
@@ -13,8 +12,8 @@ end)
 
 function MainScene:ctor()
 
-   print("ctor()")    
-
+    print("ctor()")    
+    cc(self):addComponent("components.behavior.EventProtocol"):exportMethods()
 	-- 数据初始化
 	DataManager.init()
 
@@ -23,17 +22,32 @@ function MainScene:ctor()
 
     self:addChild(self.uiLayer)
 
-    self.uiLayer:addEventListener("GAME_START",handler(self,self.gameStart))
+    self:addEventListener("GAME_START",handler(self,self.gameStart))
     
     
     --创建game 层   
-    self.uiLayer:addEventListener("GAME_END",handler(self,self.gameEnd))
+    self:addEventListener("GAME_END",handler(self,self.gameEnd))
     
     
 end
 
 -- 开始游戏
 function MainScene:gameStart(event)
+    if self.gameLayer then
+        local queue = {self.gameLayer}
+        while #queue > 0 do
+            local nodes = queue[1]:getChildren()
+            for _, node in ipairs(nodes) do
+                table.insert(queue,node)
+            end
+            if queue[1].unscheduleAllTimers then
+                queue[1]:unscheduleAllTimers()
+            end
+            table.remove(queue,1)
+        end
+        self.gameLayer:removeFromParent(true)
+    end
+    
     self.gameLayer = GameLayer.new()
     self:addChild(self.gameLayer)
     self.uiLayer:setVisible(false)

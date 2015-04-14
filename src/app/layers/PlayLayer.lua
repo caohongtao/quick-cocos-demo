@@ -34,9 +34,12 @@ function PlayLayer:init()
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(rollMapListener, self)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(removeListener, self)
 
-    local scheduler = cc.Director:getInstance():getScheduler()
-    scheduler:scheduleScriptFunc(handler(self, self.checkDroppingElements), 1.0 / 60.0, false)
+    self:scheduleUpdateWithPriorityLua(handler(self, self.checkDroppingElements), 0)
 --    self:scheduleUpdateWithPriorityLua(handler(self, self.showElementInfo), 0);
+end
+
+function PlayLayer:unscheduleAllTimers()
+    self:unscheduleUpdate()
 end
 
 function PlayLayer:showElementInfo()
@@ -465,16 +468,6 @@ function PlayLayer:rollMap(event)
 end
 
 function PlayLayer:addLines(cnt)
-    --更新界面
-    local event = cc.EventCustom:new("update hub")
-    event.type = 'score'
-    event.data = cnt*10
-    cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
-    local event = cc.EventCustom:new("update hub")
-    event.type = 'deepth'
-    event.data = cnt
-    cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
-
     --在下方增加层
     local screenLeftDown = self.map:convertToNodeSpace(cc.p(0,0))
     local LinesUnderScreen, _ = self:positionToMatrix(screenLeftDown.x, screenLeftDown.y)

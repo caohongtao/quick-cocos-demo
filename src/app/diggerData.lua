@@ -88,4 +88,6 @@ s_data.quest = {
 {id=10013,type=8,sum=10,group=0,award1=10,award2=0,bounds=0,desc="营救动物@个",},
 }
 
-return s_data
+s_data.other = {
+    lifeReduceRate = 1,--掉一格所用时
+}

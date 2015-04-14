@@ -10,10 +10,12 @@ function Player:ctor(size)
     
     self.playerSize = size
     
-    self.oxygenVol = GameData.oxgenVol
+    self.oxygenVol = s_data.level[DataManager.get(DataManager.HPLV) + 1].hp
+    self.deepth = 0
+    self.score = 0
     self.coins = 0
-    self.diamond = 0
-    self.digForce = GameData.digForce
+    self.gems = 0
+    self.digForce = s_data.level[DataManager.get(DataManager.POWERLV) + 1].power
 
     self:initTouchListener()
     
@@ -29,11 +31,15 @@ function Player:ctor(size)
     self:setAnchorPoint(0.5,0.5)
     self:setPosition(display.cx, size.height * BORN_HEIGHT)
     
+    self.reduceOxygenTimer = self:getScheduler():scheduleScriptFunc(handler(self, self.reduceOxygen), 1, false)
+    self:scheduleUpdateWithPriorityLua(handler(self, self.update), 0)
 
-    local scheduler = cc.Director:getInstance():getScheduler()
-    scheduler:scheduleScriptFunc(handler(self, self.update), 1.0 / 60.0, false)
-    local co = coroutine.create(handler(self,self.reduceOxygen))
-    coroutine.resume(co)
+    coroutine.resume(coroutine.create(handler(self,self.increaseDeepth)))
+end
+
+function Player:unscheduleAllTimers()
+    self:unscheduleUpdate()
+    self:getScheduler():unscheduleScriptEntry(self.reduceOxygenTimer)
 end
 
 function Player:detectMap(dir)
@@ -65,7 +71,8 @@ end
 function Player:gainProp(el)
     if el.m_type == elements.oxygen then
         self.oxygenVol = self.oxygenVol + 10
-        self.oxygenVol = GameData.oxgenVol < self.oxygenVol and GameData.oxgenVol or self.oxygenVol
+        local topVol = s_data.level[DataManager.get(DataManager.HPLV) + 1].hp
+        self.oxygenVol = topVol < self.oxygenVol and topVol or self.oxygenVol
         local event = cc.EventCustom:new("update hub")
         event.type = 'oxygen'
         event.data = self.oxygenVol
@@ -103,29 +110,20 @@ function Player:gainProp(el)
 end
 
 function Player:reduceOxygen()
-    local current = coroutine.running()
     
-    while true do
-        self:performWithDelay(function()
-            coroutine.resume(current)
-        end, 1.0/player.oxgenReduceRate)
-    
-        if self.oxygenVol >= 1 then
-            self.oxygenVol = self.oxygenVol - 1
-        else
-            self.oxygenVol = 0
-            self:die()
-        end
-        
-        local event = cc.EventCustom:new("update hub")
-        event.type = 'oxygen'
-        event.data = self.oxygenVol
-        cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
-        
-        coroutine.yield()
+    if self.oxygenVol >= 1 then
+        self.oxygenVol = self.oxygenVol - 1
+    else
+        self.oxygenVol = 0
+        self:die()
     end
-
+    
+    local event = cc.EventCustom:new("update hub")
+    event.type = 'oxygen'
+    event.data = self.oxygenVol
+    cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
 end
+
 
 function Player:drop()
     if not self.dropping then
@@ -190,7 +188,7 @@ function Player:rebirth()
     
     print('rebirth')
     self.dead = false
-    self.oxygenVol = GameData.oxgenVol
+    self.oxygenVol = s_data.level[DataManager.get(DataManager.HPLV) + 1].hp
     
 --    cc.Director:getInstance():getEventDispatcher():addEventListenerWithSceneGraphPriority(self.touchListener, self)
     self:initTouchListener()
@@ -230,21 +228,39 @@ function Player:showSettlement()
         btn:registerControlEventHandler(btnCallback,cc.CONTROL_EVENTTYPE_TOUCH_UP_INSIDE)
     end
 
---    self.restartBtn:runAction(cc.Sequence:create(cc.EaseOut:create(cc.MoveBy:create(1,cc.p(0,-600)),1),
---        cc.CallFunc:create(function()
---            self:rebirth()
---        end)))
-        
     print('showSettlement')
-    GameData.coins = GameData.coins + self.coins
-    GameData.diamond = GameData.diamond + self.diamond
---    highestScore
-    gameState.save(GameData)
+    DataManager.set(DataManager.GOLD, DataManager.get(DataManager.GOLD) + self.coins)
+    DataManager.set(DataManager.POINT, DataManager.get(DataManager.POINT) + self.gems)
+    DataManager.set(DataManager.TOPGROUD, DataManager.get(DataManager.TOPGROUD) > self.score and DataManager.get(DataManager.TOPGROUD) or self.deepth)
+    DataManager.set(DataManager.TOP_SCORE, DataManager.get(DataManager.TOP_SCORE) > self.score and DataManager.get(DataManager.TOP_SCORE) or self.score)
     
     self.restartBtn:setEnabled(true)
     self.restartBtn:runAction(cc.EaseBounceOut:create(cc.MoveBy:create(1,cc.p(0,-600))))
+end
+
+function Player:increaseDeepth()
+    local current = coroutine.running()
     
---    var actionTo = cc.MoveTo.create(2, cc.p(winsize.width-200, winsize.height-220)).easing(cc.easeElasticOut());
+    while true do
+        self:performWithDelay(function()
+            coroutine.resume(current)
+        end, 0.1)
+        
+        if self.dropping then
+            self.deepth = self.deepth+1
+            self.score = self.score+10
+            local event = cc.EventCustom:new("update hub")
+            event.type = 'score'
+            event.data = self.score
+            cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
+            local event = cc.EventCustom:new("update hub")
+            event.type = 'deepth'
+            event.data = self.deepth
+            cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
+        end
+        
+        coroutine.yield()
+    end
 end
 
 function Player:handleTouch()

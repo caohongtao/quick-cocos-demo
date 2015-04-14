@@ -1,6 +1,5 @@
-local GameState = require("framework.cc.utils.GameState")
-local DataManager = {}
-local data
+GameState = require("framework.cc.utils.GameState")
+DataManager = {}
 
 DataManager.POINT     ="point"
 DataManager.GOLD      ="gold"
@@ -26,18 +25,18 @@ end
 
 
 function DataManager.get(key) 
-    return data[key]
+    return DataManager.data[key]
 end
 
 function DataManager.set(key,value) 
-    data[key] = value
+    DataManager.data[key] = value
     DataManager.save()
-    return data[key]
+    return DataManager.data[key]
 end
 
 function createDataFile()
     print("init gameinfo dat")
-    data = { point    = 0, -- 钻石
+    DataManager.data = { point    = 0, -- 钻石
              gold     = 0, -- 金币
              topScore = 0, -- 最高分数
              topGroud = 0, -- 最高层数
@@ -73,8 +72,8 @@ function onState(event)
 
         if "load" == event.name then
             if event.values.data ~= nil then 
-                local str = crypto.decryptXXTEA(event.values.data, "24rs#201ojN")
-                data = json.decode(str)
+            local str = crypto.decryptXXTEA(event.values.data, "24rs#201ojN")
+            DataManager.data = json.decode(str)
             end
         elseif "save" == event.name then
             local str = json.encode(event.values)
@@ -96,10 +95,7 @@ function DataManager.load()
 end
 
 function DataManager.save()
-    if data ~=nil then         
-        GameState.save(data)
+    if DataManager.data ~=nil then         
+        GameState.save(DataManager.data)
     end
 end
-
-
-return DataManager

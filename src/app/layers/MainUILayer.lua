@@ -20,7 +20,7 @@ function MainUILayer:ctor()
             event.target:setScale(1.0)
         end)
         :onButtonClicked(function()
-            self:dispatchEvent({name = "GAME_START"})            
+            self:getParent():dispatchEvent({name = "GAME_START"})            
             print("start game")
             
 --            DataManager.set(DataManager.GOLD,DataManager.get(DataManager.GOLD)+20)
