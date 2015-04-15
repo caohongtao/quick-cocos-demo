@@ -25,6 +25,8 @@ function Player:ctor(size)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(pauseListener, self)
     local resumeListener = cc.EventListenerCustom:create("resume game", handler(self,self.initTouchListener))
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(resumeListener, self)
+    local checkBossListener = cc.EventListenerCustom:create("boss_advance", handler(self,self.checkBossCapture))
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(checkBossListener, self)
     
     self:setTexture('res/sprite/bingbing.png')
     self:setScale(size.width/self:getContentSize().width)
@@ -218,6 +220,10 @@ function Player:rebirth()
     local center, element = self:detectMap('center')
     if center ~= 'empty' then self:dig(element) end
 
+    local event = cc.EventCustom:new("beat_back_boss")
+    event.stepCnt = 6
+    cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
+
     self:runAction(cc.Spawn:create(
         cc.ScaleTo:create(0.1,self.playerSize.width/self:getContentSize().width,self.playerSize.height/self:getContentSize().height),
         cc.JumpBy:create(0.3,cc.p(0,35),16,6)
@@ -355,21 +361,10 @@ function Player:initTouchListener()
     dispatcher:addEventListenerWithSceneGraphPriority(touchListener, self)
 end
 
-function Player:test()
-
-    self:runAction(cc.Sequence:create(
-
-            cc.DelayTime:create(2),
-            cc.CallFunc:create(function()
-                local eventDispatcher = cc.Director:getInstance():getEventDispatcher()
-
-                local event = cc.EventCustom:new("move_map_up")
-                event.dest = cc.p(0,200)
-                eventDispatcher:dispatchEvent(event)
-                
-                local event = cc.EventCustom:new("add_line")
-                event.cnt = 3
-                eventDispatcher:dispatchEvent(event) 
-            end)
-    ))
+function Player:checkBossCapture(event)
+    local bossPos = event.bossPos
+    local distance = self:convertToNodeSpaceAR(bossPos)
+    if distance.y < 0 then
+    	self:die()
+    end
 end

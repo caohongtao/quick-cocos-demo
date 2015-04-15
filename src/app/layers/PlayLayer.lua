@@ -24,15 +24,20 @@ function PlayLayer:init()
     
     local player = Player.new(self.elSize)
     self:addChild(player)
+
+    local boss = Boss.new(self.elSize.height)
+    self.map:addChild(boss,1)
     
     local detectListener = cc.EventListenerCustom:create("detect_map", handler(self,self.detectMap))
     local digListener = cc.EventListenerCustom:create("dig_at", handler(self,self.digAt))
     local rollMapListener = cc.EventListenerCustom:create("roll_map", handler(self,self.rollMap))
     local removeListener = cc.EventListenerCustom:create("remove_element", function(event) self:removeAndDrop({event.el}) end)
+    local BossAdvanceListener = cc.EventListenerCustom:create("boss_advance", handler(self,self.removeLines))
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(detectListener, self)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(digListener, self)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(rollMapListener, self)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(removeListener, self)
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(BossAdvanceListener, self)
 
     self:scheduleUpdateWithPriorityLua(handler(self, self.checkDroppingElements), 0)
 --    self:scheduleUpdateWithPriorityLua(handler(self, self.showElementInfo), 0);
@@ -461,7 +466,7 @@ function PlayLayer:rollMap(event)
             dropEvent.active = false
             eventDispatcher:dispatchEvent(dropEvent)
             
-            self:removeLines()
+--            self:removeLines()
         end))
     
     self.map:runAction(moveAction)
@@ -493,12 +498,18 @@ function PlayLayer:addLines(cnt)
     end
 end
 
-function PlayLayer:removeLines()
-    local screenLeftUp = self.map:convertToNodeSpace(cc.p(0,display.height))
-    local row, _ = self:positionToMatrix(screenLeftUp.x, screenLeftUp.y)
-    local LinesOverScreen = self.mapSize.y - row
-    cnt = LinesOverScreen > 0 and LinesOverScreen or 0
-    assert(LinesOverScreen<10,'LinesOverScreen'..LinesOverScreen..' is bigger than 2')
+function PlayLayer:removeLines(event)
+    local bossPos = self.map:convertToNodeSpaceAR(event.bossPos)
+    local row, _ = self:positionToMatrix(bossPos.x, bossPos.y)
+    local LinesOverBoss = self.mapSize.y - row
+    cnt = LinesOverBoss > 0 and LinesOverBoss or 0
+
+--    local screenLeftUp = self.map:convertToNodeSpace(cc.p(0,display.height))
+--    local row, _ = self:positionToMatrix(screenLeftUp.x, screenLeftUp.y)
+--    local LinesOverScreen = self.mapSize.y - row
+--    cnt = LinesOverScreen > 0 and LinesOverScreen or 0
+
+    assert(LinesOverBoss<10,'LinesOverScreen'..LinesOverBoss..' is bigger than 2')
     
     for row = self.mapSize.y, self.mapSize.y - (cnt-1), -1 do
         for col=1, self.mapSize.x do

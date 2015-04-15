@@ -4,6 +4,7 @@ require("app.layers.PauseLayer")
 require("app.layers.HubLayer")
 require("app.sprites.Element")
 require("app.sprites.Player")
+require("app.sprites.Boss")
 
 local GameLayer = class("GameLayer", function()
     return display.newLayer("GameLayer")
