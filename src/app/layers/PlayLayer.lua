@@ -22,8 +22,8 @@ function PlayLayer:init()
     self:initMap()
     self:addChild(self.map)
 
-    local player = Player.new(self.elSize)
-    self:addChild(player)
+    self.player = Player.new(self.elSize)
+    self:addChild(self.player)
 
     local boss = Boss.new(self.elSize.height)
     self.map:addChild(boss,1)
@@ -40,7 +40,7 @@ function PlayLayer:init()
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(BossAdvanceListener, self)
 
     self:scheduleUpdateWithPriorityLua(handler(self, self.checkDroppingElements), 0)
---    self:scheduleUpdateWithPriorityLua(handler(self, self.showElementInfo), 0);
+    --    self:scheduleUpdateWithPriorityLua(handler(self, self.showElementInfo), 0);
 
     self:PlayLayerinitTouchListener()
 end
@@ -438,10 +438,10 @@ function PlayLayer:removeLines(event)
     local LinesOverBoss = self.mapSize.y - row
     cnt = LinesOverBoss > 0 and LinesOverBoss or 0
 
---    local screenLeftUp = self.map:convertToNodeSpace(cc.p(0,display.height))
---    local row, _ = self:positionToMatrix(screenLeftUp.x, screenLeftUp.y)
---    local LinesOverScreen = self.mapSize.y - row
---    cnt = LinesOverScreen > 0 and LinesOverScreen or 0
+    --    local screenLeftUp = self.map:convertToNodeSpace(cc.p(0,display.height))
+    --    local row, _ = self:positionToMatrix(screenLeftUp.x, screenLeftUp.y)
+    --    local LinesOverScreen = self.mapSize.y - row
+    --    cnt = LinesOverScreen > 0 and LinesOverScreen or 0
 
     assert(LinesOverBoss<10,'LinesOverScreen'..LinesOverBoss..' is bigger than 2')
 
@@ -581,28 +581,24 @@ function PlayLayer:positionToMatrix(x, y)
 end
 
 function PlayLayer:PlayLayerinitTouchListener()
-    print(self:isTouchCaptureEnabled())
-    
     self:setTouchEnabled(true)
     self:setTouchMode(cc.TOUCH_MODE_ONE_BY_ONE)
     self:addNodeEventListener(cc.NODE_TOUCH_EVENT, function(event)
         if event.name == "began" then
-            print('began')
-        elseif event.name == "moved" then
-            print('moved')
-        elseif event.name == "ended" then
-            print('ended')
-        end
-    end)
-    self:addNodeEventListener(cc.NODE_TOUCH_CAPTURE_EVENT, function(event)
-        if event.name == "began" then
-            print('began')
+            local touchPos = cc.p(event.x, event.y)
+            local playerPos = self.player:convertToWorldSpaceAR(cc.p(0,0))
+
+            local touchDir = nil
+            if touchPos.y < playerPos.y - 60 then touchDir = 'down'
+            elseif touchPos.x < playerPos.x then touchDir = 'left'
+            else touchDir = 'right'
+            end
+
+            local eventDispatcher = cc.Director:getInstance():getEventDispatcher()
+            local touchEvent = cc.EventCustom:new('handle_touch')
+            touchEvent.touchDir = touchDir
+            eventDispatcher:dispatchEvent(touchEvent)
             return true
-        elseif event.name == "moved" then
-            print('moved')
-            return true
-        elseif event.name == "ended" then
-            print('ended')
         end
     end)
 end

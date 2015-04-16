@@ -18,20 +18,17 @@ function Player:ctor(size)
     self.digForce = s_data.level[DataManager.get(DataManager.POWERLV) + 1].power
     self.digThrough = false --是否具有贯穿特效，吃了栗子后，一次凿一整行整列
 
---    self:initTouchListener()
-    
     local moveListener = cc.EventListenerCustom:create("Dropping", function(event) self.dropping = event.active end)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(moveListener, self)
-    local pauseListener = cc.EventListenerCustom:create("pause game", handler(self,self.disableTouchListener))
-    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(pauseListener, self)
-    local resumeListener = cc.EventListenerCustom:create("resume game", handler(self,self.initTouchListener))
-    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(resumeListener, self)
     local checkBossListener = cc.EventListenerCustom:create("boss_advance", handler(self,self.checkBossCapture))
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(checkBossListener, self)
     local castSkillListener = cc.EventListenerCustom:create("cast_skill", handler(self,self.castSkill))
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(castSkillListener, self)
     local castSkillListener = cc.EventListenerCustom:create("gain_prop", function (event) self:gainProp(event.element) end)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(castSkillListener, self)
+    local handleTouchListener = cc.EventListenerCustom:create("handle_touch", function (event) self:handleTouch(event.touchDir) end)
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(handleTouchListener, self)
+    
     
     
     self:setTexture('res/sprite/bingbing.png')
@@ -222,7 +219,6 @@ function Player:die()
     
     print('die')
     self.dead = true
-    self:disableTouchListener()
     
     self:runAction(cc.Spawn:create(
                         cc.ScaleTo:create(0.1,self.playerSize.width/self:getContentSize().width,0.1),
@@ -237,9 +233,6 @@ function Player:rebirth()
     print('rebirth')
     self.dead = false
     self.oxygenVol = s_data.level[DataManager.get(DataManager.HPLV) + 1].hp
-    
-    --激活触摸
-    self:initTouchListener()
 
     --向上挖掘
     local temp = self.digThrough
@@ -321,75 +314,24 @@ function Player:increaseDeepth()
     end
 end
 
-function Player:handleTouch()
+function Player:handleTouch(touchDir)
     if self.moving or self.dropping or self.digging
     then
         return
     end
     
-    local type, element = self:detectMap(self.touchDir)
+    local type, element = self:detectMap(touchDir)
     if self.digThrough then
-        self:dig(element, self.touchDir)
+        self:dig(element, touchDir)
     elseif type == 'empty' then
-        self:move(self.touchDir)
+        self:move(touchDir)
     elseif type == 'element' then
         if element.m_needDigTime == 0 then
-            self:move(self.touchDir)
+            self:move(touchDir)
         else
-        	self:dig(element, self.touchDir)
+        	self:dig(element, touchDir)
         end
     end
-end
-
-function Player:disableTouchListener()
-    print('disableTouchListener')
-    cc.Director:getInstance():getEventDispatcher():removeEventListener(self.touchListener)
-end
-
-function Player:initTouchListener()
-    print('initTouchListener')
-    --------------------------------------------
-    local function onTouchBegan(touch, event)
---        self.moving = true
-        
-        local touchPos = cc.p(touch:getLocation())
-        local playerPos = self:convertToWorldSpaceAR(cc.p(0,0))
-
-        if touchPos.y < playerPos.y - 60 then self.touchDir = 'down'
-        elseif touchPos.x < playerPos.x then self.touchDir = 'left'
-        else self.touchDir = 'right'
-        end
-        
-        self:handleTouch()
-        return true
-    end
-
-    --------------------------------------------
-    local function onTouchMoved(touch, event)
---        local touchPos = cc.p(touch:getLocation())
---        local playerPos = self:convertToWorldSpaceAR(cc.p(0,0))
---
---        if touchPos.y < playerPos.y - 180 then self.touchDir = 'down'
---        elseif touchPos.x < playerPos.x then self.touchDir = 'left'
---        else self.touchDir = 'right'
---        end
-        return true
-    end
-
-    --------------------------------------------
-    local function onTouchEnded(touch, event)
---        self.moving = false
-        return
-    end 
-
-    --------------------------------------------
-    local touchListener = cc.EventListenerTouchOneByOne:create()
-    touchListener:registerScriptHandler(onTouchBegan, cc.Handler.EVENT_TOUCH_BEGAN)
-    touchListener:registerScriptHandler(onTouchMoved, cc.Handler.EVENT_TOUCH_MOVED)
-    touchListener:registerScriptHandler(onTouchEnded, cc.Handler.EVENT_TOUCH_ENDED)
-    self.touchListener = touchListener
-    local dispatcher = cc.Director:getInstance():getEventDispatcher()
-    dispatcher:addEventListenerWithSceneGraphPriority(touchListener, self)
 end
 
 function Player:checkBossCapture(event)
