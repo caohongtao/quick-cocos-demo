@@ -16,8 +16,9 @@ function Player:ctor(size)
     self.coins = 0
     self.gems = 0
     self.digForce = s_data.level[DataManager.get(DataManager.POWERLV) + 1].power
+    self.digThrough = false --是否具有贯穿特效，吃了栗子后，一次凿一整行整列
 
-    self:initTouchListener()
+--    self:initTouchListener()
     
     local moveListener = cc.EventListenerCustom:create("Dropping", function(event) self.dropping = event.active end)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(moveListener, self)
@@ -27,6 +28,11 @@ function Player:ctor(size)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(resumeListener, self)
     local checkBossListener = cc.EventListenerCustom:create("boss_advance", handler(self,self.checkBossCapture))
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(checkBossListener, self)
+    local castSkillListener = cc.EventListenerCustom:create("cast_skill", handler(self,self.castSkill))
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(castSkillListener, self)
+    local castSkillListener = cc.EventListenerCustom:create("gain_prop", function (event) self:gainProp(event.element) end)
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(castSkillListener, self)
+    
     
     self:setTexture('res/sprite/bingbing.png')
     self:setScale(size.width/self:getContentSize().width)
@@ -118,11 +124,23 @@ function Player:gainProp(el)
     elseif el.m_type == elements.timebomb then
     
     elseif el.m_type == elements.mushroom then
-    
+        DataManager.set(DataManager.ITEM_1, DataManager.get(DataManager.ITEM_1) + 1)
+        local event = cc.EventCustom:new("update hub")
+        event.type = 'skillMushroom'
+        event.data = DataManager.get(DataManager.ITEM_1)
+        cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
     elseif el.m_type == elements.nut then
-
+        DataManager.set(DataManager.ITEM_2, DataManager.get(DataManager.ITEM_2) + 1)
+        local event = cc.EventCustom:new("update hub")
+        event.type = 'skillNut'
+        event.data = DataManager.get(DataManager.ITEM_2)
+        cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
     elseif el.m_type == elements.cola then
-    
+        DataManager.set(DataManager.ITEM_3, DataManager.get(DataManager.ITEM_3) + 1)
+        local event = cc.EventCustom:new("update hub")
+        event.type = 'skillCola'
+        event.data = DataManager.get(DataManager.ITEM_3)
+        cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
     elseif el.m_type == elements.toy then
     
     end
@@ -158,23 +176,29 @@ function Player:drop()
     end
 end
 
-function Player:dig(target)
+function Player:dig(target, dir)
     if self.digging then return end
-    
 
+    --播放dig动画
     self.digging = true
     self:runAction(cc.Sequence:create(
         cc.JumpBy:create(0.2, cc.p(0,0), 12, 6),
         cc.CallFunc:create(function() self.digging = false end)))
         
-    target.m_needDigTime = target.m_needDigTime - self.digForce
-    if target.m_needDigTime > 0 then return end
-    
-    local event = cc.EventCustom:new("dig_at")
---    event.playerPos = self:convertToWorldSpaceAR(cc.p(0,0))
-    event.target = target
-    cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
 
+    local event = cc.EventCustom:new("dig_at")
+    event.target = target
+    event.playerPos = self:convertToWorldSpaceAR(cc.p(0,0))
+    
+    if self.digThrough then
+        event.effect = dir
+        cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
+    else
+        target.m_needDigTime = target.m_needDigTime - self.digForce
+        if target.m_needDigTime > 0 then return end
+
+        cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
+    end
 end
 
 function Player:move(dir)
@@ -214,16 +238,21 @@ function Player:rebirth()
     self.dead = false
     self.oxygenVol = s_data.level[DataManager.get(DataManager.HPLV) + 1].hp
     
---    cc.Director:getInstance():getEventDispatcher():addEventListenerWithSceneGraphPriority(self.touchListener, self)
+    --激活触摸
     self:initTouchListener()
 
-    local center, element = self:detectMap('center')
-    if center ~= 'empty' then self:dig(element) end
+    --向上挖掘
+    local temp = self.digThrough
+    self.digThrough = true
+    self:dig(nil, 'up')
+    self.digThrough = temp
 
+    --击退boss
     local event = cc.EventCustom:new("beat_back_boss")
     event.stepCnt = 6
     cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
 
+    --复活动画
     self:runAction(cc.Spawn:create(
         cc.ScaleTo:create(0.1,self.playerSize.width/self:getContentSize().width,self.playerSize.height/self:getContentSize().height),
         cc.JumpBy:create(0.3,cc.p(0,35),16,6)
@@ -299,13 +328,15 @@ function Player:handleTouch()
     end
     
     local type, element = self:detectMap(self.touchDir)
-    if type == 'empty' then
+    if self.digThrough then
+        self:dig(element, self.touchDir)
+    elseif type == 'empty' then
         self:move(self.touchDir)
     elseif type == 'element' then
         if element.m_needDigTime == 0 then
             self:move(self.touchDir)
         else
-        	self:dig(element)
+        	self:dig(element, self.touchDir)
         end
     end
 end
@@ -367,4 +398,40 @@ function Player:checkBossCapture(event)
     if distance.y < 0 then
     	self:die()
     end
+end
+
+function Player:castSkill(event)
+    if event.skillType == elements.mushroom then
+        if self.digThrough then return end
+        
+        local skillCnt = DataManager.get(DataManager.ITEM_1)
+        if skillCnt <= 0 then return end
+        DataManager.set(DataManager.ITEM_1, skillCnt - 1)
+        local e = cc.EventCustom:new("update hub")
+        e.type = 'skillMushroom'
+        cc.Director:getInstance():getEventDispatcher():dispatchEvent(e)
+        
+        self.digThrough = true
+        self:performWithDelay(function() self.digThrough = false end, gamePara.propDuration)
+    elseif event.skillType == elements.nut then
+        local skillCnt = DataManager.get(DataManager.ITEM_2)
+        if skillCnt <= 0 then return end
+        DataManager.set(DataManager.ITEM_2, skillCnt - 1)
+        local e = cc.EventCustom:new("update hub")
+        e.type = 'skillNut'
+        cc.Director:getInstance():getEventDispatcher():dispatchEvent(e)
+        
+        local eShock = cc.EventCustom:new("shock_dizzy_boss")
+        eShock.second = 5
+        cc.Director:getInstance():getEventDispatcher():dispatchEvent(eShock)
+    elseif event.skillType == elements.cola then
+        local skillCnt = DataManager.get(DataManager.ITEM_3)
+        if skillCnt <= 0 then return end
+        DataManager.set(DataManager.ITEM_3, skillCnt - 1)
+        local e = cc.EventCustom:new("update hub")
+        e.type = 'skillCola'
+        cc.Director:getInstance():getEventDispatcher():dispatchEvent(e)
+        
+    end
+
 end

@@ -111,17 +111,17 @@ elements = {
     
     mushroom = {
         texture = "mushroom.png",
-        probability = 1,
+        probability = 100,
         needDigTime = 0,
     },
     nut = {
         texture = "nut.png",
-        probability = 1,
+        probability = 100,
         needDigTime = 0,
     },
     cola = {
         texture = "cola.png",
-        probability = 1,
+        probability = 100,
         needDigTime = 0,
     },
     punish = {--只会在挖宝箱时概率出现。
@@ -142,5 +142,6 @@ elements = {
 gamePara = {
     lifeReduceRate      = 1,--掉一格所用时
     dropSpeed           = 0.4,--移动100像素用时
-    bossMoveInterval    = 1
+    bossMoveInterval    = 1,
+    propDuration        = 12,
 }

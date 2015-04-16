@@ -45,5 +45,4 @@ function GameLayer:pauseGame()
     	table.remove(queue,1)
     end
 end
-
 return GameLayer

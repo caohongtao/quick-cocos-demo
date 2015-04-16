@@ -186,6 +186,12 @@ function Element:die()
         createFakeAndMoveTo(cc.p(display.right-35, display.top-45))
     elseif self.m_type == elements.gem then
         createFakeAndMoveTo(cc.p(display.right-190,display.bottom+50))
+    elseif self.m_type == elements.mushroom then
+        createFakeAndMoveTo(cc.p(150,display.bottom+50))
+    elseif self.m_type == elements.nut then
+        createFakeAndMoveTo(cc.p(250,display.bottom+50))
+    elseif self.m_type == elements.cola then
+        createFakeAndMoveTo(cc.p(350,display.bottom+50))
     else
         self:runAction(cc.Sequence:create(cc.FadeOut:create(0.6),
         cc.CallFunc:create(function()

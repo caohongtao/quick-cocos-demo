@@ -102,10 +102,11 @@ local BOTTOM_BAR = {
 function HubLayer:ctor()
     self:createUpBar()
     self:createBottomBar()
-    self:setTouchSwallowEnabled(true)
     
     local updateHubListener = cc.EventListenerCustom:create("update hub", handler(self,self.updateDate))
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(updateHubListener, self)
+    
+    self:setTouchSwallowEnabled(false)
 end
 
 function HubLayer:createUpBar()
@@ -145,35 +146,52 @@ function HubLayer:createUpBar()
 end
 
 function HubLayer:createBottomBar()
-
+    --底图及氧气
     cc.ui.UIImage.new("ui/bar.png")
         :align(display.BOTTOM_CENTER, display.cx, display.bottom)
-        :addTo(self)
-        
-    cc.ui.UIPushButton.new({normal = BOTTOM_BAR.skill1.normal,
-                            pressed = BOTTOM_BAR.skill1.pressed,
-                            scale9 = true,})
-        :onButtonClicked(function(event)
-        end)
-        :align(display.LEFT_BOTTOM, BOTTOM_BAR.skill1.pos.x, BOTTOM_BAR.skill1.pos.y)
         :addTo(self)
     self.oxygenLabel = cc.ui.UILabel.new(BOTTOM_BAR.oxygenLabel)
         :align(display.CENTER)
         :addTo(self)
     self.oxygenLabel:setString(s_data.level[DataManager.get(DataManager.HPLV) + 1].hp)
-        
+    
+    --技能蘑菇
+    cc.ui.UIPushButton.new({normal = BOTTOM_BAR.skill1.normal,
+                            pressed = BOTTOM_BAR.skill1.pressed,
+                            scale9 = true,})
+        :onButtonClicked(function(event) self:castSkill(elements.mushroom) end)
+        :align(display.LEFT_BOTTOM, BOTTOM_BAR.skill1.pos.x, BOTTOM_BAR.skill1.pos.y)
+        :addTo(self)
+    self.skillMushroomLabel = cc.ui.UILabel.new({font = "Times New Roman", color = display.COLOR_BLACK, size = 40,})
+        :align(display.LEFT_BOTTOM, BOTTOM_BAR.skill1.pos.x, BOTTOM_BAR.skill1.pos.y)
+        :addTo(self)
+    self.skillMushroomLabel:setString(DataManager.get(DataManager.ITEM_1))
+    
+    --技能栗子
     cc.ui.UIPushButton.new({normal = BOTTOM_BAR.skill2.normal,
                             pressed = BOTTOM_BAR.skill2.pressed,
                             scale9 = true,})
+        :onButtonClicked(function(event) self:castSkill(elements.nut) end)
         :align(display.LEFT_BOTTOM, BOTTOM_BAR.skill2.pos.x, BOTTOM_BAR.skill2.pos.y)
         :addTo(self)
+    self.skillNutLabel = cc.ui.UILabel.new({font = "Times New Roman", color = display.COLOR_BLACK, size = 40,})
+        :align(display.LEFT_BOTTOM, BOTTOM_BAR.skill2.pos.x, BOTTOM_BAR.skill2.pos.y)
+        :addTo(self)
+    self.skillNutLabel:setString(DataManager.get(DataManager.ITEM_2))
 
+    --技能可乐
     cc.ui.UIPushButton.new({normal = BOTTOM_BAR.skill3.normal,
                             pressed = BOTTOM_BAR.skill3.pressed,
                             scale9 = true,})
+        :onButtonClicked(function(event) self:castSkill(elements.cola) end)
         :align(display.LEFT_BOTTOM, BOTTOM_BAR.skill3.pos.x, BOTTOM_BAR.skill3.pos.y)
         :addTo(self)
+    self.skillColaLabel = cc.ui.UILabel.new({font = "Times New Roman", color = display.COLOR_BLACK, size = 40,})
+        :align(display.LEFT_BOTTOM, BOTTOM_BAR.skill3.pos.x, BOTTOM_BAR.skill3.pos.y)
+        :addTo(self)
+    self.skillColaLabel:setString(DataManager.get(DataManager.ITEM_3))
         
+    --宝石
     cc.ui.UIPushButton.new({normal = BOTTOM_BAR.buy.normal,
                             pressed = BOTTOM_BAR.buy.pressed,
                             scale9 = true,})
@@ -188,6 +206,12 @@ function HubLayer:createBottomBar()
         :addTo(self)
 end
 
+function HubLayer:castSkill(skillType)
+    local event = cc.EventCustom:new("cast_skill")
+    event.skillType = skillType
+    cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
+end
+
 function HubLayer:updateDate(event)
     if event.type == 'score' then
         self.scoreLabel:setString(string.format("%d/%d", event.data, DataManager.get(DataManager.TOP_SCORE)))
@@ -199,6 +223,12 @@ function HubLayer:updateDate(event)
         self.coinLabel:setString(event.data)
     elseif event.type == 'gem' then
         self.gemLabel:setString(event.data)
+    elseif event.type == 'skillMushroom' then
+        self.skillMushroomLabel:setString(DataManager.get(DataManager.ITEM_1))
+    elseif event.type == 'skillNut' then
+        self.skillNutLabel:setString(DataManager.get(DataManager.ITEM_2))
+    elseif event.type == 'skillCola' then
+        self.skillColaLabel:setString(DataManager.get(DataManager.ITEM_3))
     end
 
 end
