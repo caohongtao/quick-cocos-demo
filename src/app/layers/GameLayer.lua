@@ -1,6 +1,7 @@
 require("app.layers.PlayLayer")
 require("app.layers.BackgroundLayer")
 require("app.layers.PauseLayer")
+require("app.layers.DeadLayer")
 require("app.layers.HubLayer")
 require("app.sprites.Element")
 require("app.sprites.Player")
@@ -24,10 +25,15 @@ function GameLayer:ctor()
     
     self.pauseLayer = PauseLayer.new()
     self:addChild(self.pauseLayer)
-    self.pauseLayer:setVisible(false)
-    
+
+    self.deadLayer = DeadLayer.new()
+    self:addChild(self.deadLayer)
+
     local pauseListener = cc.EventListenerCustom:create("pause game", handler(self,self.pauseGame))
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(pauseListener, self)
+    
+    local dieListener = cc.EventListenerCustom:create("player die", handler(self,self.playerDie))
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(dieListener, self)
 end
 
 function GameLayer:pauseGame()
@@ -43,6 +49,23 @@ function GameLayer:pauseGame()
     	end
         queue[1]:pause()
     	table.remove(queue,1)
+    end
+end
+
+function GameLayer:playerDie()
+    local queue = {self}
+    while #queue > 0 do
+        local nodes = queue[1]:getChildren()
+        for _, node in ipairs(nodes) do
+            if node == self.deadLayer then
+                node:setVisible(true)
+                node:startCount()
+            else
+                table.insert(queue,node)
+            end
+        end
+        queue[1]:pause()
+        table.remove(queue,1)
     end
 end
 return GameLayer

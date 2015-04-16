@@ -79,4 +79,6 @@ function PauseLayer:ctor()
         end)
         :align(PAUSE_PANEL.back.align, PAUSE_PANEL.back.pos.x, PAUSE_PANEL.back.pos.y)
         :addTo(self)
+        
+    self:setVisible(false)
 end

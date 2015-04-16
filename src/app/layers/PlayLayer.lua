@@ -40,7 +40,7 @@ function PlayLayer:init()
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(BossAdvanceListener, self)
 
     self:scheduleUpdateWithPriorityLua(handler(self, self.checkDroppingElements), 0)
-    --    self:scheduleUpdateWithPriorityLua(handler(self, self.showElementInfo), 0);
+--    self:scheduleUpdateWithPriorityLua(handler(self, self.showElementInfo), 0);
 
     self:PlayLayerinitTouchListener()
 end

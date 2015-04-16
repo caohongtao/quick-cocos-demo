@@ -28,6 +28,8 @@ function Player:ctor(size)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(castSkillListener, self)
     local handleTouchListener = cc.EventListenerCustom:create("handle_touch", function (event) self:handleTouch(event.touchDir) end)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(handleTouchListener, self)
+    local rebirthListener = cc.EventListenerCustom:create("player rebirth", handler(self,self.rebirth))
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(rebirthListener, self)
     
     
     
@@ -216,21 +218,22 @@ end
 
 function Player:die()
     if self.dead then return end
-    
-    print('die')
     self.dead = true
     
-    self:runAction(cc.Spawn:create(
-                        cc.ScaleTo:create(0.1,self.playerSize.width/self:getContentSize().width,0.1),
-                        cc.JumpBy:create(0.1,cc.p(0,-35),16,6)
-                        ))
-    self:showSettlement()
+    self:runAction(cc.Sequence:create(cc.Spawn:create(
+                                        cc.ScaleTo:create(0.1,self.playerSize.width/self:getContentSize().width,0.1),
+                                        cc.JumpBy:create(0.1,cc.p(0,-35),16,6)
+                                        ),
+                                  cc.CallFunc:create(function()
+                                        local dieEvent = cc.EventCustom:new("player die")
+                                        cc.Director:getInstance():getEventDispatcher():dispatchEvent(dieEvent)
+                                  end)))
+                        
 end
 
 function Player:rebirth()
     if not self.dead then return end
     
-    print('rebirth')
     self.dead = false
     self.oxygenVol = s_data.level[DataManager.get(DataManager.HPLV) + 1].hp
 
@@ -251,41 +254,6 @@ function Player:rebirth()
         cc.JumpBy:create(0.3,cc.p(0,35),16,6)
     ))
 
-end
-
-function Player:showSettlement()
-    if not self.restartBtn then
-
-        local function btnCallback(node, type)
-            if type == cc.CONTROL_EVENTTYPE_TOUCH_DOWN then
-                print('HideSettlement')
-                node:setEnabled(false)
-                self.restartBtn:runAction(cc.Sequence:create(cc.EaseBounceIn:create(cc.MoveBy:create(1,cc.p(0,600))),
-                                                            cc.CallFunc:create(function()
-                                                                self:rebirth()
-                                                            end)))
-            end
-        end
-
-        local btn = cc.ControlButton:create("RESTART","Times New Roman",60)
-        btn:setPosition(display.cx,display.cy+600)
-        self:getParent():addChild(btn)
-        self.restartBtn = btn
-
-        -- 按钮事件回调
-        btn:registerControlEventHandler(btnCallback,cc.CONTROL_EVENTTYPE_TOUCH_DOWN)
-        btn:registerControlEventHandler(btnCallback,cc.CONTROL_EVENTTYPE_DRAG_INSIDE)
-        btn:registerControlEventHandler(btnCallback,cc.CONTROL_EVENTTYPE_TOUCH_UP_INSIDE)
-    end
-
-    print('showSettlement')
-    DataManager.set(DataManager.GOLD, DataManager.get(DataManager.GOLD) + self.coins)
-    DataManager.set(DataManager.POINT, DataManager.get(DataManager.POINT) + self.gems)
-    DataManager.set(DataManager.TOPGROUD, DataManager.get(DataManager.TOPGROUD) > self.score and DataManager.get(DataManager.TOPGROUD) or self.deepth)
-    DataManager.set(DataManager.TOP_SCORE, DataManager.get(DataManager.TOP_SCORE) > self.score and DataManager.get(DataManager.TOP_SCORE) or self.score)
-    
-    self.restartBtn:setEnabled(true)
-    self.restartBtn:runAction(cc.EaseBounceOut:create(cc.MoveBy:create(1,cc.p(0,-600))))
 end
 
 function Player:increaseDeepth()
