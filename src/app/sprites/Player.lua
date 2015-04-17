@@ -32,11 +32,12 @@ function Player:ctor(size)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(rebirthListener, self)
     
     
-    
-    self:setTexture('res/sprite/bingbing.png')
+    cc.SpriteFrameCache:getInstance():addSpriteFrames('sprite/player.plist', 'sprite/player.png')
+    self:setSpriteFrame('yanshu0001.png')
     self:setScale(size.width/self:getContentSize().width)
     self:setAnchorPoint(0.5,0.5)
     self:setPosition(display.cx, size.height * BORN_HEIGHT)
+    self:addAnimation()
     
     self.reduceOxygenTimer = self:getScheduler():scheduleScriptFunc(handler(self, self.reduceOxygen), 1, false)
     self:scheduleUpdateWithPriorityLua(handler(self, self.update), 0)
@@ -175,13 +176,15 @@ function Player:drop()
     end
 end
 
+local DIG_DURATION = 0.3
 function Player:dig(target, dir)
     if self.digging then return end
 
     --播放dig动画
     self.digging = true
+    transition.playAnimationOnce(self, display.getAnimationCache("player-dig"))
     self:runAction(cc.Sequence:create(
-        cc.JumpBy:create(0.2, cc.p(0,0), 12, 6),
+        cc.DelayTime:create(DIG_DURATION),
         cc.CallFunc:create(function() self.digging = false end)))
         
 
@@ -221,7 +224,7 @@ function Player:die()
     self.dead = true
     
     self:runAction(cc.Sequence:create(cc.Spawn:create(
-                                        cc.ScaleTo:create(0.1,self.playerSize.width/self:getContentSize().width,0.1),
+--                                        cc.ScaleTo:create(0.1,self.playerSize.width/self:getContentSize().width,0.1),
                                         cc.JumpBy:create(0.1,cc.p(0,-25),16,6)
                                         ),
                                   cc.CallFunc:create(function()
@@ -249,7 +252,7 @@ function Player:rebirth()
 
     --复活动画
     self:runAction(cc.Spawn:create(
-        cc.ScaleTo:create(0.1,self.playerSize.width/self:getContentSize().width,self.playerSize.height/self:getContentSize().height),
+--        cc.ScaleTo:create(0.1,self.playerSize.width/self:getContentSize().width,self.playerSize.height/self:getContentSize().height),
         cc.JumpBy:create(0.3,cc.p(0,25),16,6)
     ))
 
@@ -343,4 +346,16 @@ function Player:castSkill(event)
         
     end
 
+end
+
+function Player:addAnimation()
+    local animationNames = {"dig",}-- "dead"}
+    local animationFrameNum = {20,0}
+    local animationDelay = {DIG_DURATION / animationFrameNum[1], 0.2}
+
+    for i = 1, #animationNames do
+        local frames = display.newFrames("yanshu%04d.png", 1, animationFrameNum[i])
+        local animation = display.newAnimation(frames, animationDelay[i])
+        display.setAnimationCache("player-" .. animationNames[i], animation)
+    end
 end

@@ -7,12 +7,13 @@ function Boss:ctor(player, step)
 
     self.dizzy = false
     
+    cc.SpriteFrameCache:getInstance():addSpriteFrames('sprite/boss.plist', 'sprite/boss.png')
     self:setAnchorPoint(0.5,0)
-    self:setTexture('res/sprite/bingbing.png')
+    self:setSpriteFrame('she0001.png')
     self:setPosition(display.cx, display.cy + 2*self.step)
+    self:addAnimation()
+    
 --    self.advanceTimer = self:getScheduler():scheduleScriptFunc(handler(self, self.advance), gamePara.bossMoveInterval, false)
-
-
     local beatBackListener = cc.EventListenerCustom:create("beat_back_boss", function (event) self:recede(event.stepCnt) end)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(beatBackListener, self)
     local shockDizzyListener = cc.EventListenerCustom:create("shock_dizzy_boss", function (event) self:shockDizzy(event.second) end)
@@ -46,6 +47,7 @@ function Boss:advance()
     end
     print(advanceSteps)
     
+    transition.playAnimationOnce(self, display.getAnimationCache("boss-advance"))
     local advanceAction = cc.Sequence:create(
                                 cc.MoveBy:create(gamePara.bossMoveInterval,cc.p(0,-advanceSteps*self.step)),
                                 cc.DelayTime:create(gamePara.bossMoveInterval),
@@ -86,4 +88,17 @@ function Boss:shockDizzy(second)
         end))
         
     self:runAction(self.dizzyAction)
+end
+
+
+function Boss:addAnimation()
+    local animationNames = {"advance",}-- "dead"}
+    local animationFrameNum = {5,0}
+    local animationDelay = {gamePara.bossMoveInterval / animationFrameNum[1], 0.2}
+
+    for i = 1, #animationNames do
+        local frames = display.newFrames("she%04d.png", 1, animationFrameNum[i])
+        local animation = display.newAnimation(frames, animationDelay[i])
+        display.setAnimationCache("boss-" .. animationNames[i], animation)
+    end
 end
