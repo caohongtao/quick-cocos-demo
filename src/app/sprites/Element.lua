@@ -75,7 +75,8 @@ function Element:create(row, col ,type)
 
     self.m_type = eType
     self.m_needDigTime = eType.needDigTime
-    self:setSpriteFrame(eType.texture)
+    local texture = eType.isBrick and string.sub(eType.texture,1,-5)..math.random(1,3)..'.png' or eType.texture
+    self:setSpriteFrame(texture)
     self:createFSM()
     return self; 
 end
@@ -187,11 +188,11 @@ function Element:die()
     elseif self.m_type == elements.gem then
         createFakeAndMoveTo(cc.p(display.right-190,display.bottom+50))
     elseif self.m_type == elements.mushroom then
-        createFakeAndMoveTo(cc.p(150,display.bottom+50))
+        createFakeAndMoveTo(cc.p(170,display.bottom+50))
     elseif self.m_type == elements.nut then
-        createFakeAndMoveTo(cc.p(250,display.bottom+50))
+        createFakeAndMoveTo(cc.p(265,display.bottom+50))
     elseif self.m_type == elements.cola then
-        createFakeAndMoveTo(cc.p(350,display.bottom+50))
+        createFakeAndMoveTo(cc.p(360,display.bottom+50))
     else
         self:runAction(cc.Sequence:create(cc.FadeOut:create(0.6),
         cc.CallFunc:create(function()

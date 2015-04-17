@@ -11,6 +11,8 @@ function PlayLayer:ctor()
 
     self.m_elements = {}
     self.m_droppingElements = {}
+    
+    self.zPos = 0 --记录层数让后生成的元素显示层级在后。
 
     self:init()
 end
@@ -25,7 +27,7 @@ function PlayLayer:init()
     self.player = Player.new(self.elSize)
     self:addChild(self.player)
 
-    local boss = Boss.new(self.elSize.height)
+    local boss = Boss.new(self.player, self.elSize.height)
     self.map:addChild(boss,1)
 
     local detectListener = cc.EventListenerCustom:create("detect_map", handler(self,self.detectMap))
@@ -72,20 +74,21 @@ function PlayLayer:initMap()
 
     --以宽度为基准缩放
     local elActualSize = (display.width - self.mapOriginPoint.x * 2) / self.mapSize.x
-    self.elSize = {width = elActualSize, height = elActualSize}
+    self.elSize = {width = elActualSize, height = elActualSize-7}
 
     for row=1, self.mapSize.y do
         self.m_elements[row] = {}
         for col=1, self.mapSize.x do
             local el = Element:new():create(row, col)
             el:setPosition(cc.p(self:matrixToPosition(row,col)))
-            el:setScale(self.elSize.width/el:getContentSize().width, self.elSize.height/el:getContentSize().height)
+            el:setScale(self.elSize.width/el:getContentSize().width)
             el:addTo(self.map)
             self.m_elements[row][col] = el
         end
     end
     self.m_elements[0], self.m_elements[self.mapSize.y + 1] = {}, {} --为了后面self.m_elements[row][col]获取方便，行号越界直接返回nil，而不是异常
-
+    self.zPos = self.zPos - 1
+    
     for row=1, self.mapSize.y do
         self.m_droppingElements[row] = {}
         for col=1, self.mapSize.x do
@@ -423,13 +426,16 @@ function PlayLayer:addLines(cnt)
         for col=1, self.mapSize.x do
             local el = Element:new():create(row, col)
             el:setPosition(cc.p(self:matrixToPosition(row,col)))
-            el:setScale(self.elSize.width/el:getContentSize().width, self.elSize.height/el:getContentSize().height)
+            el:setScale(self.elSize.width/el:getContentSize().width)
+            el:setLocalZOrder(self.zPos)
             el:addTo(self.map)
             newLine[col] = el
         end
         table.insert(self.m_elements,row,newLine)
         table.insert(self.m_droppingElements,row,{})
     end
+    
+    self.zPos = self.zPos - 1
 end
 
 function PlayLayer:removeLines(event)

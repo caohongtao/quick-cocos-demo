@@ -28,7 +28,7 @@ CONFIG_SCREEN_AUTOSCALE = "FIXED_WIDTH"
 TOTAL_ELEMENT_TYPE = 4
 
 
-MAP_WIDTH = 7
+MAP_WIDTH = 9
 MAP_HEIGHT = 1
 MAP_START_X = 30
 MAP_START_Y = 0
@@ -46,8 +46,14 @@ elements = {
         needDigTime = 1,
         isBrick = true,
     },
-    orange = {
-        texture = "orange.png",
+--    orange = {
+--        texture = "orange.png",
+--        probability = 100,
+--        needDigTime = 1,
+--        isBrick = true,
+--    },
+    yellow = {
+        texture = "yellow.png",
         probability = 100,
         needDigTime = 1,
         isBrick = true,
@@ -73,12 +79,12 @@ elements = {
     },
     silverDrill = {
         texture = "silverDrill.png",
-        probability = 1,
+        probability = 0,
         needDigTime = 0,
     },
     goldenDrill = {
         texture = "goldenDrill.png",
-        probability = 1,
+        probability = 0,
         needDigTime = 0,
     },
     box = {
@@ -102,11 +108,11 @@ elements = {
         probability = 1,
         needDigTime = 0,
     },
-    timebomb = {
-        texture = "timebomb.png",
-        probability = 1,
-        needDigTime = 0,
-    },
+--    timebomb = {
+--        texture = "timebomb.png",
+--        probability = 1,
+--        needDigTime = 0,
+--    },
     
     
     mushroom = {

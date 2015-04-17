@@ -1,7 +1,8 @@
 Boss = class("Boss",  function()
     return display.newSprite()
 end)
-function Boss:ctor(step)
+function Boss:ctor(player, step)
+    self.player = player
     self.step = step
 
     self.dizzy = false
@@ -20,7 +21,7 @@ function Boss:ctor(step)
     self:advance()
 end
 
-function Player:unscheduleAllTimers()
+function Boss:unscheduleAllTimers()
     self:unscheduleUpdate()
 --    self:getScheduler():unscheduleScriptEntry(self.advanceTimer)
 end
@@ -28,16 +29,34 @@ end
 local ADVANCE_ACTION_TAG = 3838
 function Boss:advance()
     if self.dizzy then return end
+    if self.advanceAction then self:stopAction(self.advanceAction) end
 
+    local playerPos = self.player:convertToWorldSpaceAR(cc.p(0,0))
+    local bossPos = self:convertToWorldSpaceAR(cc.p(0,0))
+    local steps = math.ceil((bossPos.y - playerPos.y)/self.step)
+    local advanceSteps = 1
+    if steps <= 6 then
+    	advanceSteps = 1
+    elseif steps <= 10 then
+        advanceSteps = 2
+    elseif steps <= 16 then
+        advanceSteps = 3
+    else
+        advanceSteps = steps - 16
+    end
+    print(advanceSteps)
+    
     local advanceAction = cc.Sequence:create(
-                                cc.MoveBy:create(gamePara.bossMoveInterval,cc.p(0,-self.step)),
+                                cc.MoveBy:create(gamePara.bossMoveInterval,cc.p(0,-advanceSteps*self.step)),
                                 cc.DelayTime:create(gamePara.bossMoveInterval),
                                 cc.CallFunc:create(function()
                                     local event = cc.EventCustom:new("boss_advance")
                                     event.bossPos = self:convertToWorldSpaceAR(cc.p(0,0))
                                     cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
+                                    
+                                    self:advance()
                                 end))
-    self.advanceAction = cc.RepeatForever:create(advanceAction)
+    self.advanceAction = advanceAction--cc.RepeatForever:create(advanceAction)
     self:runAction(self.advanceAction)
 end
 

@@ -222,13 +222,12 @@ function Player:die()
     
     self:runAction(cc.Sequence:create(cc.Spawn:create(
                                         cc.ScaleTo:create(0.1,self.playerSize.width/self:getContentSize().width,0.1),
-                                        cc.JumpBy:create(0.1,cc.p(0,-35),16,6)
+                                        cc.JumpBy:create(0.1,cc.p(0,-25),16,6)
                                         ),
                                   cc.CallFunc:create(function()
                                         local dieEvent = cc.EventCustom:new("player die")
                                         cc.Director:getInstance():getEventDispatcher():dispatchEvent(dieEvent)
                                   end)))
-                        
 end
 
 function Player:rebirth()
@@ -251,7 +250,7 @@ function Player:rebirth()
     --复活动画
     self:runAction(cc.Spawn:create(
         cc.ScaleTo:create(0.1,self.playerSize.width/self:getContentSize().width,self.playerSize.height/self:getContentSize().height),
-        cc.JumpBy:create(0.3,cc.p(0,35),16,6)
+        cc.JumpBy:create(0.3,cc.p(0,25),16,6)
     ))
 
 end

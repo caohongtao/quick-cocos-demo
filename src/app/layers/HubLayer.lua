@@ -7,62 +7,94 @@ HubLayer = class("HubLayer",  function()
 end)
 
 local UP_BAR = {
+    texture = "ui/topbar.png",
+    x = display.left,
+    y = display.top,
+    align = display.LEFT_TOP,
+
     pause = {
         normal = "ui/stopup.png",
         pressed = "ui/stopdown.png",
         pos = {x=20,y=display.height-80},
     },
     score = {
-        image = {
-            "ui/score.png",
-            pos = {x=90,y=display.height-78},
-        },
-        label = {
-            text        = "0",
-            font        = "Times New Roman",
-            size        = 30,
-            color       = display.COLOR_WHITE,
-            x           = 150,
-            y           = display.height-70,
-        },
+        text        = "0",
+        font        = "Times New Roman",
+        size        = 30,
+        color       = display.COLOR_WHITE,
+        x           = 150,
+        y           = display.height-42,
     },
     deepth = {
-        image = {
-            "ui/deepth.png",
-            pos = {x=336,y=display.height-74},
-        },
-        label = {
-            text        = "0",
-            font        = "Times New Roman",
-            size        = 30,
-            color       = display.COLOR_WHITE,
-            x           = 340,
-            y           = display.height-70,
-        },
+        text        = "0",
+        font        = "Times New Roman",
+        size        = 30,
+        color       = display.COLOR_WHITE,
+        x           = 340,
+        y           = display.height-42,
     },
     coin = {
-        image = {
-            "ui/money.png",
-            pos = {x=490,y=display.height-74},
-        },
-        label = {
-            text        = "0",
-            font        = "Times New Roman",
-            size        = 30,
-            color       = display.COLOR_WHITE,
-            textAlign   = cc.TEXT_ALIGNMENT_LEFT,
-            textValign  = cc.VERTICAL_TEXT_ALIGNMENT_TOP,
-            x           = 500,
-            y           = display.height-70,
-        },
+        text        = "0",
+        font        = "Times New Roman",
+        size        = 30,
+        color       = display.COLOR_WHITE,
+        textAlign   = cc.TEXT_ALIGNMENT_LEFT,
+        textValign  = cc.VERTICAL_TEXT_ALIGNMENT_TOP,
+        x           = 550,
+        y           = display.height-42,
     },
+--    score = {
+--        image = {
+--            "ui/score.png",
+--            pos = {x=90,y=display.height-78},
+--        },
+--        label = {
+--            text        = "0",
+--            font        = "Times New Roman",
+--            size        = 30,
+--            color       = display.COLOR_WHITE,
+--            x           = 150,
+--            y           = display.height-70,
+--        },
+--    },
+--    deepth = {
+--        image = {
+--            "ui/deepth.png",
+--            pos = {x=336,y=display.height-74},
+--        },
+--        label = {
+--            text        = "0",
+--            font        = "Times New Roman",
+--            size        = 30,
+--            color       = display.COLOR_WHITE,
+--            x           = 340,
+--            y           = display.height-70,
+--        },
+--    },
+--    coin = {
+--        image = {
+--            "ui/money.png",
+--            pos = {x=490,y=display.height-74},
+--        },
+--        label = {
+--            text        = "0",
+--            font        = "Times New Roman",
+--            size        = 30,
+--            color       = display.COLOR_WHITE,
+--            textAlign   = cc.TEXT_ALIGNMENT_LEFT,
+--            textValign  = cc.VERTICAL_TEXT_ALIGNMENT_TOP,
+--            x           = 500,
+--            y           = display.height-70,
+--        },
+--    },
 }
 
 local BOTTOM_BAR = {
---    airRuler = {
---        image = "ui/AirRuler.png",
---        pos = {x=display.left+1,y=display.bottom+112},
---    },
+    texture = "ui/bottom_bar.png",
+    x = display.left,
+    y = display.bottom,
+    align = display.LEFT_BOTTOM,
+
     oxygenLabel = {
         font        = "Times New Roman",
         size        = 60,
@@ -73,17 +105,17 @@ local BOTTOM_BAR = {
     skill1 = {
         normal = "ui/jineng1.png",
         pressed = "ui/jineng2.png",
-        pos = {x=140,y=5},
+        pos = {x=170,y=5},
     },
     skill2 = {
         normal = "ui/jineng2.png",
         pressed = "ui/jineng3.png",
-        pos = {x=240,y=5},
+        pos = {x=265,y=5},
     },
     skill3 = {
         normal = "ui/jineng3.png",
         pressed = "ui/jineng1.png",
-        pos = {x=340,y=5},
+        pos = {x=360,y=5},
     },
     buy = {
         normal = "ui/plusup.png",
@@ -121,34 +153,38 @@ function HubLayer:createUpBar()
         end)
         :addTo(self)
 
-
-    cc.ui.UIImage.new(UP_BAR.score.image[1])
-        :align(display.LEFT_BOTTOM, UP_BAR.score.image.pos.x, UP_BAR.score.image.pos.y)
+    --底图
+    cc.ui.UIImage.new(UP_BAR.texture)
+        :align(UP_BAR.align, UP_BAR.x, UP_BAR.y)
         :addTo(self)
-    self.scoreLabel = cc.ui.UILabel.new(UP_BAR.score.label)
+        
+--    cc.ui.UIImage.new(UP_BAR.score.image[1])
+--        :align(display.LEFT_BOTTOM, UP_BAR.score.image.pos.x, UP_BAR.score.image.pos.y)
+--        :addTo(self)
+    self.scoreLabel = cc.ui.UILabel.new(UP_BAR.score)
         :align(display.LEFT_BOTTOM)
         :addTo(self)
         
-    cc.ui.UIImage.new(UP_BAR.deepth.image[1])
-        :align(display.LEFT_BOTTOM, UP_BAR.deepth.image.pos.x, UP_BAR.deepth.image.pos.y)
-        :addTo(self)
-    self.deepthLabel = cc.ui.UILabel.new(UP_BAR.deepth.label)
+--    cc.ui.UIImage.new(UP_BAR.deepth.image[1])
+--        :align(display.LEFT_BOTTOM, UP_BAR.deepth.image.pos.x, UP_BAR.deepth.image.pos.y)
+--        :addTo(self)
+    self.deepthLabel = cc.ui.UILabel.new(UP_BAR.deepth)
         :align(display.LEFT_BOTTOM)
         :addTo(self)
         
         
-    cc.ui.UIImage.new(UP_BAR.coin.image[1])
-        :align(display.LEFT_BOTTOM, UP_BAR.coin.image.pos.x, UP_BAR.coin.image.pos.y)
-        :addTo(self)
-    self.coinLabel = cc.ui.UILabel.new(UP_BAR.coin.label)
+--    cc.ui.UIImage.new(UP_BAR.coin.image[1])
+--        :align(display.LEFT_BOTTOM, UP_BAR.coin.image.pos.x, UP_BAR.coin.image.pos.y)
+--        :addTo(self)
+    self.coinLabel = cc.ui.UILabel.new(UP_BAR.coin)
         :align(display.LEFT_BOTTOM)
         :addTo(self)
 end
 
 function HubLayer:createBottomBar()
     --底图及氧气
-    cc.ui.UIImage.new("ui/bar.png")
-        :align(display.BOTTOM_CENTER, display.cx, display.bottom)
+    cc.ui.UIImage.new(BOTTOM_BAR.texture)
+        :align(BOTTOM_BAR.align, BOTTOM_BAR.x, BOTTOM_BAR.y)
         :addTo(self)
     self.oxygenLabel = cc.ui.UILabel.new(BOTTOM_BAR.oxygenLabel)
         :align(display.CENTER)
