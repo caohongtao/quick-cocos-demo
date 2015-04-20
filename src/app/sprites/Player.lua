@@ -15,6 +15,7 @@ function Player:ctor(size)
     self.score = 0
     self.coins = 0
     self.gems = 0
+    self.toys = 0
     self.digForce = s_data.level[DataManager.get(DataManager.POWERLV) + 1].power
     self.digThrough = false --是否具有贯穿特效，吃了栗子后，一次凿一整行整列
 
@@ -120,9 +121,9 @@ function Player:gainProp(el)
         event.data = self.gems
         cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
     elseif el.m_type == elements.bomb then
-        cc.BezierTo:create(t,points)
+--        cc.BezierTo:create(t,points)
     elseif el.m_type == elements.timebomb then
-    
+
     elseif el.m_type == elements.mushroom then
         DataManager.set(DataManager.ITEM_1, DataManager.get(DataManager.ITEM_1) + 1)
         local event = cc.EventCustom:new("update hub")
@@ -142,7 +143,7 @@ function Player:gainProp(el)
         event.data = DataManager.get(DataManager.ITEM_3)
         cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
     elseif el.m_type == elements.toy then
-    
+        self.toys = self.toys + 1
     end
     
     local event = cc.EventCustom:new("remove_element")
@@ -225,7 +226,9 @@ function Player:die()
     
     self:runAction(cc.Sequence:create(cc.Spawn:create(
 --                                        cc.ScaleTo:create(0.1,self.playerSize.width/self:getContentSize().width,0.1),
-                                        cc.JumpBy:create(0.1,cc.p(0,-25),16,6)
+                                        cc.ScaleBy:create(0.2,0.01),
+                                        cc.RotateBy:create(0.2,360)
+--                                        cc.JumpBy:create(0.1,cc.p(0,-0),16,6)
                                         ),
                                   cc.CallFunc:create(function()
                                         local dieEvent = cc.EventCustom:new("player die")
@@ -247,13 +250,15 @@ function Player:rebirth()
 
     --击退boss
     local event = cc.EventCustom:new("beat_back_boss")
-    event.stepCnt = 6
+    event.stepCnt = gamePara.bossRecedeSteps
     cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
 
     --复活动画
     self:runAction(cc.Spawn:create(
 --        cc.ScaleTo:create(0.1,self.playerSize.width/self:getContentSize().width,self.playerSize.height/self:getContentSize().height),
-        cc.JumpBy:create(0.3,cc.p(0,25),16,6)
+        cc.ScaleBy:create(0.2,100,100),
+        cc.RotateBy:create(0.2,-360)
+--        cc.JumpBy:create(0.3,cc.p(0,0),16,6)
     ))
 
 end
@@ -324,7 +329,16 @@ function Player:castSkill(event)
         cc.Director:getInstance():getEventDispatcher():dispatchEvent(e)
         
         self.digThrough = true
-        self:performWithDelay(function() self.digThrough = false end, gamePara.propDuration)
+        if not self.digThroughEffect then
+        	self.digThroughEffect = cc.ParticleFlower:create()
+        	self.digThroughEffect:setPosition(80,60)
+            self:addChild(self.digThroughEffect)
+        end
+        self.digThroughEffect:setVisible(true)
+        self:performWithDelay(function()
+            self.digThrough = false
+            self.digThroughEffect:setVisible(false)
+        end, gamePara.propDuration)
     elseif event.skillType == elements.nut then
         local skillCnt = DataManager.get(DataManager.ITEM_2)
         if skillCnt <= 0 then return end
@@ -333,9 +347,21 @@ function Player:castSkill(event)
         e.type = 'skillNut'
         cc.Director:getInstance():getEventDispatcher():dispatchEvent(e)
         
-        local eShock = cc.EventCustom:new("shock_dizzy_boss")
-        eShock.second = 5
-        cc.Director:getInstance():getEventDispatcher():dispatchEvent(eShock)
+        local fart = cc.ParticleSmoke:create()
+        fart:setPosition(60,200)
+        self:addChild(fart,10)
+        fart:runAction(cc.Sequence:create(
+                            cc.ScaleBy:create(1, 10, 20),
+                            cc.CallFunc:create(function()
+                                local eShock = cc.EventCustom:new("shock_dizzy_boss")
+                                eShock.second = gamePara.bossDizzyTime
+                                cc.Director:getInstance():getEventDispatcher():dispatchEvent(eShock)
+                            end),
+                            cc.FadeOut:create(1),
+                            cc.CallFunc:create(function()
+                                fart:removeFromParent(true)
+                            end)))
+
     elseif event.skillType == elements.cola then
         local skillCnt = DataManager.get(DataManager.ITEM_3)
         if skillCnt <= 0 then return end
@@ -344,6 +370,20 @@ function Player:castSkill(event)
         e.type = 'skillCola'
         cc.Director:getInstance():getEventDispatcher():dispatchEvent(e)
         
+        local cola = display.newSprite('#cola.png',40,40)
+        cola:setScale(3)
+        cola:addTo(self)
+        local paticle = cc.ParticleSun:create()
+        paticle:setPosition(40,40)
+        paticle:addTo(cola)
+        cola:runAction(cc.Sequence:create(
+                            cc.MoveBy:create(0.3,cc.p(0,display.height)),
+                            cc.CallFunc:create(function()
+                                cola:removeFromParent(true)
+                                local event = cc.EventCustom:new("beat_back_boss")
+                                event.stepCnt = gamePara.bossRecedeSteps
+                                cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
+                            end)))
     end
 
 end

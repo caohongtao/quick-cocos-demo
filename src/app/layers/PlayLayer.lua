@@ -35,11 +35,13 @@ function PlayLayer:init()
     local rollMapListener = cc.EventListenerCustom:create("roll_map", handler(self,self.rollMap))
     local removeListener = cc.EventListenerCustom:create("remove_element", function(event) self:removeAndDrop({event.el}) end)
     local BossAdvanceListener = cc.EventListenerCustom:create("boss_advance", handler(self,self.removeLines))
+    local explode_Listener = cc.EventListenerCustom:create("bomb_explode", handler(self,self.bombExplode))
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(detectListener, self)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(digListener, self)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(rollMapListener, self)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(removeListener, self)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(BossAdvanceListener, self)
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(explode_Listener, self)
 
     self:scheduleUpdateWithPriorityLua(handler(self, self.checkDroppingElements), 0)
 --    self:scheduleUpdateWithPriorityLua(handler(self, self.showElementInfo), 0);
@@ -607,4 +609,30 @@ function PlayLayer:PlayLayerinitTouchListener()
             return true
         end
     end)
+end
+
+function PlayLayer:bombExplode(event)
+    local bomb = event.el
+    local row,col = self:positionToMatrix(bomb:getPosition())
+    
+    local batch = cc.ParticleBatchNode:createWithTexture(cc.ParticleFire:create():getTexture())
+    local grids = {}
+    for r=row-1, row+1 do
+        for c=col-1, col+1 do
+            if self.m_elements[r] and self.m_elements[r][c] then
+                table.insert(grids,self.m_elements[r][c])
+            elseif self.m_droppingElements[r] and self.m_droppingElements[r][c] then
+                self:removeElement(self.m_droppingElements[r][c])
+            end
+            
+            local fire = cc.ParticleFire:create()
+            fire:setPosition(self:matrixToPosition(r, c))
+            fire:setLife(1)
+            batch:addChild(fire, 10);
+        end
+    end
+    self.map:addChild(batch, 10)
+    batch:performWithDelay(function() batch:removeFromParent(true) end, 0.5)
+    
+    self:removeAndDrop(grids)
 end

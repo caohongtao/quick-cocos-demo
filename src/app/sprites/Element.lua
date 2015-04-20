@@ -175,7 +175,7 @@ function Element:die()
         fake:addTo(cc.Director:getInstance():getRunningScene())
 
         fake:runAction(cc.Sequence:create(
-            cc.Spawn:create(cc.EaseIn:create(cc.MoveTo:create(1,dest), 0.5),cc.ScaleTo:create(1,0.1)),
+            cc.Spawn:create(cc.EaseIn:create(cc.MoveTo:create(1,dest), 0.5),cc.ScaleTo:create(1,0.3)),
             cc.CallFunc:create(function()
                 fake:removeFromParent(true)
             end)))
@@ -188,11 +188,20 @@ function Element:die()
     elseif self.m_type == elements.gem then
         createFakeAndMoveTo(cc.p(display.right-190,display.bottom+50))
     elseif self.m_type == elements.mushroom then
-        createFakeAndMoveTo(cc.p(170,display.bottom+50))
+        createFakeAndMoveTo(cc.p(200,display.bottom+50))
     elseif self.m_type == elements.nut then
-        createFakeAndMoveTo(cc.p(265,display.bottom+50))
+        createFakeAndMoveTo(cc.p(295,display.bottom+50))
     elseif self.m_type == elements.cola then
-        createFakeAndMoveTo(cc.p(360,display.bottom+50))
+        createFakeAndMoveTo(cc.p(390,display.bottom+50))
+    elseif self.m_type == elements.timebomb then
+        self:setLocalZOrder(1)
+        self:runAction(cc.Sequence:create(cc.TintTo:create(2,255,0,0),
+                            cc.CallFunc:create(function()
+                                local event = cc.EventCustom:new("bomb_explode")
+                                event.el = self
+                                cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
+                                self:removeFromParent(true)
+                            end)))
     else
         self:runAction(cc.Sequence:create(cc.FadeOut:create(0.6),
         cc.CallFunc:create(function()

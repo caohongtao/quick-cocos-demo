@@ -79,17 +79,17 @@ elements = {
     },
     silverDrill = {
         texture = "silverDrill.png",
-        probability = 0,
+        probability = 1,
         needDigTime = 0,
     },
     goldenDrill = {
         texture = "goldenDrill.png",
-        probability = 0,
+        probability = 1,
         needDigTime = 0,
     },
     box = {
         texture = "box.png",
-        probability = 100,
+        probability = 1,
         needDigTime = 0,
         
     },
@@ -103,31 +103,31 @@ elements = {
         probability = 1,
         needDigTime = 0,
     },
-    bomb = {
-        texture = "bomb.png",
-        probability = 1,
-        needDigTime = 0,
-    },
---    timebomb = {
---        texture = "timebomb.png",
+--    bomb = {
+--        texture = "bomb.png",
 --        probability = 1,
 --        needDigTime = 0,
 --    },
+    timebomb = {
+        texture = "bomb.png",
+        probability = 10,
+        needDigTime = 0,
+    },
     
     
     mushroom = {
         texture = "mushroom.png",
-        probability = 100,
+        probability = 1,
         needDigTime = 0,
     },
     nut = {
         texture = "nut.png",
-        probability = 100,
+        probability = 1,
         needDigTime = 0,
     },
     cola = {
         texture = "cola.png",
-        probability = 100,
+        probability = 1,
         needDigTime = 0,
     },
     punish = {--只会在挖宝箱时概率出现。
@@ -148,6 +148,13 @@ elements = {
 gamePara = {
     lifeReduceRate      = 1,--掉一格所用时
     dropSpeed           = 0.4,--移动100像素用时
-    bossMoveInterval    = 1,
+    
+    bossMoveInterval    = 0.5,
+    bossMoveStep        = 20,--像素
+    bossRecedeSteps     = 16,
+    bossSlowDownDistance= 10,
+    
+    bossDizzyTime       = 5,
+    
     propDuration        = 12,
 }
