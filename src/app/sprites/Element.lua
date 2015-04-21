@@ -85,7 +85,11 @@ function Element:getTypeAccordProbability()
     if not totalProbability then
         totalProbability = 0
         for _, element in pairs(elements) do
-            totalProbability = totalProbability + element.probability
+            local probability = element.probability
+            if not element.isBrick then
+                probability = probability * s_data.level[DataManager.get(DataManager.LUCKLV) + 1].luck * 10
+            end
+            totalProbability = totalProbability + probability
             element.IntervalEnd = totalProbability
 		end
 	end
