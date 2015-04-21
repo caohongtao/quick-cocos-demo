@@ -39,16 +39,16 @@ function Boss:advance()
     local bossPos = self:convertToWorldSpaceAR(cc.p(0,0))
     local steps = math.ceil((bossPos.y - playerPos.y)/self.step)
     local advanceSteps = 1
---    if steps <= 6 then
---    	advanceSteps = 1
---    elseif steps <= 10 then
---        advanceSteps = 2
---    elseif steps <= 16 then
---        advanceSteps = 3
---    else
---        advanceSteps = steps - 16
-    if steps > gamePara.bossSlowDownDistance then
-        advanceSteps = steps - gamePara.bossSlowDownDistance
+    if steps <= gamePara.bossSlowDownDistance then
+    	advanceSteps = 1
+    elseif steps <= 2*gamePara.bossSlowDownDistance then
+        advanceSteps = 2
+    elseif steps <= 3*gamePara.bossSlowDownDistance then
+        advanceSteps = 3
+--    elseif steps <= 4*gamePara.bossSlowDownDistance then
+--        advanceSteps = 4
+    else
+        advanceSteps = steps-3*gamePara.bossSlowDownDistance
     end
     
 --    transition.playAnimationOnce(self, display.getAnimationCache("boss-advance"))

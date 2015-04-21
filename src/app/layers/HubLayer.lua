@@ -9,13 +9,13 @@ end)
 local UP_BAR = {
     texture = "ui/topbar.png",
     x = display.left,
-    y = display.top,
+    y = display.top-3,
     align = display.LEFT_TOP,
 
     pause = {
         normal = "ui/stopup.png",
         pressed = "ui/stopdown.png",
-        pos = {x=20,y=display.height-80},
+        pos = {x=10,y=display.height-60},
     },
     score = {
         text        = "0",
@@ -142,9 +142,15 @@ function HubLayer:ctor()
 end
 
 function HubLayer:createUpBar()
+    --底图
+    cc.ui.UIImage.new(UP_BAR.texture)
+        :align(UP_BAR.align, UP_BAR.x, UP_BAR.y)
+        :addTo(self)
+        
+    --暂停按钮
     cc.ui.UIPushButton.new({normal = UP_BAR.pause.normal,
-                            pressed = UP_BAR.pause.pressed,
-                            scale9 = true,})
+        pressed = UP_BAR.pause.pressed,
+        scale9 = true,})
         :align(display.LEFT_BOTTOM, UP_BAR.pause.pos.x, UP_BAR.pause.pos.y)
         :onButtonClicked(function(event)
             print("pause game")
@@ -152,30 +158,16 @@ function HubLayer:createUpBar()
             cc.Director:getInstance():getEventDispatcher():dispatchEvent(pauseEvent)
         end)
         :addTo(self)
-
-    --底图
-    cc.ui.UIImage.new(UP_BAR.texture)
-        :align(UP_BAR.align, UP_BAR.x, UP_BAR.y)
-        :addTo(self)
         
---    cc.ui.UIImage.new(UP_BAR.score.image[1])
---        :align(display.LEFT_BOTTOM, UP_BAR.score.image.pos.x, UP_BAR.score.image.pos.y)
---        :addTo(self)
+    --三个label
     self.scoreLabel = cc.ui.UILabel.new(UP_BAR.score)
         :align(display.LEFT_BOTTOM)
         :addTo(self)
         
---    cc.ui.UIImage.new(UP_BAR.deepth.image[1])
---        :align(display.LEFT_BOTTOM, UP_BAR.deepth.image.pos.x, UP_BAR.deepth.image.pos.y)
---        :addTo(self)
     self.deepthLabel = cc.ui.UILabel.new(UP_BAR.deepth)
         :align(display.LEFT_BOTTOM)
         :addTo(self)
         
-        
---    cc.ui.UIImage.new(UP_BAR.coin.image[1])
---        :align(display.LEFT_BOTTOM, UP_BAR.coin.image.pos.x, UP_BAR.coin.image.pos.y)
---        :addTo(self)
     self.coinLabel = cc.ui.UILabel.new(UP_BAR.coin)
         :align(display.LEFT_BOTTOM)
         :addTo(self)

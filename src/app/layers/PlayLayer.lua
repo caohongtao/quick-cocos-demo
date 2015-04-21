@@ -405,7 +405,8 @@ function PlayLayer:rollMap(event)
             dropEvent.active = false
             eventDispatcher:dispatchEvent(dropEvent)
 
-            --            self:removeLines()
+            
+            self:removeLines({bossPos = cc.p(display.cx, 2*display.cy)})
         end))
 
     self.map:runAction(moveAction)
@@ -444,14 +445,13 @@ function PlayLayer:removeLines(event)
     local bossPos = self.map:convertToNodeSpaceAR(event.bossPos)
     local row, _ = self:positionToMatrix(bossPos.x, bossPos.y)
     local LinesOverBoss = self.mapSize.y - row
-    cnt = LinesOverBoss > 0 and LinesOverBoss or 0
+    local cnt = LinesOverBoss > 0 and LinesOverBoss or 0
 
     --    local screenLeftUp = self.map:convertToNodeSpace(cc.p(0,display.height))
     --    local row, _ = self:positionToMatrix(screenLeftUp.x, screenLeftUp.y)
     --    local LinesOverScreen = self.mapSize.y - row
     --    cnt = LinesOverScreen > 0 and LinesOverScreen or 0
-
-    assert(LinesOverBoss<10,'LinesOverScreen'..LinesOverBoss..' is bigger than 2')
+    --    assert(LinesOverScreen<10,'LinesOverScreen'..LinesOverScreen..' is bigger than 2')
 
     for row = self.mapSize.y, self.mapSize.y - (cnt-1), -1 do
         for col=1, self.mapSize.x do

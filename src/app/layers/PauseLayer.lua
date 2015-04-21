@@ -41,22 +41,24 @@ function PauseLayer:ctor()
         :onButtonClicked(function(event)
             print("resume game")
             
-            local queue = {cc.Director:getInstance():getRunningScene()}
-            while #queue > 0 do
-                local nodes = queue[1]:getChildren()
-                for _, node in ipairs(nodes) do
-                    if node == self then
-                        node:setVisible(false)
-                    else
-                        table.insert(queue,node)
-                    end
-                end
-                queue[1]:resume()
-                table.remove(queue,1)
-            end
-            
-            local resumeEvent = cc.EventCustom:new("resume game")
-            cc.Director:getInstance():getEventDispatcher():dispatchEvent(resumeEvent)
+--            local queue = {self:getParent()}
+--            while #queue > 0 do
+--                local nodes = queue[1]:getChildren()
+--                for _, node in ipairs(nodes) do
+--                    if node == self then
+--                        node:setVisible(false)
+--                    else
+--                        table.insert(queue,node)
+--                    end
+--                end
+--                queue[1]:resume()
+--                table.remove(queue,1)
+--            end
+--            
+--            local resumeEvent = cc.EventCustom:new("resume game")
+--            cc.Director:getInstance():getEventDispatcher():dispatchEvent(resumeEvent)
+
+            cc.Director:getInstance():popScene()
         end)
         :align(PAUSE_PANEL.continue.align, PAUSE_PANEL.continue.pos.x, PAUSE_PANEL.continue.pos.y)
         :addTo(self)
@@ -66,7 +68,11 @@ function PauseLayer:ctor()
         scale9 = true,})
         :onButtonClicked(function(event)
             print('restart')
-            cc.Director:getInstance():getRunningScene():dispatchEvent({name = "GAME_START"})   
+            cc.Director:getInstance():popScene()
+            self.gameScene:performWithDelay(function()
+                cc.Director:getInstance():getRunningScene():dispatchEvent({name = "GAME_START"})   
+            end,0.1)
+            
         end)
         :align(PAUSE_PANEL.restart.align, PAUSE_PANEL.restart.pos.x, PAUSE_PANEL.restart.pos.y)
         :addTo(self)
@@ -80,5 +86,5 @@ function PauseLayer:ctor()
         :align(PAUSE_PANEL.back.align, PAUSE_PANEL.back.pos.x, PAUSE_PANEL.back.pos.y)
         :addTo(self)
         
-    self:setVisible(false)
+--    self:setVisible(false)
 end

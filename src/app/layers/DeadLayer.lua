@@ -18,23 +18,30 @@ function DeadLayer:ctor()
         :onButtonClicked(function(event)
             print("player rebirth")
 
-            local queue = {cc.Director:getInstance():getRunningScene()}
-            while #queue > 0 do
-                local nodes = queue[1]:getChildren()
-                for _, node in ipairs(nodes) do
-                    if node == self then
-                        node:setVisible(false)
-                        node:stopCount()
-                    else
-                        table.insert(queue,node)
-                    end
-                end
-                queue[1]:resume()
-                table.remove(queue,1)
-            end
+--            local queue = {self:getParent()}
+--            while #queue > 0 do
+--                local nodes = queue[1]:getChildren()
+--                for _, node in ipairs(nodes) do
+--                    if node == self then
+--                        node:setVisible(false)
+--                        node:stopCount()
+--                    else
+--                        table.insert(queue,node)
+--                    end
+--                end
+--                queue[1]:resume()
+--                table.remove(queue,1)
+--            end
         
-            local resumeEvent = cc.EventCustom:new("player rebirth")
-            cc.Director:getInstance():getEventDispatcher():dispatchEvent(resumeEvent)
+--            self:removeFromParent(true)
+--            display.resume()
+
+            cc.Director:getInstance():popScene()
+            
+            self.gameScene:performWithDelay(function()
+                local resumeEvent = cc.EventCustom:new("player rebirth")
+                cc.Director:getInstance():getEventDispatcher():dispatchEvent(resumeEvent)
+            end,0.1)
         end)
         :addTo(self)
         
@@ -50,7 +57,8 @@ function DeadLayer:ctor()
         :align(display.CENTER)
         :addTo(self)
         
-    self:setVisible(false)
+--    self:setVisible(false)
+    self:startCount()
 end
 
 function DeadLayer:startCount()
@@ -61,7 +69,7 @@ function DeadLayer:startCount()
         cc.DelayTime:create(1),
         cc.CallFunc:create(function()
             if self.timeLeft == 0 then
-                self:stopCount()
+--                self:stopCount()
                 self:gameEnd()
             end
             self.timeLeft = self.timeLeft - 1
@@ -69,10 +77,10 @@ function DeadLayer:startCount()
         end)))
     self:runAction(self.countDownAction)
 end
-
-function DeadLayer:stopCount()
-    self:stopAction(self.countDownAction)    --确保下次弹出时，从10重新开始
-end
+--
+--function DeadLayer:stopCount()
+--    self:stopAction(self.countDownAction)    --确保下次弹出时，从10重新开始
+--end
 
 function DeadLayer:gameEnd()
 
@@ -92,5 +100,8 @@ function DeadLayer:gameEnd()
     gameEndEvent.golds = 0
     gameEndEvent.grounds = 0
     
-    cc.Director:getInstance():getRunningScene():dispatchEvent({name = "GAME_END", event = gameEndEvent})   
+    cc.Director:getInstance():popScene()
+    self.gameScene:performWithDelay(function()
+        cc.Director:getInstance():getRunningScene():dispatchEvent({name = "GAME_END", event = gameEndEvent})   
+    end,0.1)
 end

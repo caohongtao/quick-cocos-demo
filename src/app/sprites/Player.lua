@@ -179,7 +179,7 @@ end
 
 local DIG_DURATION = 0.3
 function Player:dig(target, dir)
-    if self.digging then return end
+    if not self.digThrough and self.digging then return end --self.digThrough == true时(复活或者放可乐救命时)，即使上个挖掘动作没玩，也立即挖掘，否则不能往上挖掘，不断死亡。
 
     --播放dig动画
     self.digging = true
@@ -250,7 +250,7 @@ function Player:rebirth()
 
     --击退boss
     local event = cc.EventCustom:new("beat_back_boss")
-    event.stepCnt = gamePara.bossRecedeSteps
+    event.stepCnt = 3*gamePara.bossRecedeSteps
     cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
 
     --复活动画
@@ -319,19 +319,42 @@ end
 
 function Player:castSkill(event)
     if event.skillType == elements.mushroom then
-        if self.digThrough then return end
-        
         local skillCnt = DataManager.get(DataManager.ITEM_1)
         if skillCnt <= 0 then return end
         DataManager.set(DataManager.ITEM_1, skillCnt - 1)
         local e = cc.EventCustom:new("update hub")
         e.type = 'skillMushroom'
         cc.Director:getInstance():getEventDispatcher():dispatchEvent(e)
-        
+
+        local fart = cc.ParticleSmoke:create()
+        fart:setPosition(60,200)
+        self:addChild(fart,10)
+        fart:runAction(cc.Sequence:create(
+            cc.ScaleBy:create(1, 10, 20),
+            cc.CallFunc:create(function()
+                local eShock = cc.EventCustom:new("shock_dizzy_boss")
+                eShock.second = gamePara.bossDizzyTime
+                cc.Director:getInstance():getEventDispatcher():dispatchEvent(eShock)
+            end),
+            cc.FadeOut:create(1),
+            cc.CallFunc:create(function()
+                fart:removeFromParent(true)
+            end)))
+
+    elseif event.skillType == elements.nut then
+        if self.digThrough then return end
+
+        local skillCnt = DataManager.get(DataManager.ITEM_2)
+        if skillCnt <= 0 then return end
+        DataManager.set(DataManager.ITEM_2, skillCnt - 1)
+        local e = cc.EventCustom:new("update hub")
+        e.type = 'skillNut'
+        cc.Director:getInstance():getEventDispatcher():dispatchEvent(e)
+
         self.digThrough = true
         if not self.digThroughEffect then
-        	self.digThroughEffect = cc.ParticleFlower:create()
-        	self.digThroughEffect:setPosition(80,60)
+            self.digThroughEffect = cc.ParticleFlower:create()
+            self.digThroughEffect:setPosition(80,60)
             self:addChild(self.digThroughEffect)
         end
         self.digThroughEffect:setVisible(true)
@@ -339,29 +362,6 @@ function Player:castSkill(event)
             self.digThrough = false
             self.digThroughEffect:setVisible(false)
         end, gamePara.propDuration)
-    elseif event.skillType == elements.nut then
-        local skillCnt = DataManager.get(DataManager.ITEM_2)
-        if skillCnt <= 0 then return end
-        DataManager.set(DataManager.ITEM_2, skillCnt - 1)
-        local e = cc.EventCustom:new("update hub")
-        e.type = 'skillNut'
-        cc.Director:getInstance():getEventDispatcher():dispatchEvent(e)
-        
-        local fart = cc.ParticleSmoke:create()
-        fart:setPosition(60,200)
-        self:addChild(fart,10)
-        fart:runAction(cc.Sequence:create(
-                            cc.ScaleBy:create(1, 10, 20),
-                            cc.CallFunc:create(function()
-                                local eShock = cc.EventCustom:new("shock_dizzy_boss")
-                                eShock.second = gamePara.bossDizzyTime
-                                cc.Director:getInstance():getEventDispatcher():dispatchEvent(eShock)
-                            end),
-                            cc.FadeOut:create(1),
-                            cc.CallFunc:create(function()
-                                fart:removeFromParent(true)
-                            end)))
-
     elseif event.skillType == elements.cola then
         local skillCnt = DataManager.get(DataManager.ITEM_3)
         if skillCnt <= 0 then return end
@@ -376,12 +376,19 @@ function Player:castSkill(event)
         local paticle = cc.ParticleSun:create()
         paticle:setPosition(40,40)
         paticle:addTo(cola)
+        
+        --向上挖掘得立即释放，救命。
+        local temp = self.digThrough
+        self.digThrough = true
+        self:dig(nil, 'up')
+        self.digThrough = temp
         cola:runAction(cc.Sequence:create(
-                            cc.MoveBy:create(0.3,cc.p(0,display.height)),
+                            cc.EaseBackIn:create(cc.MoveBy:create(0.6,cc.p(0,display.height*2))),
                             cc.CallFunc:create(function()
                                 cola:removeFromParent(true)
+                                --击退boss
                                 local event = cc.EventCustom:new("beat_back_boss")
-                                event.stepCnt = gamePara.bossRecedeSteps
+                                event.stepCnt = 3*gamePara.bossRecedeSteps
                                 cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
                             end)))
     end
