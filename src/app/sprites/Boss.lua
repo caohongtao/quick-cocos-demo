@@ -7,6 +7,9 @@ function Boss:ctor(player, step)
 
     self.dizzy = false
     
+    self.dizzyTimes = 0
+    self.recedeTimes = 0
+    
     cc.SpriteFrameCache:getInstance():addSpriteFrames('sprite/boss.plist', 'sprite/boss.png')
     self:setAnchorPoint(0.5,0)
     self:setSpriteFrame('she0001.png')
@@ -21,6 +24,8 @@ function Boss:ctor(player, step)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(shockDizzyListener, self)
     local explode_Listener = cc.EventListenerCustom:create("bomb_explode", handler(self,self.bombExplode))
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(explode_Listener, self)
+    local settlementListener = cc.EventListenerCustom:create("get_settlement_info", handler(self,self.getSettlementInfo))
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(settlementListener, self)
     
     self:advance()
 end
@@ -67,6 +72,7 @@ function Boss:advance()
 end
 
 function Boss:recede(stepCnt)
+    self.recedeTimes = self.recedeTimes + 1
     local recedeAction = cc.Sequence:create(
                                 cc.CallFunc:create(function()
                                     if self.advanceAction then
@@ -80,6 +86,8 @@ end
 
 function Boss:shockDizzy(second)
     self.dizzy = true
+    self.dizzyTimes = self.dizzyTimes + 1
+    
     if self.dizzyAction then self:stopAction(self.dizzyAction) end  --防止连续被击晕，回调中提前讲self.dizzy ＝ false
     
     if self.advanceAction then self:stopAction(self.advanceAction) end
@@ -116,4 +124,9 @@ function Boss:bombExplode(event)
     if bossPos.y < bombPos.y then
         self:shockDizzy(gamePara.bossDizzyTime)
     end
+end
+
+function Boss:getSettlementInfo(event)
+    event. dizzyTimes = self.dizzyTimes
+    event. recedeTimes = self.recedeTimes
 end

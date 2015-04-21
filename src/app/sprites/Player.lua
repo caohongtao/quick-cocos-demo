@@ -238,13 +238,15 @@ function Player:die()
 --                                        cc.JumpBy:create(0.1,cc.p(0,-0),16,6)
                                         ),
                                   cc.CallFunc:create(function()
+                                        local getSettlementInfo = cc.EventCustom:new("get_settlement_info")
+                                        cc.Director:getInstance():getEventDispatcher():dispatchEvent(getSettlementInfo)
                                         local settlement = {
                                             saves = 0,
                                             use1 = self.skill1Times,
                                             use2 = self.skill2Times,
                                             use3 = self.skill3Times,
-                                            atkboss = 0,
-                                            dizzboss = 0,
+                                            atkboss = getSettlementInfo.recedeTimes,
+                                            dizzboss = getSettlementInfo.dizzyTimes,
                                             box = self.boxes,
                                             golds = self.coins,
                                             grounds = self.deepth,
