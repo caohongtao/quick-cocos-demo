@@ -147,7 +147,10 @@ elements = {
 
 gamePara = {
     lifeReduceRate      = 1,--掉一格所用时
-    dropSpeed           = 0.4,--移动100像素用时
+    
+    baseDropDuration    = 0.2,--移动100像素用时
+    baseMoveDuration    = 0.2,
+    baseDigDuration     = 0.3,
     
     bossMoveInterval    = 0.5,
     bossMoveStep        = 20,--像素

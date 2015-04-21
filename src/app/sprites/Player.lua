@@ -177,15 +177,15 @@ function Player:drop()
     end
 end
 
-local DIG_DURATION = 0.3
 function Player:dig(target, dir)
     if not self.digThrough and self.digging then return end --self.digThrough == true时(复活或者放可乐救命时)，即使上个挖掘动作没玩，也立即挖掘，否则不能往上挖掘，不断死亡。
 
     --播放dig动画
     self.digging = true
     transition.playAnimationOnce(self, display.getAnimationCache("player-dig"))
+    local duration = gamePara.baseDigDuration / s_data.level[DataManager.get(DataManager.SPEEDLV) + 1].speed
     self:runAction(cc.Sequence:create(
-        cc.DelayTime:create(DIG_DURATION),
+        cc.DelayTime:create(duration),
         cc.CallFunc:create(function() self.digging = false end)))
         
 
@@ -215,8 +215,10 @@ function Player:move(dir)
         delta = cc.p(playerWidth,0)
     end
     self.moving = true
+    
+    local duration = gamePara.baseMoveDuration / s_data.level[DataManager.get(DataManager.SPEEDLV) + 1].speed
     self:runAction(cc.Sequence:create(
-        cc.MoveBy:create(0.4,delta),
+        cc.MoveBy:create(duration,delta),
         cc.CallFunc:create(function() self.moving = false end)))
 end
 
@@ -265,7 +267,9 @@ end
 
 function Player:increaseDeepth()
     local current = coroutine.running()
-    local perFloorDuration = gamePara.dropSpeed / 100 * self.playerSize.height
+    
+    local dropSpeed = gamePara.baseDropDuration / s_data.level[DataManager.get(DataManager.SPEEDLV) + 1].speed
+    local perFloorDuration = dropSpeed / 100 * self.playerSize.height
     
     while true do
         self:performWithDelay(function()
@@ -398,7 +402,8 @@ end
 function Player:addAnimation()
     local animationNames = {"dig",}-- "dead"}
     local animationFrameNum = {20,0}
-    local animationDelay = {DIG_DURATION / animationFrameNum[1], 0.2}
+    local duration = gamePara.baseDigDuration / s_data.level[DataManager.get(DataManager.SPEEDLV) + 1].speed
+    local animationDelay = {duration / animationFrameNum[1], 0.2}
 
     for i = 1, #animationNames do
         local frames = display.newFrames("yanshu%04d.png", 1, animationFrameNum[i])

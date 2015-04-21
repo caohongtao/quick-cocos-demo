@@ -100,7 +100,8 @@ function Element:getTypeAccordProbability()
     return elements[#elements] --不可能执行到这里，以防万一
 end
 
-local shakeSpeed = 1
+local ElementShakeSpeed = 1
+local ElementDropSpeed = 0.4
 --方块摇动动画
 function Element:shake()
     cc.Director:getInstance():getActionManager():removeAllActionsFromTarget(self)
@@ -111,12 +112,12 @@ function Element:shake()
     if self.shakAction ~=nil then transition.removeAction(self.shakAction) end
     local arr = {}    
 
-    table.insert(arr,cc.MoveBy:create( 0.05*shakeSpeed, cc.p(-3,0)))
+    table.insert(arr,cc.MoveBy:create( 0.05*ElementShakeSpeed, cc.p(-3,0)))
     for i =1,5 do
-        table.insert(arr,cc.MoveBy:create(0.1 *shakeSpeed, cc.p(6,0)))
-        table.insert(arr,cc.MoveBy:create( 0.1*shakeSpeed, cc.p(-6,0)))
+        table.insert(arr,cc.MoveBy:create(0.1 *ElementShakeSpeed, cc.p(6,0)))
+        table.insert(arr,cc.MoveBy:create( 0.1*ElementShakeSpeed, cc.p(-6,0)))
     end
-    table.insert(arr,cc.MoveBy:create( 0.05*shakeSpeed, cc.p(3,0)))
+    table.insert(arr,cc.MoveBy:create( 0.05*ElementShakeSpeed, cc.p(3,0)))
 
     table.insert(arr,cc.CallFunc:create(function()
         self.shaked = false
@@ -133,7 +134,7 @@ end
 function Element:drop()
     cc.Director:getInstance():getActionManager():removeAllActionsFromTarget(self)
     local arr = {}   
-    table.insert(arr, cc.MoveBy:create(gamePara.dropSpeed,cc.p(0,-100)))
+    table.insert(arr, cc.MoveBy:create(ElementDropSpeed,cc.p(0,-100)))
 
     local function onComplete()
         if self:getState() == 'DROP' then
@@ -152,7 +153,7 @@ function Element:load(dest)
 
     self.needCheckRemove = true --刚刚着陆的需要检查是否消除
 
-    local goDest = transition.moveTo(self,{x = dest.x, y = dest.y, time = gamePara.dropSpeed * math.abs(dest.y - self:getPositionY()) / 100})
+    local goDest = transition.moveTo(self,{x = dest.x, y = dest.y, time = ElementDropSpeed * math.abs(dest.y - self:getPositionY()) / 100})
     local bouceUp = transition.moveTo(self,{x = dest.x, y = dest.y+6, time = 0.1})
     local backDest = transition.newEasing(cc.MoveTo:create(0.1, dest), {easing = 'elasticOut'})
     local loadOverNotify = cc.CallFunc:create(function()

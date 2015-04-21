@@ -12,6 +12,9 @@ local GameLayer = class("GameLayer", function()
 end)
 
 function GameLayer:ctor()
+    self:stub()
+    
+    
     local backgroudLayer = BackgroundLayer.new()
     backgroudLayer:setPosition(display.left,display.bottom)
     backgroudLayer:setAnchorPoint(0,0)
@@ -106,6 +109,10 @@ function GameLayer:captureScreen()
     sp:setFlippedY(true)
     
     return sp
+end
+
+function GameLayer:stub()
+    DataManager.set(DataManager.SPEEDLV, 2)
 end
 
 return GameLayer
