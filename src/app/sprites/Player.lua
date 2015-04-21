@@ -13,9 +13,13 @@ function Player:ctor(size)
     self.oxygenVol = s_data.level[DataManager.get(DataManager.HPLV) + 1].hp
     self.deepth = 0
     self.score = 0
+    self.boxes = 0
     self.coins = 0
     self.gems = 0
     self.toys = 0
+    self.skill1Times = 0
+    self.skill2Times = 0
+    self.skill3Times = 0
     self.digForce = s_data.level[DataManager.get(DataManager.POWERLV) + 1].power
     self.digThrough = false --是否具有贯穿特效，吃了栗子后，一次凿一整行整列
 
@@ -97,6 +101,7 @@ function Player:gainProp(el)
         self:performWithDelay(function() self.digForce = self.digForce / 4 end, 10)
     elseif el.m_type == elements.box then
         print('box')
+        self.boxes = self.boxes + 1
         local fakeBox = Element.new():create(el.m_row, el.m_col, elements.box)
         fakeBox.fsm_:doEvent("destroy")
         
@@ -233,7 +238,20 @@ function Player:die()
 --                                        cc.JumpBy:create(0.1,cc.p(0,-0),16,6)
                                         ),
                                   cc.CallFunc:create(function()
+                                        local settlement = {
+                                            saves = 0,
+                                            use1 = self.skill1Times,
+                                            use2 = self.skill2Times,
+                                            use3 = self.skill3Times,
+                                            atkboss = 0,
+                                            dizzboss = 0,
+                                            box = self.boxes,
+                                            golds = self.coins,
+                                            grounds = self.deepth,
+                                        }
+                                        
                                         local dieEvent = cc.EventCustom:new("player die")
+                                        dieEvent.settlement = settlement
                                         cc.Director:getInstance():getEventDispatcher():dispatchEvent(dieEvent)
                                   end)))
 end
@@ -326,6 +344,7 @@ function Player:castSkill(event)
         local skillCnt = DataManager.get(DataManager.ITEM_1)
         if skillCnt <= 0 then return end
         DataManager.set(DataManager.ITEM_1, skillCnt - 1)
+        self.skill1Times = self.skill1Times + 1
         local e = cc.EventCustom:new("update hub")
         e.type = 'skillMushroom'
         cc.Director:getInstance():getEventDispatcher():dispatchEvent(e)
@@ -351,6 +370,7 @@ function Player:castSkill(event)
         local skillCnt = DataManager.get(DataManager.ITEM_2)
         if skillCnt <= 0 then return end
         DataManager.set(DataManager.ITEM_2, skillCnt - 1)
+        self.skill2Times = self.skill2Times + 1
         local e = cc.EventCustom:new("update hub")
         e.type = 'skillNut'
         cc.Director:getInstance():getEventDispatcher():dispatchEvent(e)
@@ -370,6 +390,7 @@ function Player:castSkill(event)
         local skillCnt = DataManager.get(DataManager.ITEM_3)
         if skillCnt <= 0 then return end
         DataManager.set(DataManager.ITEM_3, skillCnt - 1)
+        self.skill3Times = self.skill3Times + 1
         local e = cc.EventCustom:new("update hub")
         e.type = 'skillCola'
         cc.Director:getInstance():getEventDispatcher():dispatchEvent(e)

@@ -66,7 +66,7 @@ function GameLayer:pauseGame()
     cc.Director:getInstance():pushScene(pauseScene)
 end
 
-function GameLayer:playerDie()
+function GameLayer:playerDie(event)
 --    local queue = {self}
 --    while #queue > 0 do
 --        local nodes = queue[1]:getChildren()
@@ -93,6 +93,7 @@ function GameLayer:playerDie()
 
     local deadLayer = DeadLayer.new()
     deadLayer.gameScene = self
+    deadLayer.settlementInfo = event.settlement
     deadScene:addChild(deadLayer)
 
     cc.Director:getInstance():pushScene(deadScene)

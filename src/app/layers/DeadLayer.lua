@@ -83,25 +83,13 @@ end
 --end
 
 function DeadLayer:gameEnd()
-
-    --    DataManager.set(DataManager.GOLD, DataManager.get(DataManager.GOLD) + self.coins)
-    --    DataManager.set(DataManager.POINT, DataManager.get(DataManager.POINT) + self.gems)
-    --    DataManager.set(DataManager.TOPGROUD, DataManager.get(DataManager.TOPGROUD) > self.score and DataManager.get(DataManager.TOPGROUD) or self.deepth)
-    --    DataManager.set(DataManager.TOP_SCORE, DataManager.get(DataManager.TOP_SCORE) > self.score and DataManager.get(DataManager.TOP_SCORE) or self.score)
-    
-    local gameEndEvent = {}
-    gameEndEvent.saves = 0
-    gameEndEvent.use1 = 0
-    gameEndEvent.use2 = 0
-    gameEndEvent.use3 = 0
-    gameEndEvent.atkboss = 0
-    gameEndEvent.dizzboss = 0
-    gameEndEvent.box = 0
-    gameEndEvent.golds = 0
-    gameEndEvent.grounds = 0
+    local event = {name = "GAME_END"}
+    for key, var in pairs(self.settlementInfo) do
+        event[key] = var
+    end
     
     cc.Director:getInstance():popScene()
     self.gameScene:performWithDelay(function()
-        cc.Director:getInstance():getRunningScene():dispatchEvent({name = "GAME_END", event = gameEndEvent})   
+        cc.Director:getInstance():getRunningScene():dispatchEvent(event)   
     end,0.1)
 end
