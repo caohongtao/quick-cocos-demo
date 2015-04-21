@@ -106,7 +106,7 @@ function Boss:addAnimation()
     local animationNames = {"advance",}-- "dead"}
     local animationFrameNum = {5,0}
 --    local animationDelay = {gamePara.bossMoveInterval / animationFrameNum[1], 0.2}
-    local animationDelay = {0.3, 0.2}
+    local animationDelay = {0.2, 0.2}
 
     for i = 1, #animationNames do
         local frames = display.newFrames("she%04d.png", 1, animationFrameNum[i])

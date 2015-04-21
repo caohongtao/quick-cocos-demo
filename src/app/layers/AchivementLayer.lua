@@ -1,36 +1,149 @@
-local DataManager = require("app.DataManager")
 local AchivementLayer   = class("AchivementLayer", function()
     return display.newLayer("AchivementLayer")
 end)
 
-function AchivementLayer:ctor()
- 
-       cc(self):addComponent("components.behavior.EventProtocol"):exportMethods()
+function AchivementLayer:ctor(event)
 
-    -- 开始游戏按键
-        cc.ui.UIPushButton.new({normal="img/replay1.png",
-                                pressed ="img/replay2.png",
-                                scale9 = false})
-                                
-        :setButtonSize(140, 45)
-        :onButtonPressed(function(event)
-            event.target:setScale(0.9)
-        end)
-        :onButtonRelease(function(event)
-            event.target:setScale(1.0)
-        end)
-        :onButtonClicked(function()
-            self:dispatchEvent({name = "GAME_START"})            
-            print("start game")
-            
-            DataManager.set(DataManager.GOLD,DataManager.get(DataManager.GOLD)+20)
-            
-        end)
-        :align(display.BOTTOM_CENTER, 240,83)
+    cc(self):addComponent("components.behavior.EventProtocol"):exportMethods()
+
+    -- _tmp_rounds      = DataManager.get("_tmp_rounds")
+    -- _tmp_grounds     = DataManager.get("_tmp_grounds")
+    -- _tmp_save_animal = DataManager.get("_tmp_save_animal")
+    -- _tmp_use_item_1  = DataManager.get("_tmp_use_item_1")
+    -- _tmp_use_item_2  = DataManager.get("_tmp_use_item_2")
+    -- _tmp_use_item_3  = DataManager.get("_tmp_use_item_3")
+    -- _tmp_atk_boss    = DataManager.get("_tmp_atk_boss")
+    -- _tmp_dizz_boss   = DataManager.get("_tmp_dizz_boss")
+
+    self.panel =   cc.ui.UIImage.new("ui/chengjiu.png")
+        :align(display.LEFT_BOTTOM, display.cx -    430/2, display.cy-300)
         :addTo(self)
+
+
+
+    cc.ui.UIPushButton.new({normal="ui/X.png",
+        pressed ="ui/X.png",
+        scale9 = false})
+        :onButtonClicked(function()self:dispatchEvent({name = "JUMP_LEVELUP"})  end)
+        :align(display.LEFT_BOTTOM, 373,450)
+        :addTo(self.panel)
+
+    self.params = event
+    -- 显示3条成就
+    self:reflushData(self.params)
+
+    self:showData()
+end
+
+function AchivementLayer:showData()
+
+    self.panel:removeAllChildrenWithCleanup(false)
+    local i = 2
+    for k,v in pairs(self._shownList) do
+
+        cc.ui.UILabel.new({
+            UILabelType = cc.ui.UILabel.LABEL_TYPE_TTF,
+            text = string.gsub(v.desc, "@", v.sum),
+            align = cc.ui.TEXT_ALIGN_LEFT,
+            color = display.COLOR_BLACK,
+            x = 48,
+            y = 94+74*i,
+        }):addTo(self.panel)
+
+        if v.finished then
+            cc.ui.UIPushButton.new({normal="ui/wancheng.png",
+                pressed ="ui/wancheng.png",
+                scale9 = false})
+                :onButtonClicked(function() self:finishedAchivement(v.id) end)
+                :align(display.LEFT_BOTTOM, 260,86+74*i)
+                :addTo(self.panel)
+        elseif v.achived then
+            cc.ui.UIPushButton.new({normal="ui/lingqvjiangli.png",
+                pressed ="ui/lingqvjiangli.png",
+                scale9 = false})
+                :onButtonClicked(function() self:finishedAchivement(v.id) end)
+                :align(display.LEFT_BOTTOM, 260,86+74*i)
+                :addTo(self.panel)
+        end
+
+        i = i-1
+    end
+end
+
+
+
+function AchivementLayer:finishedAchivement(id)
+    if s_data.achivement[id] then
+        s_data.achivement[id].finished = true
+
+        DataManager.achiveFinish(id)
+        print("|给予奖励")
+        --
+        if s_data.achivement[id].award1 and s_data.achivement[id].award1 > 0 then DataManager.addGold(s_data.achivement[id].award1) end
+        if s_data.achivement[id].award2 and s_data.achivement[id].award2 > 0 then DataManager.addPoint(s_data.achivement[id].award2) end
+
+        -- 通知UI
+        self:dispatchEvent({name = "REFLUSH_DATA"})
         
-        
-        
+        -- 再次刷新成就列表
+        print("再次刷新成就列表")
+        self:reflushData(self.params)
+
+        self:showData()
+    end
+end
+
+
+function AchivementLayer:reflushData(event)
+
+    self._shownList = {}
+    -- 扫描成就
+   
+    for k, v in pairs(s_data.achivement) do
+        if v.finished ~=true  then
+            if v.type ==1 then
+                if DataManager.get(DataManager.GOLD) >= v.sum then v.achived = true  if #self._shownList<3 then table.insert(self._shownList,v) end end
+            elseif v.type ==2 then
+                if DataManager.get(DataManager.TOPGROUD) >= v.sum then v.achived = true if #self._shownList<3 then table.insert(self._shownList,v)end end
+            elseif v.type ==3 then
+                if DataManager.get(DataManager.TOP_SCORE) >= v.sum then v.achived = true if #self._shownList<3 then table.insert(self._shownList,v)end  end
+            elseif v.type ==4 then
+                if DataManager.get(DataManager.SAVES) >= v.sum then v.achived = true if #self._shownList<3 then table.insert(self._shownList,v)end  end
+            elseif v.type ==5 then
+                if DataManager.get(DataManager.GAIN_BOX) >= v.sum then v.achived = true if #self._shownList<3 then table.insert(self._shownList,v)end  end
+            elseif v.type ==6 then
+                if event and event.relive >= v.sum then v.achived = true if #self._shownList<3 then table.insert(self._shownList,v)end  end
+            elseif v.type ==7 then
+                if event and  event.use1 >= v.sum then v.achived = true if #self._shownList<3 then table.insert(self._shownList,v)end  end
+            elseif v.type ==8 then
+                if event and  event.use2 >= v.sum then v.achived = true if #self._shownList<3 then table.insert(self._shownList,v)end  end
+            elseif v.type ==9 then
+                if event and  event.use3 >= v.sum then v.achived = true if #self._shownList<3 then table.insert(self._shownList,v)end  end
+            elseif v.type ==10 then
+                if DataManager.get(DataManager.SPEEDLV) >= v.sum then v.achived = true if #self._shownList<3 then table.insert(self._shownList,v)end  end
+            elseif v.type ==11 then
+                if DataManager.get(DataManager.POWERLV) >= v.sum then v.achived = true if #self._shownList<3 then table.insert(self._shownList,v)end  end
+            elseif v.type ==12 then
+                if DataManager.get(DataManager.HPLV) >= v.sum then v.achived = true if #self._shownList<3 then table.insert(self._shownList,v)end  end
+            elseif v.type ==13 then
+                if DataManager.get(DataManager.LUCKLV) >= v.sum then v.achived = true if #self._shownList<3 then table.insert(self._shownList,v)end  end
+            end
+        end
+    end
+
+    if #self._shownList<3 then
+        for k, v in pairs(s_data.achivement) do
+            if v.finished ~=true and v.achived ~=true then table.insert(self._shownList,v) end
+            if #self._shownList == 3 then break end
+        end
+    end
+
+
+    if #self._shownList < 3 then
+        for i=0,2-#self._shownList do
+            table.insert(self._shownList,s_data.achivement[#s_data.achivement-i])
+        end
+    end
 end
 
 

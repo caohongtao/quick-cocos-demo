@@ -7,67 +7,67 @@
             <key>she0001.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,2},{150,360}}</string>
+                <string>{{2,2},{150,450}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{150,360}}</string>
+                <string>{{0,0},{150,450}}</string>
                 <key>sourceSize</key>
-                <string>{150,360}</string>
+                <string>{150,450}</string>
             </dict>
             <key>she0002.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,2},{150,360}}</string>
+                <string>{{154,2},{150,450}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{150,360}}</string>
+                <string>{{0,0},{150,450}}</string>
                 <key>sourceSize</key>
-                <string>{150,360}</string>
+                <string>{150,450}</string>
             </dict>
             <key>she0003.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{154,2},{150,360}}</string>
+                <string>{{306,2},{150,450}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{150,360}}</string>
+                <string>{{0,0},{150,450}}</string>
                 <key>sourceSize</key>
-                <string>{150,360}</string>
+                <string>{150,450}</string>
             </dict>
             <key>she0004.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{154,2},{150,360}}</string>
+                <string>{{2,454},{150,450}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{150,360}}</string>
+                <string>{{0,0},{150,450}}</string>
                 <key>sourceSize</key>
-                <string>{150,360}</string>
+                <string>{150,450}</string>
             </dict>
             <key>she0005.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{306,2},{150,360}}</string>
+                <string>{{154,454},{150,450}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{150,360}}</string>
+                <string>{{0,0},{150,450}}</string>
                 <key>sourceSize</key>
-                <string>{150,360}</string>
+                <string>{150,450}</string>
             </dict>
         </dict>
         <key>metadata</key>
@@ -77,9 +77,9 @@
             <key>realTextureFileName</key>
             <string>boss.png</string>
             <key>size</key>
-            <string>{512,512}</string>
+            <string>{512,1024}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:99a812f46151050c7c705dd0fdca2a39:e94821d60d20d6357fa5e3b7b60a940a:130860349884e9db32a7002f801c74f9$</string>
+            <string>$TexturePacker:SmartUpdate:7de64115d8465c6c9775adeb9b5b96bb:05490df3f3d1497b30972f30ab1c2cda:130860349884e9db32a7002f801c74f9$</string>
             <key>textureFileName</key>
             <string>boss.png</string>
         </dict>
