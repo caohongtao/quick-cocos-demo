@@ -2,6 +2,7 @@ Player = class("Player",  function()
     return display.newSprite()
 end)
 local BORN_HEIGHT = 5.5  --人物诞生时候的位置，BORN_HEIGHT个元素的高度。确保出生在某个元素位置。则移动，降落时都按照整行整列计算，就能保确保人物位置一直在某元素的位置。
+local FART_DURATION = 2
 function Player:ctor(size)
     self.moving = false
     self.dropping = false
@@ -23,7 +24,7 @@ function Player:ctor(size)
     self.digForce = s_data.level[DataManager.get(DataManager.POWERLV) + 1].power
     self.digThrough = false --是否具有贯穿特效，吃了栗子后，一次凿一整行整列
 
-    local moveListener = cc.EventListenerCustom:create("Dropping", function(event) self.dropping = event.active end)
+    local moveListener = cc.EventListenerCustom:create("Dropping", function(event) self.dropping = event.active print(self.dropping and '##drop true' or '##drop false') end)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(moveListener, self)
     local checkBossListener = cc.EventListenerCustom:create("boss_advance", handler(self,self.checkBossCapture))
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(checkBossListener, self)
@@ -176,6 +177,8 @@ end
 function Player:drop()
     if not self.dropping then
         self.dropping = true
+        print('##drop')
+        
         local event = cc.EventCustom:new("roll_map")
         event.playerPos = self:convertToWorldSpaceAR(cc.p(0,0))
         cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
@@ -187,11 +190,12 @@ function Player:dig(target, dir)
 
     --播放dig动画
     self.digging = true
+    print('##dig')
     transition.playAnimationOnce(self, display.getAnimationCache("player-dig"))
     local duration = gamePara.baseDigDuration / s_data.level[DataManager.get(DataManager.SPEEDLV) + 1].speed
     self:runAction(cc.Sequence:create(
         cc.DelayTime:create(duration),
-        cc.CallFunc:create(function() self.digging = false end)))
+        cc.CallFunc:create(function() self.digging = false print('##undig') end)))
         
 
     local event = cc.EventCustom:new("dig_at")
@@ -220,16 +224,18 @@ function Player:move(dir)
         delta = cc.p(playerWidth,0)
     end
     self.moving = true
+    print('##move')
     
     local duration = gamePara.baseMoveDuration / s_data.level[DataManager.get(DataManager.SPEEDLV) + 1].speed
     self:runAction(cc.Sequence:create(
         cc.MoveBy:create(duration,delta),
-        cc.CallFunc:create(function() self.moving = false end)))
+        cc.CallFunc:create(function() self.moving = false print('##unmove') end)))
 end
 
 function Player:die()
     if self.dead then return end
     self.dead = true
+    print('##dead')
     
     self:runAction(cc.Sequence:create(cc.Spawn:create(
 --                                        cc.ScaleTo:create(0.1,self.playerSize.width/self:getContentSize().width,0.1),
@@ -262,6 +268,7 @@ function Player:rebirth()
     if not self.dead then return end
     
     self.dead = false
+    print('##undead')
     self.oxygenVol = s_data.level[DataManager.get(DataManager.HPLV) + 1].hp
 
     --向上挖掘
@@ -351,18 +358,15 @@ function Player:castSkill(event)
         e.type = 'skillMushroom'
         cc.Director:getInstance():getEventDispatcher():dispatchEvent(e)
 
-        local fart = cc.ParticleSmoke:create()
-        fart:setPosition(60,200)
-        self:addChild(fart,10)
+        local fart = display.newSprite('#pi0001.png'):addTo(self)
+        fart:setPosition(60,160)
+        transition.playAnimationOnce(fart, display.getAnimationCache("player-fart"))
         fart:runAction(cc.Sequence:create(
-            cc.ScaleBy:create(1, 10, 20),
+            cc.Spawn:create(cc.MoveBy:create(FART_DURATION,cc.p(0,800)),cc.ScaleBy:create(FART_DURATION,10)),
             cc.CallFunc:create(function()
                 local eShock = cc.EventCustom:new("shock_dizzy_boss")
                 eShock.second = gamePara.bossDizzyTime
                 cc.Director:getInstance():getEventDispatcher():dispatchEvent(eShock)
-            end),
-            cc.FadeOut:create(1),
-            cc.CallFunc:create(function()
                 fart:removeFromParent(true)
             end)))
 
@@ -424,13 +428,19 @@ end
 
 function Player:addAnimation()
     local animationNames = {"dig",}-- "dead"}
-    local animationFrameNum = {20,0}
+    local animationFrameNum = {20,10}
     local duration = gamePara.baseDigDuration / s_data.level[DataManager.get(DataManager.SPEEDLV) + 1].speed
     local animationDelay = {duration / animationFrameNum[1], 0.2}
 
+    --鼹鼠
     for i = 1, #animationNames do
         local frames = display.newFrames("yanshu%04d.png", 1, animationFrameNum[i])
         local animation = display.newAnimation(frames, animationDelay[i])
         display.setAnimationCache("player-" .. animationNames[i], animation)
     end
+    
+    --屁
+    local frames = display.newFrames("pi%04d.png", 1, 10)
+    local animation = display.newAnimation(frames, FART_DURATION / 10)
+    display.setAnimationCache("player-fart", animation)
 end

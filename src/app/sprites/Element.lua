@@ -1,6 +1,8 @@
 Element = class("Element",  function()
     return display.newSprite()
 end)
+local CRUSH_DURATION, CRUSH_FRAMES = 1, 4
+local EXPLODE_DURATION, EXPLODE_FRAMES = 1, 4
 
 function Element:ctor()
     self.m_row = 0
@@ -188,7 +190,19 @@ function Element:die()
         self:removeFromParent(true)
     end
     
-    if self.m_type == elements.coin then
+    if self.m_type.isBrick then
+        local curPos = self:convertToWorldSpaceAR(cc.p(0,0))
+        local crush = display.newSprite('#crush_0001.png',curPos.x-50,curPos.y):addTo(cc.Director:getInstance():getRunningScene())
+        crush:setAnchorPoint(cc.p(0.5,0.5))
+        crush:setColor(cc.c3b(unpack(self.m_type.color)))
+        transition.playAnimationOnce(crush, display.getAnimationCache("brick-crush"))
+        crush:runAction(cc.Sequence:create(
+            cc.DelayTime:create(CRUSH_DURATION),
+            cc.CallFunc:create(function()
+                crush:removeFromParent(true)
+            end)))
+        self:removeFromParent(true)
+    elseif self.m_type == elements.coin then
         createFakeAndMoveTo(cc.p(display.right-35, display.top-45))
     elseif self.m_type == elements.gem then
         createFakeAndMoveTo(cc.p(display.right-190,display.bottom+50))
@@ -201,6 +215,13 @@ function Element:die()
     elseif self.m_type == elements.timebomb then
         self:setLocalZOrder(1)
         self:runAction(cc.Sequence:create(cc.TintTo:create(2,255,0,0),
+                            cc.CallFunc:create(function()
+                                local explosion = display.newSprite('#explode_0001.png'):addTo(self:getParent())
+                                explosion:setPosition(self:getPosition())
+                                transition.playAnimationOnce(explosion, display.getAnimationCache("bomb-explode"))
+                                explosion:performWithDelay(function() explosion:removeFromParent(true) end, EXPLODE_DURATION)
+                            end),
+                            cc.DelayTime:create(EXPLODE_DURATION/2),
                             cc.CallFunc:create(function()
                                 local event = cc.EventCustom:new("bomb_explode")
                                 event.el = self
@@ -223,4 +244,16 @@ function Element:isStable()
     return self.fsm_:getState() == "IDLE" or
         --           self.fsm_:getState() == "SHAKE" or
         self.fsm_:getState() == "LOAD"
+end
+
+function Element:addAnimation()
+    --brick crush
+    local frames = display.newFrames("crush_%04d.png", 1, CRUSH_FRAMES)
+    local animation = display.newAnimation(frames, CRUSH_DURATION / CRUSH_FRAMES)
+    display.setAnimationCache("brick-crush", animation)
+    
+    --bomb explode
+    frames = display.newFrames("explode_%04d.png", 1, EXPLODE_FRAMES)
+    animation = display.newAnimation(frames, EXPLODE_DURATION / EXPLODE_FRAMES)
+    display.setAnimationCache("bomb-explode", animation)
 end

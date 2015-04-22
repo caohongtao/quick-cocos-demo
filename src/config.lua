@@ -39,12 +39,14 @@ elements = {
         probability = 100,
         needDigTime = 1,
         isBrick = true,
+        color = {35,155,251},
     },
     green = {
         texture = "green.png",
         probability = 100,
         needDigTime = 1,
         isBrick = true,
+        color = {27,235,46},
     },
 --    orange = {
 --        texture = "orange.png",
@@ -57,18 +59,21 @@ elements = {
         probability = 100,
         needDigTime = 1,
         isBrick = true,
+        color = {255,238,24},
     },
     purple = {
         texture = "purple.png",
         probability = 100,
         needDigTime = 1,
         isBrick = true,
+        color = {221,84,252},
     },
     red = {
         texture = "red.png",
         probability = 100,
         needDigTime = 1,
         isBrick = true,
+        color = {252,104,61},
     },
 
 

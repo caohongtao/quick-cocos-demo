@@ -14,6 +14,9 @@ end)
 function GameLayer:ctor()
     self:stub()
     
+    cc.SpriteFrameCache:getInstance():addSpriteFrames('sprite/crush.plist', 'sprite/crush.png')
+    cc.SpriteFrameCache:getInstance():addSpriteFrames('sprite/fart.plist', 'sprite/fart.png')
+    cc.SpriteFrameCache:getInstance():addSpriteFrames('sprite/explode.plist', 'sprite/explode.png')
     
     local backgroudLayer = BackgroundLayer.new()
     backgroudLayer:setPosition(display.left,display.bottom)

@@ -73,7 +73,7 @@ function PlayLayer:showElementInfo()
 end
 
 function PlayLayer:initMap()
-
+    Element:addAnimation()
     --以宽度为基准缩放
     local elActualSize = (display.width - self.mapOriginPoint.x * 2) / self.mapSize.x
     self.elSize = {width = elActualSize, height = elActualSize-7}
@@ -615,7 +615,6 @@ function PlayLayer:bombExplode(event)
     local bomb = event.el
     local row,col = self:positionToMatrix(bomb:getPosition())
     
-    local batch = cc.ParticleBatchNode:createWithTexture(cc.ParticleFire:create():getTexture())
     local grids = {}
     for c=1, self.mapSize.x do
         if self.m_elements[row] and self.m_elements[row][c] then
@@ -623,13 +622,6 @@ function PlayLayer:bombExplode(event)
         elseif self.m_droppingElements[row] and self.m_droppingElements[row][c] then
             self:removeElement(self.m_droppingElements[row][c])
         end
-        
-        local fire = cc.ParticleFire:create()
-        fire:setPosition(self:matrixToPosition(row, c))
-        batch:addChild(fire, 10);
     end
-    self.map:addChild(batch, 10)
-    batch:performWithDelay(function() batch:removeFromParent(true) end, 0.5)
-    
     self:removeAndDrop(grids)
 end
