@@ -77,7 +77,9 @@ function Player:update()
         if el.m_type.isBrick then
             self:die()
         else
-            self:gainProp(el)
+            local event = cc.EventCustom:new("remove_element")
+            event.el = el
+            cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
         end
     end
 end
@@ -103,15 +105,6 @@ function Player:gainProp(el)
     elseif el.m_type == elements.box then
         print('box')
         self.boxes = self.boxes + 1
-        local fakeBox = Element.new():create(el.m_row, el.m_col, elements.box)
-        fakeBox.fsm_:doEvent("destroy")
-        
-        local types = {elements.coin, elements.gem, elements.goldenDrill, elements.oxygen, elements.punish}
-        el.m_type = types[math.random(1,#types)]
-        el:setSpriteFrame(el.m_type.texture)
-        self:gainProp(el)
-
-        return
     elseif el.m_type == elements.coin then
         print('coin')
         self.coins = self.coins + 1
@@ -151,10 +144,6 @@ function Player:gainProp(el)
     elseif el.m_type == elements.toy then
         self.toys = self.toys + 1
     end
-    
-    local event = cc.EventCustom:new("remove_element")
-    event.el = el
-    cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
     
 end
 

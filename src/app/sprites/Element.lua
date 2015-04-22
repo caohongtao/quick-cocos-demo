@@ -1,7 +1,7 @@
 Element = class("Element",  function()
     return display.newSprite()
 end)
-local CRUSH_DURATION, CRUSH_FRAMES = 1, 4
+local CRUSH_DURATION, CRUSH_FRAMES = 1, 10
 local EXPLODE_DURATION, EXPLODE_FRAMES = 1, 4
 
 function Element:ctor()
@@ -173,6 +173,12 @@ end
 function Element:die()
     cc.Director:getInstance():getActionManager():removeAllActionsFromTarget(self)
     
+    local function gainProp()
+        local event = cc.EventCustom:new("gain_prop")
+        event.element = self
+        cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
+    end
+    
     local function createFakeAndMoveTo(dest)
         local fake = display.newSprite('#'..self.m_type.texture)
 
@@ -186,13 +192,12 @@ function Element:die()
             cc.CallFunc:create(function()
                 fake:removeFromParent(true)
             end)))
-
         self:removeFromParent(true)
     end
     
     if self.m_type.isBrick then
         local curPos = self:convertToWorldSpaceAR(cc.p(0,0))
-        local crush = display.newSprite('#crush_0001.png',curPos.x-50,curPos.y):addTo(cc.Director:getInstance():getRunningScene())
+        local crush = display.newSprite('#crush_0001.png',curPos.x,curPos.y):addTo(cc.Director:getInstance():getRunningScene())
         crush:setAnchorPoint(cc.p(0.5,0.5))
         crush:setColor(cc.c3b(unpack(self.m_type.color)))
         transition.playAnimationOnce(crush, display.getAnimationCache("brick-crush"))
@@ -203,14 +208,19 @@ function Element:die()
             end)))
         self:removeFromParent(true)
     elseif self.m_type == elements.coin then
+        gainProp()
         createFakeAndMoveTo(cc.p(display.right-35, display.top-45))
     elseif self.m_type == elements.gem then
+        gainProp()
         createFakeAndMoveTo(cc.p(display.right-190,display.bottom+50))
     elseif self.m_type == elements.mushroom then
+        gainProp()
         createFakeAndMoveTo(cc.p(200,display.bottom+50))
     elseif self.m_type == elements.nut then
+        gainProp()
         createFakeAndMoveTo(cc.p(295,display.bottom+50))
     elseif self.m_type == elements.cola then
+        gainProp()
         createFakeAndMoveTo(cc.p(390,display.bottom+50))
     elseif self.m_type == elements.timebomb then
         self:setLocalZOrder(1)
@@ -228,6 +238,21 @@ function Element:die()
                                 cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
                                 self:removeFromParent(true)
                             end)))
+    elseif self.m_type == elements.box then
+        --开出随机道具，并直接拾取
+        local types = {elements.coin, elements.gem, elements.goldenDrill, elements.oxygen,}-- elements.punish}
+        local randomType = types[math.random(1,#types)]
+        local randomProp = Element.new():create(self.m_row, self.m_col, randomType)
+        randomProp:addTo(self:getParent())
+        randomProp:setPosition(self:getPosition())
+        randomProp.fsm_:doEvent("destroy")
+        
+        --拾取箱子本身，需要统计宝箱数量
+        gainProp()
+        self:runAction(cc.Sequence:create(cc.FadeOut:create(0.6),
+            cc.CallFunc:create(function()
+                self:removeFromParent(true)
+            end)))
     else
         self:runAction(cc.Sequence:create(cc.FadeOut:create(0.6),
         cc.CallFunc:create(function()

@@ -514,7 +514,7 @@ function PlayLayer:digAt(event)
 
     --挖掘一整道元素
     if event.effect then
-        local block,brickBlock = {}, {}
+        local block = {}
         local pos = self.map:convertToNodeSpace(playerPos)
         local PlayerRow,PlayerCol = self:positionToMatrix(pos.x, pos.y) --穿透挖掘，有可能没有挖掘对象。所以位置要根据playerPos算
 
@@ -540,21 +540,9 @@ function PlayLayer:digAt(event)
                 if self.m_droppingElements[row][PlayerCol] then table.insert(block,self.m_droppingElements[row][PlayerCol]) end
             end
         end
-
-        --道具直接拾取
-        for _, el in ipairs(block) do
-            if not el.m_type.isBrick then
-                local event = cc.EventCustom:new("gain_prop")
-                event.element = el
-                cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
-            else
-                table.insert(brickBlock,el)
-            end
-        end
-
-        --砖块直接删除
-        self:removeAndDrop(brickBlock)
-        --挖单个元素
+        self:removeAndDrop(block)
+        
+    --挖单个元素
     else
         if target:isStable() then
             --地面上的元素
