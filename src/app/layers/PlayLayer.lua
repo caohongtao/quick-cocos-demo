@@ -1,7 +1,7 @@
 PlayLayer = class("PlayLayer",  function()
     return display.newLayer("PlayLayer")
 end)
-
+local JUDGE_RANGE = 6 -- 跟相邻元素相交或者相距在一定的范围内，都认为紧贴相邻。
 function PlayLayer:ctor()
     self.map = cc.Node:create()
     self.mapSize = cc.p(MAP_WIDTH,MAP_HEIGHT)
@@ -76,7 +76,7 @@ function PlayLayer:initMap()
     Element:addAnimation()
     --以宽度为基准缩放
     local elActualSize = (display.width - self.mapOriginPoint.x * 2) / self.mapSize.x
-    self.elSize = {width = elActualSize, height = elActualSize-7}
+    self.elSize = {width = elActualSize, height = elActualSize-6}
 
     for row=1, self.mapSize.y do
         self.m_elements[row] = {}
@@ -142,6 +142,10 @@ function PlayLayer:removeAndDrop(block)
 
             --处理当前元素
             self.m_elements[curr.m_row][curr.m_col] = nil
+            if self.m_droppingElements[curr.m_row][curr.m_col] then
+            --防御性代码
+                self.m_droppingElements[curr.m_row][curr.m_col].fsm_:doEvent("destroy")
+            end
             self.m_droppingElements[curr.m_row][curr.m_col] = curr
             curr.touched = true
             curr.fsm_:doEvent("unSupport")
@@ -243,21 +247,20 @@ end
 function PlayLayer:checkNeedSupported(el)
     local elPos = cc.p(el:getPosition())
     local row, col
-    local judgeRange = 6 -- 跟相邻元素相交或者相距在一定的范围内，都认为紧贴相邻。
 
     --1.寻找上下左右的元素
     row, col = self:positionToMatrix(elPos.x - self.elSize.width, elPos.y)
     local left = self.m_elements[row][col]
-    if left and math.abs(left:getPositionY() - el:getPositionY()) > judgeRange then left = nil end
+    if left and math.abs(left:getPositionY() - el:getPositionY()) > JUDGE_RANGE then left = nil end
 
     row, col = self:positionToMatrix(elPos.x + self.elSize.width, elPos.y)
     local right = self.m_elements[row][col]
-    if right and math.abs(right:getPositionY() - el:getPositionY()) > judgeRange then right = nil end
+    if right and math.abs(right:getPositionY() - el:getPositionY()) > JUDGE_RANGE then right = nil end
 
-    row, col = self:positionToMatrix(elPos.x, elPos.y + self.elSize.height / 2 + judgeRange)
+    row, col = self:positionToMatrix(elPos.x, elPos.y + self.elSize.height / 2 + JUDGE_RANGE)
     local up = self.m_elements[row][col]
 
-    row, col = self:positionToMatrix(elPos.x, elPos.y - self.elSize.height / 2 - judgeRange)
+    row, col = self:positionToMatrix(elPos.x, elPos.y - self.elSize.height / 2 - JUDGE_RANGE)
     local down = self.m_elements[row][col]
 
     --2.下方有supported的元素，或者左,右,上有supported的且type一样的元素，或已经掉到最后一行，都停止掉落
@@ -316,6 +319,10 @@ function PlayLayer:checkNeedSupported(el)
 
             --处理当前元素
             self.m_droppingElements[curr.m_row][curr.m_col] = nil
+            if self.m_elements[curr.m_row][curr.m_col] then
+                --防御性代码
+                self.m_elements[curr.m_row][curr.m_col].fsm_:doEvent("destroy")
+            end
             self.m_elements[curr.m_row][curr.m_col] = curr
             curr:setRotation(0)
             curr.reached = true
@@ -344,7 +351,7 @@ function PlayLayer:checkNeedPushBelow(el)
     --正在drop的元素，下方有shaking的元素，需要让其停止shake，直接drop
     local down = self.m_droppingElements[el.m_row-1][el.m_col]
     if down and down:getState() == 'SHAKE' and el:getState() == 'DROP' then
-        if el:getPositionY() - down:getPositionY() < self.elSize.height then
+        if el:getPositionY() - down:getPositionY() < self.elSize.height + JUDGE_RANGE then
             down.fsm_:doEvent("push")
         end
     end
@@ -386,24 +393,25 @@ function PlayLayer:rollMap(event)
             break
         end
     end
+    
     if 0 == lines then return end
 
     self:addLines(lines)
     local diff = cc.p(0, lines*self.elSize.height)
     local dropSpeed = gamePara.baseDropDuration / DataManager.getCurrProperty('speed')
     local duration = diff.y / 100 * dropSpeed
-
-    local eventDispatcher = cc.Director:getInstance():getEventDispatcher()
-    local dropEvent = cc.EventCustom:new("Dropping")
-    dropEvent.active = true
-    eventDispatcher:dispatchEvent(dropEvent)
+--
+--    local eventDispatcher = cc.Director:getInstance():getEventDispatcher()
+--    local dropEvent = cc.EventCustom:new("Dropping")
+--    dropEvent.active = true
+--    eventDispatcher:dispatchEvent(dropEvent)
 
     local moveAction = cc.Sequence:create(
         cc.MoveBy:create(duration,diff),
         cc.CallFunc:create(function()
             local dropEvent = cc.EventCustom:new("Dropping")
             dropEvent.active = false
-            eventDispatcher:dispatchEvent(dropEvent)
+            cc.Director:getInstance():getEventDispatcher():dispatchEvent(dropEvent)
 
             
             self:removeLines({bossPos = cc.p(display.cx, 2*display.cy)})
@@ -576,20 +584,64 @@ function PlayLayer:positionToMatrix(x, y)
     return row, col
 end
 
+function PlayLayer:showTutorial()
+    local playerPos = self.player:convertToWorldSpaceAR(cc.p(0,0))
+    
+    self.tutorialLayer = display.newLayer()
+    self.tutorialLayer:setTouchSwallowEnabled(false)
+    self.tutorialLayer:addTo(self)
+
+    local leftRegion = display.newSprite('ui/touch_hint.png',display.cx-1,playerPos.y):addTo(self.tutorialLayer)
+    leftRegion:setAnchorPoint(cc.p(1,0))
+    leftRegion:setScale(2)
+
+    local rightRegion = display.newSprite('ui/touch_hint.png',display.cx+1,playerPos.y):addTo(self.tutorialLayer)
+    rightRegion:setAnchorPoint(cc.p(0,0))
+    rightRegion:setScale(2)
+
+    local downRegion = display.newSprite('ui/touch_hint.png',display.cx,playerPos.y-2):addTo(self.tutorialLayer)
+    downRegion:setAnchorPoint(cc.p(0.5,1))
+    downRegion:setScale(2)
+    
+    DataManager.set('tutorial_finished', true)
+    DataManager.save()
+end
+
 function PlayLayer:PlayLayerinitTouchListener()
+    DataManager.set('tutorial_finished', false)
+    DataManager.save()
+    if not DataManager.get('tutorial_finished') then
+    	self:showTutorial()
+    end
+
+    local hint = display.newSprite('ui/touch_hint.png',display.cx,display.top - 100):addTo(self)
+    hint:setAnchorPoint(cc.p(0.5,0.5))
+    hint:setScale(2)
+    hint:setVisible(false)
+    
     self:setTouchEnabled(true)
     self:setTouchMode(cc.TOUCH_MODE_ONE_BY_ONE)
     self:addNodeEventListener(cc.NODE_TOUCH_EVENT, function(event)
         if event.name == "began" then
             local touchPos = cc.p(event.x, event.y)
             local playerPos = self.player:convertToWorldSpaceAR(cc.p(0,0))
-
+            
             local touchDir = nil
-            if touchPos.y < playerPos.y then touchDir = 'down'
-            elseif touchPos.x < display.cx then touchDir = 'left'
-            else touchDir = 'right'
+            if touchPos.y < playerPos.y then
+                touchDir = 'down'
+                hint:setRotation(0)
+            elseif touchPos.x < display.cx then
+                touchDir = 'left'
+                hint:setRotation(90)
+            else
+                touchDir = 'right'
+                hint:setRotation(-90)
             end
-
+            
+            if self.tutorialLayer then self.tutorialLayer:removeFromParent(true) self.tutorialLayer = nil end
+            hint:setVisible(true)
+            hint:performWithDelay(function() hint:setVisible(false) end, 0.1)
+                
             local eventDispatcher = cc.Director:getInstance():getEventDispatcher()
             local touchEvent = cc.EventCustom:new('handle_touch')
             touchEvent.touchDir = touchDir

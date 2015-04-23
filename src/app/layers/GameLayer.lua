@@ -76,9 +76,10 @@ function GameLayer:captureScreen()
 end
 
 function GameLayer:stub()
-    DataManager.set(DataManager.SPEEDLV, 2)
+    DataManager.set(DataManager.SPEEDLV, 4)
     DataManager.set(DataManager.HPLV, 4)
     DataManager.set(DataManager.LUCKLV, 4)
+    DataManager.save()
 end
 
 return GameLayer

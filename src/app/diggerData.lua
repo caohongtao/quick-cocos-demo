@@ -66,10 +66,10 @@ s_data.achivement = {
 
 s_data.level = {
 key1={lv=1,speed=0.5,power=1,hp=110,luck=0.1,cost=10,},
-key2={lv=2,speed=1,power=2,hp=120,luck=0.15,cost=50,},
-key3={lv=3,speed=1.5,power=3,hp=130,luck=0.2,cost=300,},
-key4={lv=4,speed=2,power=4,hp=150,luck=0.25,cost=5000,},
-key5={lv=5,speed=2.5,power=5,hp=170,luck=0.3,cost=20000,},
+key2={lv=2,speed=0.65,power=2,hp=120,luck=0.15,cost=50,},
+key3={lv=3,speed=0.78,power=3,hp=130,luck=0.2,cost=300,},
+key4={lv=4,speed=0.9,power=4,hp=150,luck=0.25,cost=5000,},
+key5={lv=5,speed=1,power=5,hp=170,luck=0.3,cost=20000,},
 }
 
 s_data.quest = {

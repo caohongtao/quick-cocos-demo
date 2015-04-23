@@ -4,26 +4,26 @@ end)
 
 local PAUSE_PANEL = {
     frame = {
-        "ui/stopbox.png",
+        "ui/panel2.png",
         pos = {x=display.cx,y=display.cy},
         align = display.CENTER,
     },
     continue = {
-        normal = "ui/continue1.png",
-        pressed = "ui/continue2.png",
-        pos = {x=display.cx,y=display.cy+70},
+        normal = "ui/bigbutton1.png",
+        pressed = "ui/bigbutton2.png",
+        pos = {x=display.cx,y=display.cy+105},
         align = display.CENTER,
     },
     restart = {
-        normal = "ui/replay1.png",
-        pressed = "ui/replay2.png",
-        pos = {x=display.cx,y=display.cy-30},
+        normal = "ui/bigbutton1.png",
+        pressed = "ui/bigbutton2.png",
+        pos = {x=display.cx,y=display.cy},
         align = display.CENTER,
     },
     back = {
-        normal = "ui/back1.png",
-        pressed = "ui/back2.png",
-        pos = {x=display.cx,y=display.cy-135},
+        normal = "ui/bigbutton1.png",
+        pressed = "ui/bigbutton2.png",
+        pos = {x=display.cx,y=display.cy-105},
         align = display.CENTER,
     },
 }
@@ -35,7 +35,7 @@ function PauseLayer:ctor()
         :align(PAUSE_PANEL.frame.align, PAUSE_PANEL.frame.pos.x, PAUSE_PANEL.frame.pos.y)
         :addTo(self)
         
-    cc.ui.UIPushButton.new({normal = PAUSE_PANEL.continue.normal,
+    local resumeButton = cc.ui.UIPushButton.new({normal = PAUSE_PANEL.continue.normal,
         pressed = PAUSE_PANEL.continue.pressed,
         scale9 = true,})
         :onButtonClicked(function(event)
@@ -62,8 +62,9 @@ function PauseLayer:ctor()
         end)
         :align(PAUSE_PANEL.continue.align, PAUSE_PANEL.continue.pos.x, PAUSE_PANEL.continue.pos.y)
         :addTo(self)
+    display.newSprite('ui/jixuyouxi.png',0,0):addTo(resumeButton)
         
-    cc.ui.UIPushButton.new({normal = PAUSE_PANEL.restart.normal,
+    local restartButton = cc.ui.UIPushButton.new({normal = PAUSE_PANEL.restart.normal,
         pressed = PAUSE_PANEL.restart.pressed,
         scale9 = true,})
         :onButtonClicked(function(event)
@@ -76,8 +77,9 @@ function PauseLayer:ctor()
         end)
         :align(PAUSE_PANEL.restart.align, PAUSE_PANEL.restart.pos.x, PAUSE_PANEL.restart.pos.y)
         :addTo(self)
+    display.newSprite('ui/congxinkaishi.png',0,0):addTo(restartButton)
         
-    cc.ui.UIPushButton.new({normal = PAUSE_PANEL.back.normal,
+    local backButton = cc.ui.UIPushButton.new({normal = PAUSE_PANEL.back.normal,
         pressed = PAUSE_PANEL.back.pressed,
         scale9 = true,})
         :onButtonClicked(function(event)
@@ -85,6 +87,7 @@ function PauseLayer:ctor()
         end)
         :align(PAUSE_PANEL.back.align, PAUSE_PANEL.back.pos.x, PAUSE_PANEL.back.pos.y)
         :addTo(self)
+    display.newSprite('ui/huidaodating.png',0,0):addTo(backButton)
         
 --    self:setVisible(false)
 end

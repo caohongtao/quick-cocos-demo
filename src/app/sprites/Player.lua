@@ -212,6 +212,8 @@ function Player:move(dir)
         delta = cc.p(-playerWidth,0)
     elseif 'right' == dir then
         delta = cc.p(playerWidth,0)
+    else
+        return  --不会有这种可能，防御代码。
     end
     self.moving = true
     print('##move')

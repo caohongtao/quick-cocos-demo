@@ -4,7 +4,7 @@
     <dict>
         <key>frames</key>
         <dict>
-            <key>explode_0001.png</key>
+            <key>explode_center_0001.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,2},{100,98}}</string>
@@ -17,7 +17,7 @@
                 <key>sourceSize</key>
                 <string>{100,98}</string>
             </dict>
-            <key>explode_0002.png</key>
+            <key>explode_center_0002.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{104,2},{100,98}}</string>
@@ -30,10 +30,10 @@
                 <key>sourceSize</key>
                 <string>{100,98}</string>
             </dict>
-            <key>explode_0003.png</key>
+            <key>explode_center_0003.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,102},{100,98}}</string>
+                <string>{{206,2},{100,98}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -43,10 +43,10 @@
                 <key>sourceSize</key>
                 <string>{100,98}</string>
             </dict>
-            <key>explode_0004.png</key>
+            <key>explode_center_0004.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{104,102},{100,98}}</string>
+                <string>{{308,2},{100,98}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -55,6 +55,58 @@
                 <string>{{0,0},{100,98}}</string>
                 <key>sourceSize</key>
                 <string>{100,98}</string>
+            </dict>
+            <key>explode_spread_0001.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,102},{450,50}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{450,50}}</string>
+                <key>sourceSize</key>
+                <string>{450,50}</string>
+            </dict>
+            <key>explode_spread_0002.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,154},{450,50}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{450,50}}</string>
+                <key>sourceSize</key>
+                <string>{450,50}</string>
+            </dict>
+            <key>explode_spread_0003.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,206},{450,50}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{450,50}}</string>
+                <key>sourceSize</key>
+                <string>{450,50}</string>
+            </dict>
+            <key>explode_spread_0004.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,258},{450,50}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{450,50}}</string>
+                <key>sourceSize</key>
+                <string>{450,50}</string>
             </dict>
         </dict>
         <key>metadata</key>
@@ -64,9 +116,9 @@
             <key>realTextureFileName</key>
             <string>explode.png</string>
             <key>size</key>
-            <string>{256,256}</string>
+            <string>{512,512}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:436778f0795efd3be737ab1ba99cd9fc:30dc33bbb0575f8fe59e6f023ca3322e:9a6b6e03bb2f7ee660b9781489ce2d1f$</string>
+            <string>$TexturePacker:SmartUpdate:b77db0131ffb6a88a29c73252a2aaba8:e0eb881cce04ec54b01d54ae2a43e2e5:9a6b6e03bb2f7ee660b9781489ce2d1f$</string>
             <key>textureFileName</key>
             <string>explode.png</string>
         </dict>

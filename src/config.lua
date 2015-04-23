@@ -79,7 +79,7 @@ elements = {
 
     oxygen = {
         texture = "oxygen.png",
-        probability = 1,
+        probability = 5,
         needDigTime = 0,
     },
     silverDrill = {
@@ -115,24 +115,24 @@ elements = {
 --    },
     timebomb = {
         texture = "timebomb.png",
-        probability = 10,
+        probability = 1,
         needDigTime = 0,
     },
     
     
     mushroom = {
         texture = "mushroom.png",
-        probability = 10,
+        probability = 1,
         needDigTime = 0,
     },
     nut = {
         texture = "nut.png",
-        probability = 10,
+        probability = 1,
         needDigTime = 0,
     },
     cola = {
         texture = "cola.png",
-        probability = 10,
+        probability = 1,
         needDigTime = 0,
     },
     punish = {--只会在挖宝箱时概率出现。

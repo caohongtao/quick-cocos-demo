@@ -7,145 +7,132 @@
             <key>crush_0001.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,2},{250,250}}</string>
+                <string>{{2,2},{300,300}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{250,250}}</string>
+                <string>{{0,0},{300,300}}</string>
                 <key>sourceSize</key>
-                <string>{250,250}</string>
+                <string>{300,300}</string>
             </dict>
             <key>crush_0002.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{254,2},{250,250}}</string>
+                <string>{{304,2},{300,300}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{250,250}}</string>
+                <string>{{0,0},{300,300}}</string>
                 <key>sourceSize</key>
-                <string>{250,250}</string>
+                <string>{300,300}</string>
             </dict>
             <key>crush_0003.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{506,2},{250,250}}</string>
+                <string>{{606,2},{300,300}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{250,250}}</string>
+                <string>{{0,0},{300,300}}</string>
                 <key>sourceSize</key>
-                <string>{250,250}</string>
+                <string>{300,300}</string>
             </dict>
             <key>crush_0004.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{758,2},{250,250}}</string>
+                <string>{{2,304},{300,300}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{250,250}}</string>
+                <string>{{0,0},{300,300}}</string>
                 <key>sourceSize</key>
-                <string>{250,250}</string>
+                <string>{300,300}</string>
             </dict>
             <key>crush_0005.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,254},{250,250}}</string>
+                <string>{{304,304},{300,300}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{250,250}}</string>
+                <string>{{0,0},{300,300}}</string>
                 <key>sourceSize</key>
-                <string>{250,250}</string>
+                <string>{300,300}</string>
             </dict>
             <key>crush_0006.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{254,254},{250,250}}</string>
+                <string>{{606,304},{300,300}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{250,250}}</string>
+                <string>{{0,0},{300,300}}</string>
                 <key>sourceSize</key>
-                <string>{250,250}</string>
+                <string>{300,300}</string>
             </dict>
             <key>crush_0007.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{506,254},{250,250}}</string>
+                <string>{{2,606},{300,300}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{250,250}}</string>
+                <string>{{0,0},{300,300}}</string>
                 <key>sourceSize</key>
-                <string>{250,250}</string>
+                <string>{300,300}</string>
             </dict>
             <key>crush_0008.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{758,254},{250,250}}</string>
+                <string>{{304,606},{300,300}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{250,250}}</string>
+                <string>{{0,0},{300,300}}</string>
                 <key>sourceSize</key>
-                <string>{250,250}</string>
+                <string>{300,300}</string>
             </dict>
             <key>crush_0009.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,506},{250,250}}</string>
+                <string>{{606,606},{300,300}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{250,250}}</string>
+                <string>{{0,0},{300,300}}</string>
                 <key>sourceSize</key>
-                <string>{250,250}</string>
+                <string>{300,300}</string>
             </dict>
             <key>crush_0010.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{254,506},{250,250}}</string>
+                <string>{{2,908},{300,300}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{250,250}}</string>
+                <string>{{0,0},{300,300}}</string>
                 <key>sourceSize</key>
-                <string>{250,250}</string>
-            </dict>
-            <key>crush_0011.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{506,506},{250,250}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{250,250}}</string>
-                <key>sourceSize</key>
-                <string>{250,250}</string>
+                <string>{300,300}</string>
             </dict>
         </dict>
         <key>metadata</key>
@@ -155,9 +142,9 @@
             <key>realTextureFileName</key>
             <string>crush.png</string>
             <key>size</key>
-            <string>{1024,1024}</string>
+            <string>{1024,2048}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:68366f0a20e1009ba5f4723336502a01:a1d210f2385117249b9975cda5dee152:2129659acb93445568f81d9c7085bffa$</string>
+            <string>$TexturePacker:SmartUpdate:c539e72a2fb5919588fee8e092093fce:1dd63531133234becdca544106ce0c14:2129659acb93445568f81d9c7085bffa$</string>
             <key>textureFileName</key>
             <string>crush.png</string>
         </dict>

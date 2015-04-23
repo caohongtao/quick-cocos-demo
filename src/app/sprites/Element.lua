@@ -1,8 +1,8 @@
 Element = class("Element",  function()
     return display.newSprite()
 end)
-local CRUSH_DURATION, CRUSH_FRAMES = 1, 11
-local EXPLODE_DURATION, EXPLODE_FRAMES = 1, 4
+local CRUSH_DURATION, CRUSH_FRAMES = 1, 10
+local EXPLODE_DURATION, EXPLODE_CENTER_FRAMES, EXPLODE_SPREAD_FRAMES = 0.6, 4, 4
 
 function Element:ctor()
     self.m_row = 0
@@ -227,10 +227,18 @@ function Element:die()
         self:setLocalZOrder(1)
         self:runAction(cc.Sequence:create(cc.TintTo:create(2,255,0,0),
                             cc.CallFunc:create(function()
-                                local explosion = display.newSprite('#explode_0001.png'):addTo(self:getParent())
-                                explosion:setPosition(self:getPosition())
-                                transition.playAnimationOnce(explosion, display.getAnimationCache("bomb-explode"))
-                                explosion:performWithDelay(function() explosion:removeFromParent(true) end, EXPLODE_DURATION)
+                                local explosion_center = display.newSprite('#explode_center_0001.png'):addTo(self:getParent())
+                                explosion_center:setPosition(self:getPosition())
+                                explosion_center:setLocalZOrder(10)
+                                transition.playAnimationOnce(explosion_center, display.getAnimationCache("bomb-explode-center"))
+                                explosion_center:performWithDelay(function() explosion_center:removeFromParent(true) end, EXPLODE_DURATION)
+                                
+                                local explosion_spread = display.newSprite('#explode_spread_0001.png'):addTo(self:getParent())
+                                explosion_spread:setScale(2,4)
+                                explosion_spread:setPosition(self:getPosition())
+                                explosion_spread:setLocalZOrder(10)
+                                transition.playAnimationOnce(explosion_spread, display.getAnimationCache("bomb-explode-spread"))
+                                explosion_spread:performWithDelay(function() explosion_spread:removeFromParent(true) end, EXPLODE_DURATION)
                             end),
                             cc.DelayTime:create(EXPLODE_DURATION/2),
                             cc.CallFunc:create(function()
@@ -279,7 +287,11 @@ function Element:addAnimation()
     display.setAnimationCache("brick-crush", animation)
     
     --bomb explode
-    frames = display.newFrames("explode_%04d.png", 1, EXPLODE_FRAMES)
-    animation = display.newAnimation(frames, EXPLODE_DURATION / EXPLODE_FRAMES)
-    display.setAnimationCache("bomb-explode", animation)
+    frames = display.newFrames("explode_center_%04d.png", 1, EXPLODE_CENTER_FRAMES)
+    animation = display.newAnimation(frames, EXPLODE_DURATION / EXPLODE_CENTER_FRAMES)
+    display.setAnimationCache("bomb-explode-center", animation)
+    
+    frames = display.newFrames("explode_spread_%04d.png", 1, EXPLODE_SPREAD_FRAMES)
+    animation = display.newAnimation(frames, EXPLODE_DURATION / EXPLODE_SPREAD_FRAMES)
+    display.setAnimationCache("bomb-explode-spread", animation)
 end
