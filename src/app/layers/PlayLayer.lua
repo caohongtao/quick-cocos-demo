@@ -585,8 +585,8 @@ function PlayLayer:PlayLayerinitTouchListener()
             local playerPos = self.player:convertToWorldSpaceAR(cc.p(0,0))
 
             local touchDir = nil
-            if touchPos.y < playerPos.y - 60 then touchDir = 'down'
-            elseif touchPos.x < playerPos.x then touchDir = 'left'
+            if touchPos.y < playerPos.y then touchDir = 'down'
+            elseif touchPos.x < display.cx then touchDir = 'left'
             else touchDir = 'right'
             end
 
