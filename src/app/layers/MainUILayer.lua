@@ -1,4 +1,3 @@
-local DataManager = require("app.DataManager")
 local MainUILayer   = class("MainUILayer", function()
     return display.newLayer("MainUILayer")
 end)
@@ -6,12 +5,12 @@ end)
 function MainUILayer:ctor()
  
        cc(self):addComponent("components.behavior.EventProtocol"):exportMethods()
+   
+         -- 开始游戏按键
+         self._b = cc.ui.UIPushButton.new({normal="ui/replay1.png",
+        pressed ="ui/replay2.png",
+        scale9 = false})
 
-    -- 开始游戏按键
-        cc.ui.UIPushButton.new({normal="ui/replay1.png",
-                                pressed ="ui/replay2.png",
-                                scale9 = false})
-                                
         :setButtonSize(140, 45)
         :onButtonPressed(function(event)
             event.target:setScale(0.9)
@@ -20,17 +19,27 @@ function MainUILayer:ctor()
             event.target:setScale(1.0)
         end)
         :onButtonClicked(function()
-            self:getParent():dispatchEvent({name = "GAME_START"})            
-            print("start game")
-            
---            DataManager.set(DataManager.GOLD,DataManager.get(DataManager.GOLD)+20)
-            
+        
+            --            self:dispatchEvent({name = "GAME_END",
+            --                saves = 3, -- 救动物
+            --                use1=1,  -- 使用物品
+            --                use2=2,
+            --                use3=1,
+            --                atkboss=0, -- 击退boss
+            --                dizzboss=0,-- 晕眩boss
+            --                box=2,     -- 宝箱数
+            --                golds=3,   -- 金币数
+            --                grounds=58, -- 层数
+            --            })            
+            --            print(" game  -  end  ")
+    
+
+--            self:dispatchEvent({name = "GAME_START"})
+            self:getParent():dispatchEvent({name = "GAME_START"})
         end)
+
         :align(display.BOTTOM_CENTER, 240,83)
         :addTo(self)
-        
-        
-        
 end
 
 

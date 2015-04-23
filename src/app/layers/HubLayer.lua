@@ -15,14 +15,14 @@ local UP_BAR = {
     pause = {
         normal = "ui/stopup.png",
         pressed = "ui/stopdown.png",
-        pos = {x=10,y=display.height-60},
+        pos = {x=6,y=display.height-50},
     },
     score = {
         text        = "0",
         font        = "Times New Roman",
         size        = 30,
         color       = display.COLOR_WHITE,
-        x           = 150,
+        x           = 100,
         y           = display.height-42,
     },
     deepth = {
@@ -30,7 +30,7 @@ local UP_BAR = {
         font        = "Times New Roman",
         size        = 30,
         color       = display.COLOR_WHITE,
-        x           = 340,
+        x           = 220,
         y           = display.height-42,
     },
     coin = {
@@ -40,53 +40,9 @@ local UP_BAR = {
         color       = display.COLOR_WHITE,
         textAlign   = cc.TEXT_ALIGNMENT_LEFT,
         textValign  = cc.VERTICAL_TEXT_ALIGNMENT_TOP,
-        x           = 550,
+        x           = 400,
         y           = display.height-42,
     },
---    score = {
---        image = {
---            "ui/score.png",
---            pos = {x=90,y=display.height-78},
---        },
---        label = {
---            text        = "0",
---            font        = "Times New Roman",
---            size        = 30,
---            color       = display.COLOR_WHITE,
---            x           = 150,
---            y           = display.height-70,
---        },
---    },
---    deepth = {
---        image = {
---            "ui/deepth.png",
---            pos = {x=336,y=display.height-74},
---        },
---        label = {
---            text        = "0",
---            font        = "Times New Roman",
---            size        = 30,
---            color       = display.COLOR_WHITE,
---            x           = 340,
---            y           = display.height-70,
---        },
---    },
---    coin = {
---        image = {
---            "ui/money.png",
---            pos = {x=490,y=display.height-74},
---        },
---        label = {
---            text        = "0",
---            font        = "Times New Roman",
---            size        = 30,
---            color       = display.COLOR_WHITE,
---            textAlign   = cc.TEXT_ALIGNMENT_LEFT,
---            textValign  = cc.VERTICAL_TEXT_ALIGNMENT_TOP,
---            x           = 500,
---            y           = display.height-70,
---        },
---    },
 }
 
 local BOTTOM_BAR = {
@@ -105,30 +61,30 @@ local BOTTOM_BAR = {
     skill1 = {
         normal = "ui/jineng1.png",
         pressed = "ui/jineng2.png",
-        pos = {x=170,y=5},
+        pos = {x=125,y=5},
     },
     skill2 = {
         normal = "ui/jineng2.png",
         pressed = "ui/jineng3.png",
-        pos = {x=265,y=5},
+        pos = {x=195,y=5},
     },
     skill3 = {
         normal = "ui/jineng3.png",
         pressed = "ui/jineng1.png",
-        pos = {x=360,y=5},
+        pos = {x=265,y=5},
     },
     buy = {
         normal = "ui/plusup.png",
         pressed = "ui/plusdown.png",
-        pos = {x=560,y=11},
+        pos = {x=420,y=11},
     },
     gemLabel = {
         font        = "Times New Roman",
         text        = "0",
         size        = 30,
         color       = display.COLOR_WHITE,
-        x           = 500,
-        y           = 25,
+        x           = 360,
+        y           = 16,
     },
 }
 function HubLayer:ctor()
@@ -181,7 +137,7 @@ function HubLayer:createBottomBar()
     self.oxygenLabel = cc.ui.UILabel.new(BOTTOM_BAR.oxygenLabel)
         :align(display.CENTER)
         :addTo(self)
-    self.oxygenLabel:setString(s_data.level[DataManager.get(DataManager.HPLV) + 1].hp)
+    self.oxygenLabel:setString(DataManager.getCurrProperty('hp'))
     
     --技能蘑菇
     cc.ui.UIPushButton.new({normal = BOTTOM_BAR.skill1.normal,

@@ -3,8 +3,8 @@
     "isLandscape": false,
     "isWindowTop": false,
     "name": "digger",
-    "width": 640,
-    "height": 960,
+    "width": 480,
+    "height": 800,
     "entry": "src/main.lua",
     "consolePort": 6010,
     "uploadPort": 6020

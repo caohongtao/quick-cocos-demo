@@ -11,7 +11,7 @@ local PAUSE_PANEL = {
     continue = {
         normal = "ui/continue1.png",
         pressed = "ui/continue2.png",
-        pos = {x=display.cx,y=display.cy+100},
+        pos = {x=display.cx,y=display.cy+70},
         align = display.CENTER,
     },
     restart = {
@@ -23,7 +23,7 @@ local PAUSE_PANEL = {
     back = {
         normal = "ui/back1.png",
         pressed = "ui/back2.png",
-        pos = {x=display.cx,y=display.cy-160},
+        pos = {x=display.cx,y=display.cy-135},
         align = display.CENTER,
     },
 }

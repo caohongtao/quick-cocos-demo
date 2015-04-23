@@ -390,7 +390,7 @@ function PlayLayer:rollMap(event)
 
     self:addLines(lines)
     local diff = cc.p(0, lines*self.elSize.height)
-    local dropSpeed = gamePara.baseDropDuration / s_data.level[DataManager.get(DataManager.SPEEDLV) + 1].speed
+    local dropSpeed = gamePara.baseDropDuration / DataManager.getCurrProperty('speed')
     local duration = diff.y / 100 * dropSpeed
 
     local eventDispatcher = cc.Director:getInstance():getEventDispatcher()

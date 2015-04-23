@@ -15,29 +15,39 @@ function AchivementLayer:ctor(event)
     -- _tmp_atk_boss    = DataManager.get("_tmp_atk_boss")
     -- _tmp_dizz_boss   = DataManager.get("_tmp_dizz_boss")
 
-    self.panel =   cc.ui.UIImage.new("ui/chengjiu.png")
-        :align(display.LEFT_BOTTOM, display.cx -    430/2, display.cy-300)
+    self.panel =   cc.ui.UIImage.new("ui/panel1.png")
+        :align(display.CENTER, display.cx, display.cy)
         :addTo(self)
 
+    cc.ui.UIImage.new("ui/chengjiu.png")
+    :align(display.LEFT_BOTTOM, 148, 416)
+    :addTo(self.panel)
 
-
-    cc.ui.UIPushButton.new({normal="ui/X.png",
-        pressed ="ui/X.png",
+    cc.ui.UIPushButton.new({normal="ui/x.png",
+        pressed ="ui/x.png",
         scale9 = false})
-        :onButtonClicked(function()self:dispatchEvent({name = "JUMP_LEVELUP"})  end)
+        :onButtonClicked(
+            function() self:dispatchEvent({name = "JUMP_LEVELUP"})  end)
         :align(display.LEFT_BOTTOM, 373,450)
         :addTo(self.panel)
 
-    self.params = event
-    -- 显示3条成就
+     self.params = event
+    
+    self._achivements_tag = 599
+
     self:reflushData(self.params)
 
-    self:showData()
+     self:showData()
 end
 
 function AchivementLayer:showData()
 
-    self.panel:removeAllChildrenWithCleanup(false)
+    print("AchivementLayer:showData()")
+    
+    local node = self.panel:getChildByTag(self._achivements_tag)
+    
+    if  node then  node:removeAllChildren() else node = display.newNode():addTo(self.panel,5,self._achivements_tag)  end 
+    
     local i = 2
     for k,v in pairs(self._shownList) do
 
@@ -47,8 +57,8 @@ function AchivementLayer:showData()
             align = cc.ui.TEXT_ALIGN_LEFT,
             color = display.COLOR_BLACK,
             x = 48,
-            y = 94+74*i,
-        }):addTo(self.panel)
+            y = 96+74*i,
+        }):addTo(node)
 
         if v.finished then
             cc.ui.UIPushButton.new({normal="ui/wancheng.png",
@@ -56,15 +66,19 @@ function AchivementLayer:showData()
                 scale9 = false})
                 :onButtonClicked(function() self:finishedAchivement(v.id) end)
                 :align(display.LEFT_BOTTOM, 260,86+74*i)
-                :addTo(self.panel)
+                :addTo(node)
         elseif v.achived then
             cc.ui.UIPushButton.new({normal="ui/lingqvjiangli.png",
                 pressed ="ui/lingqvjiangli.png",
                 scale9 = false})
                 :onButtonClicked(function() self:finishedAchivement(v.id) end)
                 :align(display.LEFT_BOTTOM, 260,86+74*i)
-                :addTo(self.panel)
+                :addTo(node)
         end
+
+        cc.ui.UIImage.new("ui/line.png")
+        :align(display.LEFT_BOTTOM, 40, 76+74*i)
+        :addTo(node)
 
         i = i-1
     end
@@ -73,6 +87,9 @@ end
 
 
 function AchivementLayer:finishedAchivement(id)
+
+    print(" AchivementLayer:finishedAchivement(id) "..id)
+
     if s_data.achivement[id] then
         s_data.achivement[id].finished = true
 
@@ -86,10 +103,13 @@ function AchivementLayer:finishedAchivement(id)
         self:dispatchEvent({name = "REFLUSH_DATA"})
         
         -- 再次刷新成就列表
-        print("再次刷新成就列表")
-        self:reflushData(self.params)
-
-        self:showData()
+        scheduler.performWithDelayGlobal(function ()
+            print("再次刷新成就列表")  
+              
+            self:reflushData(self.params)
+    
+            self:showData()
+        end, 0.1)
     end
 end
 

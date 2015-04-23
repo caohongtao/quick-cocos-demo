@@ -11,17 +11,18 @@ function Player:ctor(size)
     
     self.playerSize = size
     
-    self.oxygenVol = s_data.level[DataManager.get(DataManager.HPLV) + 1].hp
+    self.oxygenVol = DataManager.getCurrProperty('hp')
     self.deepth = 0
     self.score = 0
     self.boxes = 0
     self.coins = 0
     self.gems = 0
     self.toys = 0
+    self.rebirthTimes = 0
     self.skill1Times = 0
     self.skill2Times = 0
     self.skill3Times = 0
-    self.digForce = s_data.level[DataManager.get(DataManager.POWERLV) + 1].power
+    self.digForce = DataManager.getCurrProperty('power')
     self.digThrough = false --是否具有贯穿特效，吃了栗子后，一次凿一整行整列
 
     local moveListener = cc.EventListenerCustom:create("Dropping", function(event) self.dropping = event.active print(self.dropping and '##drop true' or '##drop false') end)
@@ -88,7 +89,7 @@ function Player:gainProp(el)
     if el.m_type == elements.oxygen then
         print('oxygen')
         self.oxygenVol = self.oxygenVol + 10
-        local topVol = s_data.level[DataManager.get(DataManager.HPLV) + 1].hp
+        local topVol = DataManager.getCurrProperty('hp')
         self.oxygenVol = topVol < self.oxygenVol and topVol or self.oxygenVol
         local event = cc.EventCustom:new("update hub")
         event.type = 'oxygen'
@@ -181,7 +182,7 @@ function Player:dig(target, dir)
     self.digging = true
     print('##dig')
     transition.playAnimationOnce(self, display.getAnimationCache("player-dig"))
-    local duration = gamePara.baseDigDuration / s_data.level[DataManager.get(DataManager.SPEEDLV) + 1].speed
+    local duration = gamePara.baseDigDuration / DataManager.getCurrProperty('speed')
     self:runAction(cc.Sequence:create(
         cc.DelayTime:create(duration),
         cc.CallFunc:create(function() self.digging = false print('##undig') end)))
@@ -215,7 +216,7 @@ function Player:move(dir)
     self.moving = true
     print('##move')
     
-    local duration = gamePara.baseMoveDuration / s_data.level[DataManager.get(DataManager.SPEEDLV) + 1].speed
+    local duration = gamePara.baseMoveDuration / DataManager.getCurrProperty('speed')
     self:runAction(cc.Sequence:create(
         cc.MoveBy:create(duration,delta),
         cc.CallFunc:create(function() self.moving = false print('##unmove') end)))
@@ -245,6 +246,8 @@ function Player:die()
                                             box = self.boxes,
                                             golds = self.coins,
                                             grounds = self.deepth,
+                                            points =  self.gems,
+                                            relive = self.rebirthTimes,
                                         }
                                         
                                         local dieEvent = cc.EventCustom:new("player die")
@@ -258,7 +261,7 @@ function Player:rebirth()
     
     self.dead = false
     print('##undead')
-    self.oxygenVol = s_data.level[DataManager.get(DataManager.HPLV) + 1].hp
+    self.oxygenVol = DataManager.getCurrProperty('hp')
 
     --向上挖掘
     local temp = self.digThrough
@@ -284,7 +287,7 @@ end
 function Player:increaseDeepth()
     local current = coroutine.running()
     
-    local dropSpeed = gamePara.baseDropDuration / s_data.level[DataManager.get(DataManager.SPEEDLV) + 1].speed
+    local dropSpeed = gamePara.baseDropDuration / DataManager.getCurrProperty('speed')
     local perFloorDuration = dropSpeed / 100 * self.playerSize.height
     
     while true do
@@ -418,7 +421,7 @@ end
 function Player:addAnimation()
     local animationNames = {"dig",}-- "dead"}
     local animationFrameNum = {20,10}
-    local duration = gamePara.baseDigDuration / s_data.level[DataManager.get(DataManager.SPEEDLV) + 1].speed
+    local duration = gamePara.baseDigDuration / DataManager.getCurrProperty('speed')
     local animationDelay = {duration / animationFrameNum[1], 0.2}
 
     --鼹鼠

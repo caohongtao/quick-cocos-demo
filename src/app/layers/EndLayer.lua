@@ -6,9 +6,6 @@ function EndLayer:ctor(event)
  
        cc(self):addComponent("components.behavior.EventProtocol"):exportMethods()
 
-
-
-
         local result = {
             _tmp_rounds = DataManager.set(DataManager.get("_tmp_rounds")+1),
             _tmp_grounds = DataManager.set(DataManager.get("_tmp_grounds")+event.grounds),
@@ -17,23 +14,41 @@ function EndLayer:ctor(event)
             _tmp_use_item_2 = DataManager.set(DataManager.get("_tmp_use_item_2")+event.use2),
             _tmp_use_item_3 = DataManager.set(DataManager.get("_tmp_use_item_3")+event.use3),
             _tmp_atk_boss = DataManager.set(DataManager.get("_tmp_atk_boss")+event.atkboss),
-            _tmp_dizz_boss = DataManager.set(DataManager.get("_tmp_dizz_boss")+event.dizzboss),
-
-
-            
+            _tmp_dizz_boss = DataManager.set(DataManager.get("_tmp_dizz_boss")+event.dizzboss),            
         }
         
         DataManager.save()
 
-      local panel =   cc.ui.UIImage.new("ui/fenshudiban.png")
-        :align(display.LEFT_BOTTOM, display.cx -    430/2, display.cy-300)
+      local panel =   cc.ui.UIImage.new("ui/panel1.png")
+        :align(display.CENTER, display.cx , display.cy)
         :addTo(self)
 
 
+        -- "分数"
+        cc.ui.UIImage.new("ui/fenshu.png")
+        :align(display.LEFT_BOTTOM, 148, 416)
+        :addTo(panel)
+
+        cc.ui.UIImage.new("ui/groove.png")
+        :align(display.LEFT_BOTTOM, 40, 332)
+        :addTo(panel)
+
+
+        cc.ui.UIImage.new("ui/Settlementback.png")
+        :align(display.LEFT_BOTTOM, 52, 58)
+        :addTo(panel)
+
+
+        for i=0,2 do
+        cc.ui.UIImage.new("ui/Settlementgroove.png")
+        :align(display.LEFT_BOTTOM, 74, 65+i*58)
+        :addTo(panel)
+        end
+
 
         -- 跳转 成就界面
-         cc.ui.UIPushButton.new({normal="ui/X.png",
-                                pressed ="ui/X.png",
+         cc.ui.UIPushButton.new({normal="ui/x.png",
+                                pressed ="ui/x.png",
                                 scale9 = false})                                
         -- :onButtonPressed(function(event)
         --     event.target:setScale(0.9)

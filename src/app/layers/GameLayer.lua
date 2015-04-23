@@ -1,7 +1,7 @@
 require("app.layers.PlayLayer")
 require("app.layers.BackgroundLayer")
 require("app.layers.PauseLayer")
-require("app.layers.DeadLayer")
+local Relive = require("app.layers.ReliveLayer")
 require("app.layers.HubLayer")
 require("app.sprites.Element")
 require("app.sprites.Player")
@@ -28,13 +28,6 @@ function GameLayer:ctor()
     
     local hubLayer = HubLayer.new()
     self:addChild(hubLayer)
-    
---    self.pauseLayer = PauseLayer.new()
---    self:addChild(self.pauseLayer)
-
-
---    self.deadLayer = DeadLayer.new()
---    self:addChild(self.deadLayer)
 
     local pauseListener = cc.EventListenerCustom:create("pause game", handler(self,self.pauseGame))
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(pauseListener, self)
@@ -44,21 +37,6 @@ function GameLayer:ctor()
 end
 
 function GameLayer:pauseGame()
---    local queue = {self}
---    while #queue > 0 do
---        local nodes = queue[1]:getChildren()
---    	for _, node in ipairs(nodes) do
---            if node == self.pauseLayer then
---                node:setVisible(true)
---            else
---                table.insert(queue,node)
---            end
---    	end
---        queue[1]:pause()
---    	table.remove(queue,1)
---    end
-
-    
     local pauseScene = display.newScene('pauseScene')
     pauseScene:addChild(self:captureScreen())
     
@@ -70,31 +48,13 @@ function GameLayer:pauseGame()
 end
 
 function GameLayer:playerDie(event)
---    local queue = {self}
---    while #queue > 0 do
---        local nodes = queue[1]:getChildren()
---        for _, node in ipairs(nodes) do
---            if node == self.deadLayer then
---                node:setVisible(true)
---                node:startCount()
---            else
---                table.insert(queue,node)
---            end
---        end
---        queue[1]:pause()
---        table.remove(queue,1)
---    end
-
-
---    display.pause()
---    local layer = DeadLayer.new()
---    self:addChild(layer)
-
 
     local deadScene = display.newScene('deadScene')
     deadScene:addChild(self:captureScreen())
 
-    local deadLayer = DeadLayer.new()
+--    local deadLayer = DeadLayer.new()
+    local deadLayer = Relive.new()
+    
     deadLayer.gameScene = self
     deadLayer.settlementInfo = event.settlement
     deadScene:addChild(deadLayer)

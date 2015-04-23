@@ -22,6 +22,13 @@ function DataManager.init()
     for k,v in pairs(DataManager.data._finished_achivements) do
          s_data.achivement[v].finished = true
     end
+    --测试
+    DataManager.data.gold = 10000
+    DataManager.data.point = 1000
+    DataManager.data.topScore = 4000 -- 最高分数
+    DataManager.data.total_rounds = 400 -- 总局数
+    DataManager.data.topGroud = 800 -- 最高层数
+    DataManager.save()
 end
 
 
@@ -70,11 +77,6 @@ end
 function DataManager.achiveFinish(id)
     if DataManager.data._finished_achivements[id] == nil then
         table.insert(DataManager.data._finished_achivements,id)
-        
-        for k,v in pairs(DataManager.data._finished_achivements) do
-            print(k,v)
-        end
-
         DataManager.save()
     end
 end
@@ -134,13 +136,12 @@ end
 
 function DataManager.save()
     if DataManager.data ~=nil then         
-        print(type(DataManager.data))
-        print("   >>>   "..json.encode(DataManager.data._finished_achivements))
-        print("   >>>   "..json.encode(DataManager.data))
-
         GameState.save(DataManager.data)
     end
 end
 
+function DataManager.getCurrProperty(property)
+    return s_data.level["key"..(DataManager.get(property..'Lv') + 1)][property]
+end
 
 return DataManager

@@ -1,7 +1,7 @@
 Element = class("Element",  function()
     return display.newSprite()
 end)
-local CRUSH_DURATION, CRUSH_FRAMES = 1, 10
+local CRUSH_DURATION, CRUSH_FRAMES = 1, 11
 local EXPLODE_DURATION, EXPLODE_FRAMES = 1, 4
 
 function Element:ctor()
@@ -89,7 +89,7 @@ function Element:getTypeAccordProbability()
         for _, element in pairs(elements) do
             local probability = element.probability
             if not element.isBrick then
-                probability = probability * s_data.level[DataManager.get(DataManager.LUCKLV) + 1].luck * 10
+                probability = probability * DataManager.getCurrProperty('luck') * 10
             end
             totalProbability = totalProbability + probability
             element.IntervalEnd = totalProbability
@@ -197,9 +197,10 @@ function Element:die()
     
     if self.m_type.isBrick then
         local curPos = self:convertToWorldSpaceAR(cc.p(0,0))
-        local crush = display.newSprite('#crush_0001.png',curPos.x,curPos.y):addTo(cc.Director:getInstance():getRunningScene())
+        local crush = display.newSprite('#crush_0001.png',curPos.x,curPos.y):addTo(self:getParent())
         crush:setAnchorPoint(cc.p(0.5,0.5))
-        crush:setColor(cc.c3b(unpack(self.m_type.color)))
+        crush:setPosition(self:getPosition())
+--        crush:setColor(cc.c3b(unpack(self.m_type.color)))
         transition.playAnimationOnce(crush, display.getAnimationCache("brick-crush"))
         crush:runAction(cc.Sequence:create(
             cc.DelayTime:create(CRUSH_DURATION),
@@ -209,19 +210,19 @@ function Element:die()
         self:removeFromParent(true)
     elseif self.m_type == elements.coin then
         gainProp()
-        createFakeAndMoveTo(cc.p(display.right-35, display.top-45))
+        createFakeAndMoveTo(cc.p(display.right-90, display.top-30))
     elseif self.m_type == elements.gem then
         gainProp()
-        createFakeAndMoveTo(cc.p(display.right-190,display.bottom+50))
+        createFakeAndMoveTo(cc.p(display.right-100,display.bottom+40))
     elseif self.m_type == elements.mushroom then
         gainProp()
-        createFakeAndMoveTo(cc.p(200,display.bottom+50))
+        createFakeAndMoveTo(cc.p(140,display.bottom+50))
     elseif self.m_type == elements.nut then
         gainProp()
-        createFakeAndMoveTo(cc.p(295,display.bottom+50))
+        createFakeAndMoveTo(cc.p(210,display.bottom+50))
     elseif self.m_type == elements.cola then
         gainProp()
-        createFakeAndMoveTo(cc.p(390,display.bottom+50))
+        createFakeAndMoveTo(cc.p(280,display.bottom+50))
     elseif self.m_type == elements.timebomb then
         self:setLocalZOrder(1)
         self:runAction(cc.Sequence:create(cc.TintTo:create(2,255,0,0),
