@@ -166,3 +166,7 @@ gamePara = {
     
     propDuration        = 12,
 }
+
+mapStrategy = {
+
+}

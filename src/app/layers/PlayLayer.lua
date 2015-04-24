@@ -46,7 +46,7 @@ function PlayLayer:init()
     self:scheduleUpdateWithPriorityLua(handler(self, self.checkDroppingElements), 0)
 --    self:scheduleUpdateWithPriorityLua(handler(self, self.showElementInfo), 0);
 
-    self:PlayLayerinitTouchListener()
+    self:initTouchListener()
 end
 
 function PlayLayer:unscheduleAllTimers()
@@ -606,63 +606,108 @@ function PlayLayer:positionToMatrix(x, y)
     return row, col
 end
 
-function PlayLayer:showTutorial()
-    local playerPos = self.player:convertToWorldSpaceAR(cc.p(0,0))
+--function PlayLayer:showTutorial()
+--    local playerPos = self.player:convertToWorldSpaceAR(cc.p(0,0))
+--    
+--    self.tutorialLayer = display.newLayer()
+--    self.tutorialLayer:setTouchSwallowEnabled(false)
+--    self.tutorialLayer:addTo(self)
+--
+--    local leftRegion = display.newSprite('ui/touch_hint.png',display.cx-1,playerPos.y):addTo(self.tutorialLayer)
+--    leftRegion:setAnchorPoint(cc.p(1,0))
+--    leftRegion:setScale(2)
+--
+--    local rightRegion = display.newSprite('ui/touch_hint.png',display.cx+1,playerPos.y):addTo(self.tutorialLayer)
+--    rightRegion:setAnchorPoint(cc.p(0,0))
+--    rightRegion:setScale(2)
+--
+--    local downRegion = display.newSprite('ui/touch_hint.png',display.cx,playerPos.y-2):addTo(self.tutorialLayer)
+--    downRegion:setAnchorPoint(cc.p(0.5,1))
+--    downRegion:setScale(2)
+--    
+--    DataManager.set('tutorial_finished', true)
+--    DataManager.save()
+--end
+--
+--function PlayLayer:initTouchListener()
+--    DataManager.set('tutorial_finished', false)
+--    DataManager.save()
+--    if not DataManager.get('tutorial_finished') then
+--    	self:showTutorial()
+--    end
+--
+--    local hint = display.newSprite('ui/touch_hint.png',display.cx,display.top - 100):addTo(self)
+--    hint:setAnchorPoint(cc.p(0.5,0.5))
+--    hint:setScale(2)
+--    hint:setVisible(false)
+--    
+--    self:setTouchEnabled(true)
+--    self:setTouchMode(cc.TOUCH_MODE_ONE_BY_ONE)
+--    self:addNodeEventListener(cc.NODE_TOUCH_EVENT, function(event)
+--        if event.name == "began" then
+--            local touchPos = cc.p(event.x, event.y)
+--            local playerPos = self.player:convertToWorldSpaceAR(cc.p(0,0))
+--            
+--            local touchDir = nil
+--            if touchPos.y < playerPos.y then
+--                touchDir = 'down'
+--                hint:setRotation(0)
+--            elseif touchPos.x < display.cx then
+--                touchDir = 'left'
+--                hint:setRotation(90)
+--            else
+--                touchDir = 'right'
+--                hint:setRotation(-90)
+--            end
+--            
+--            if self.tutorialLayer then self.tutorialLayer:removeFromParent(true) self.tutorialLayer = nil end
+--            hint:setVisible(true)
+--            hint:performWithDelay(function() hint:setVisible(false) end, 0.1)
+--                
+--            local eventDispatcher = cc.Director:getInstance():getEventDispatcher()
+--            local touchEvent = cc.EventCustom:new('handle_touch')
+--            touchEvent.touchDir = touchDir
+--            eventDispatcher:dispatchEvent(touchEvent)
+--            return true
+--        end
+--    end)
+--end
+
+function PlayLayer:initTouchListener()
+    local RADIUS = 40
+    local btnPos = {
+            left  = {x=100, y = 120,},
+            right = {x=200, y = 120,},
+            down  = {x=400, y = 120,},
+          }
+    local left  = display.newSprite('ui/player_ctl_btn.png',btnPos.left.x,btnPos.left.y):addTo(self)
+    left:setScale(RADIUS*2/left:getContentSize().height)
+    left:setRotation(180)
     
-    self.tutorialLayer = display.newLayer()
-    self.tutorialLayer:setTouchSwallowEnabled(false)
-    self.tutorialLayer:addTo(self)
+    local right = display.newSprite('ui/player_ctl_btn.png',btnPos.right.x,btnPos.right.y):addTo(self)
+    right:setScale(RADIUS*2/right:getContentSize().height)
+        
+    local down  = display.newSprite('ui/player_ctl_btn.png',btnPos.down.x,btnPos.down.y):addTo(self)
+    down:setScale(RADIUS*2/down:getContentSize().height)
+    down:setRotation(90)
+        
 
-    local leftRegion = display.newSprite('ui/touch_hint.png',display.cx-1,playerPos.y):addTo(self.tutorialLayer)
-    leftRegion:setAnchorPoint(cc.p(1,0))
-    leftRegion:setScale(2)
-
-    local rightRegion = display.newSprite('ui/touch_hint.png',display.cx+1,playerPos.y):addTo(self.tutorialLayer)
-    rightRegion:setAnchorPoint(cc.p(0,0))
-    rightRegion:setScale(2)
-
-    local downRegion = display.newSprite('ui/touch_hint.png',display.cx,playerPos.y-2):addTo(self.tutorialLayer)
-    downRegion:setAnchorPoint(cc.p(0.5,1))
-    downRegion:setScale(2)
-    
-    DataManager.set('tutorial_finished', true)
-    DataManager.save()
-end
-
-function PlayLayer:PlayLayerinitTouchListener()
-    DataManager.set('tutorial_finished', false)
-    DataManager.save()
-    if not DataManager.get('tutorial_finished') then
-    	self:showTutorial()
-    end
-
-    local hint = display.newSprite('ui/touch_hint.png',display.cx,display.top - 100):addTo(self)
-    hint:setAnchorPoint(cc.p(0.5,0.5))
-    hint:setScale(2)
-    hint:setVisible(false)
-    
     self:setTouchEnabled(true)
     self:setTouchMode(cc.TOUCH_MODE_ONE_BY_ONE)
     self:addNodeEventListener(cc.NODE_TOUCH_EVENT, function(event)
         if event.name == "began" then
             local touchPos = cc.p(event.x, event.y)
-            local playerPos = self.player:convertToWorldSpaceAR(cc.p(0,0))
-            
             local touchDir = nil
-            if touchPos.y < playerPos.y then
-                touchDir = 'down'
-                hint:setRotation(0)
-            elseif touchPos.x < display.cx then
+
+            if cc.pDistanceSQ(btnPos.left,touchPos) < RADIUS * RADIUS then
                 touchDir = 'left'
-                hint:setRotation(90)
-            else
+            elseif cc.pDistanceSQ(btnPos.right,touchPos) < RADIUS * RADIUS then
                 touchDir = 'right'
-                hint:setRotation(-90)
+            elseif cc.pDistanceSQ(btnPos.down,touchPos) < RADIUS * RADIUS then
+                touchDir = 'down'
+            else
+                return
             end
-            
-            if self.tutorialLayer then self.tutorialLayer:removeFromParent(true) self.tutorialLayer = nil end
-            hint:setVisible(true)
-            hint:performWithDelay(function() hint:setVisible(false) end, 0.1)
                 
             local eventDispatcher = cc.Director:getInstance():getEventDispatcher()
             local touchEvent = cc.EventCustom:new('handle_touch')

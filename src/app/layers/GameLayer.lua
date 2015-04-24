@@ -35,6 +35,9 @@ function GameLayer:ctor()
     local dieListener = cc.EventListenerCustom:create("player die", handler(self,self.playerDie))
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(dieListener, self)
     
+    local adjustMapListener = cc.EventListenerCustom:create("adjust map", handler(self,self.adjustMapStrategy))
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(adjustMapListener, self)    
+    
     audio.stopMusic()
     audio.playMusic('audio/gameSceneBG.mp3',true)
     audio.setMusicVolume(0.2)
@@ -80,6 +83,11 @@ function GameLayer:captureScreen()
     sp:setFlippedY(true)
     
     return sp
+end
+
+function GameLayer:adjustMapStrategy(event)
+    local deepth = event.deepth
+    
 end
 
 function GameLayer:stub()

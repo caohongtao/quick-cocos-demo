@@ -151,12 +151,15 @@ function Player:gainProp(el)
 end
 
 function Player:reduceOxygen()
-    
     if self.oxygenVol >= 1 then
         self.oxygenVol = self.oxygenVol - 1
     else
         self.oxygenVol = 0
         self:die()
+    end
+    
+    if self.oxygenVol == 30 then
+        audio.playSound('audio/alert.mp3')
     end
     
     local event = cc.EventCustom:new("update hub")
@@ -181,7 +184,6 @@ function Player:dig(target, dir)
 
     --播放dig动画
     self.digging = true
-    audio.playSound('audio/dig.wav')
     
     self.oxygenVol = self.oxygenVol - 1
     local event = cc.EventCustom:new("update hub")
@@ -201,9 +203,11 @@ function Player:dig(target, dir)
     event.playerPos = self:convertToWorldSpaceAR(cc.p(0,0))
     
     if self.digThrough then
+        audio.playSound('audio/digThrough.mp3')
         event.effect = dir
         cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
     else
+        audio.playSound('audio/dig.wav')
         target.m_needDigTime = target.m_needDigTime - self.digForce
         if target.m_needDigTime > 0 then
             target:runAction(cc.JumpBy:create(0.2,cc.p(0,0),3,3))

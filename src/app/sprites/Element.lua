@@ -243,6 +243,7 @@ function Element:die()
                             end),
                             cc.DelayTime:create(EXPLODE_DURATION/2),
                             cc.CallFunc:create(function()
+                                audio.playSound('audio/explosion.mp3')
                                 local event = cc.EventCustom:new("bomb_explode")
                                 event.el = self
                                 cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
