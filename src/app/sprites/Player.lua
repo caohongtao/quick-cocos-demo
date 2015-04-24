@@ -179,6 +179,13 @@ function Player:dig(target, dir)
 
     --播放dig动画
     self.digging = true
+    
+    self.oxygenVol = self.oxygenVol - 1
+    local event = cc.EventCustom:new("update hub")
+    event.type = 'oxygen'
+    event.data = self.oxygenVol
+    cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
+    
     transition.playAnimationOnce(self, display.getAnimationCache("player-dig"))
     local duration = gamePara.baseDigDuration / DataManager.getCurrProperty('speed')
     self:runAction(cc.Sequence:create(
