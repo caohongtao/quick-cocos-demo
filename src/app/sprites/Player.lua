@@ -202,7 +202,10 @@ function Player:dig(target, dir)
         cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
     else
         target.m_needDigTime = target.m_needDigTime - self.digForce
-        if target.m_needDigTime > 0 then return end
+        if target.m_needDigTime > 0 then
+            target:runAction(cc.JumpBy:create(0.2,cc.p(0,0),3,3))
+            return
+        end
 
         cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
     end

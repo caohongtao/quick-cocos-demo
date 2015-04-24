@@ -95,7 +95,7 @@ elements = {
     box = {
         texture = "box.png",
         probability = 1,
-        needDigTime = 0,
+        needDigTime = 3,
         
     },
     coin = {

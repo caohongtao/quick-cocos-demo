@@ -79,6 +79,7 @@ function GameLayer:stub()
     DataManager.set(DataManager.SPEEDLV, 4)
     DataManager.set(DataManager.HPLV, 4)
     DataManager.set(DataManager.LUCKLV, 4)
+    DataManager.set(DataManager.POWERLV, 0)
     DataManager.save()
 end
 
