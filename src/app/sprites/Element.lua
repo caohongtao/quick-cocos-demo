@@ -200,6 +200,7 @@ function Element:die()
         local crush = display.newSprite('#crush_0001.png',curPos.x,curPos.y):addTo(self:getParent())
         crush:setAnchorPoint(cc.p(0.5,0.5))
         crush:setPosition(self:getPosition())
+        crush:setScale(0.4)
 --        crush:setColor(cc.c3b(unpack(self.m_type.color)))
         transition.playAnimationOnce(crush, display.getAnimationCache("brick-crush"))
         crush:runAction(cc.Sequence:create(

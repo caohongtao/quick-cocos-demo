@@ -237,6 +237,10 @@ function PlayLayer:refreshPosInDroppingMatrix(el)
     local row, col = self:positionToMatrix(el:getPosition())
 
     --下方的如果还没变为nil，暂不设置，等下方移动后，再设，避免重叠。
+--        if row ~= el.m_row and self.m_droppingElements[row][col] ~= nil then
+--            print('XXXXXXXXXXXXXXX掉落元素发生交错，'..self.m_droppingElements[row][col].fsm_:getState())
+--        end
+        
     if row ~= el.m_row and self.m_droppingElements[row][col] == nil then
         self.m_droppingElements[el.m_row][el.m_col] = nil
         self.m_droppingElements[row][col] = el
@@ -349,11 +353,23 @@ end
 
 function PlayLayer:checkNeedPushBelow(el)
     --正在drop的元素，下方有shaking的元素，需要让其停止shake，直接drop
-    local down = self.m_droppingElements[el.m_row-1][el.m_col]
-    if down and down:getState() == 'SHAKE' and el:getState() == 'DROP' then
-        if el:getPositionY() - down:getPositionY() < self.elSize.height + JUDGE_RANGE then
-            down.fsm_:doEvent("push")
-        end
+    
+--    local down = self.m_droppingElements[el.m_row-1][el.m_col]
+--    if down and down:getState() == 'SHAKE' and el:getState() == 'DROP' then
+--        if el:getPositionY() - down:getPositionY() < self.elSize.height + JUDGE_RANGE then
+--            down.fsm_:doEvent("push")
+--            el:setPositionY(down:getPositionY() + self.elSize.height)
+--        end
+--    end
+
+    if el:getState() ~= 'DROP' then return end
+
+    local row, col = el.m_row - 1, el.m_col
+    local next = self.m_droppingElements[row][col]
+    while next and next:getState() == 'SHAKE' do
+        next.fsm_:doEvent("push")
+        row = row - 1
+        next = self.m_droppingElements[row][col]
     end
 end
 
