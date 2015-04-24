@@ -25,7 +25,7 @@ function Player:ctor(size)
     self.digForce = DataManager.getCurrProperty('power')
     self.digThrough = false --是否具有贯穿特效，吃了栗子后，一次凿一整行整列
 
-    local moveListener = cc.EventListenerCustom:create("Dropping", function(event) self.dropping = event.active print(self.dropping and '##drop true' or '##drop false') end)
+    local moveListener = cc.EventListenerCustom:create("Dropping", function(event) self.dropping = event.active end)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(moveListener, self)
     local checkBossListener = cc.EventListenerCustom:create("boss_advance", handler(self,self.checkBossCapture))
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(checkBossListener, self)
@@ -167,7 +167,6 @@ end
 function Player:drop()
     if not self.dropping then
         self.dropping = true
-        print('##drop')
         
         local event = cc.EventCustom:new("roll_map")
         event.playerPos = self:convertToWorldSpaceAR(cc.p(0,0))
@@ -180,12 +179,11 @@ function Player:dig(target, dir)
 
     --播放dig动画
     self.digging = true
-    print('##dig')
     transition.playAnimationOnce(self, display.getAnimationCache("player-dig"))
     local duration = gamePara.baseDigDuration / DataManager.getCurrProperty('speed')
     self:runAction(cc.Sequence:create(
         cc.DelayTime:create(duration),
-        cc.CallFunc:create(function() self.digging = false print('##undig') end)))
+        cc.CallFunc:create(function() self.digging = false end)))
         
 
     local event = cc.EventCustom:new("dig_at")
@@ -216,18 +214,16 @@ function Player:move(dir)
         return  --不会有这种可能，防御代码。
     end
     self.moving = true
-    print('##move')
     
     local duration = gamePara.baseMoveDuration / DataManager.getCurrProperty('speed')
     self:runAction(cc.Sequence:create(
         cc.MoveBy:create(duration,delta),
-        cc.CallFunc:create(function() self.moving = false print('##unmove') end)))
+        cc.CallFunc:create(function() self.moving = false end)))
 end
 
 function Player:die()
     if self.dead then return end
     self.dead = true
-    print('##dead')
     
     self:runAction(cc.Sequence:create(cc.Spawn:create(
 --                                        cc.ScaleTo:create(0.1,self.playerSize.width/self:getContentSize().width,0.1),
@@ -262,7 +258,6 @@ function Player:rebirth()
     if not self.dead then return end
     
     self.dead = false
-    print('##undead')
     self.oxygenVol = DataManager.getCurrProperty('hp')
 
     --向上挖掘

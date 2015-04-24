@@ -404,13 +404,19 @@ function PlayLayer:rollMap(event)
 
     local lines = row - 1
     for i=row-1 < self.mapSize.y and row-1 or self.mapSize.y, 1, -1 do
-        if (self.m_elements[i][col] and self.m_elements[i][col].m_needDigTime > 0) or (self.m_droppingElements[i][col]) then
+        if (self.m_elements[i][col]         and self.m_elements[i][col].m_needDigTime > 0) or
+           (self.m_droppingElements[i][col] and self.m_droppingElements[i][col].m_needDigTime > 0) then
             lines = (row-1) - i
             break
         end
     end
     
-    if 0 == lines then return end
+    if 0 == lines then
+        print('rollMap err, 0 lines need to be rolled')
+        local dropEvent = cc.EventCustom:new("Dropping")
+        dropEvent.active = false
+        cc.Director:getInstance():getEventDispatcher():dispatchEvent(dropEvent)
+    end
 
     self:addLines(lines)
     local diff = cc.p(0, lines*self.elSize.height)
