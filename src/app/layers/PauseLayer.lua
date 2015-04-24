@@ -58,6 +58,7 @@ function PauseLayer:ctor()
 --            local resumeEvent = cc.EventCustom:new("resume game")
 --            cc.Director:getInstance():getEventDispatcher():dispatchEvent(resumeEvent)
 
+            audio.resumeMusic()
             cc.Director:getInstance():popScene()
         end)
         :align(PAUSE_PANEL.continue.align, PAUSE_PANEL.continue.pos.x, PAUSE_PANEL.continue.pos.y)

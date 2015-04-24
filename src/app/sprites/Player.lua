@@ -75,7 +75,7 @@ function Player:update()
     --是否获取到道具或者被砖块砸到
     local center, el = self:detectMap('center')
     if center == 'element' then
-        if el.m_type.isBrick then
+        if el.m_type.needDigTime > 0 then
             self:die()
         else
             local event = cc.EventCustom:new("remove_element")
@@ -86,6 +86,8 @@ function Player:update()
 end
 
 function Player:gainProp(el)
+    audio.playSound('audio/getProp.wav')
+    
     if el.m_type == elements.oxygen then
         print('oxygen')
         self.oxygenVol = self.oxygenVol + 10
@@ -179,6 +181,7 @@ function Player:dig(target, dir)
 
     --播放dig动画
     self.digging = true
+    audio.playSound('audio/dig.wav')
     
     self.oxygenVol = self.oxygenVol - 1
     local event = cc.EventCustom:new("update hub")
@@ -269,6 +272,7 @@ function Player:rebirth()
     
     self.dead = false
     self.oxygenVol = DataManager.getCurrProperty('hp')
+    audio.resumeMusic()
 
     --向上挖掘
     local temp = self.digThrough

@@ -23,6 +23,14 @@ function MainScene:ctor()
     self.uiLayer = MainUILayer.new()    
 
     self:addChild(self.uiLayer)
+    
+    audio.preloadMusic('audio/mainSceneBG.mp3')
+    audio.preloadMusic('audio/gameSceneBG.mp3')
+    audio.preloadSound('audio/dig.wav')
+    audio.preloadSound('audio/getProp.wav')
+    
+    audio.playMusic('audio/mainSceneBG.mp3',true)
+    audio.setMusicVolume(0.2)
 
     cc(self):addComponent("components.behavior.EventProtocol"):exportMethods()
     self:addEventListener("GAME_START",handler(self,self.gameStart))

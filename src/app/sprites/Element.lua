@@ -264,6 +264,7 @@ function Element:die()
                 self:removeFromParent(true)
             end)))
     else
+        gainProp()
         self:runAction(cc.Sequence:create(cc.FadeOut:create(0.6),
         cc.CallFunc:create(function()
             self:removeFromParent(true)

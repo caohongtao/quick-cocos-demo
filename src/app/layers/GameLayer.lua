@@ -34,9 +34,15 @@ function GameLayer:ctor()
     
     local dieListener = cc.EventListenerCustom:create("player die", handler(self,self.playerDie))
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(dieListener, self)
+    
+    audio.stopMusic()
+    audio.playMusic('audio/gameSceneBG.mp3',true)
+    audio.setMusicVolume(0.2)
 end
 
 function GameLayer:pauseGame()
+    audio.pauseMusic()
+    
     local pauseScene = display.newScene('pauseScene')
     pauseScene:addChild(self:captureScreen())
     
@@ -48,7 +54,8 @@ function GameLayer:pauseGame()
 end
 
 function GameLayer:playerDie(event)
-
+    audio.pauseMusic()
+    
     local deadScene = display.newScene('deadScene')
     deadScene:addChild(self:captureScreen())
 
