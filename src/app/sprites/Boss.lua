@@ -15,7 +15,15 @@ function Boss:ctor(player, step)
     self:setSpriteFrame('she0001.png')
     self:setPosition(display.cx, display.cy + 2*self.step)
     self:addAnimation()
-    transition.playAnimationForever(self, display.getAnimationCache("boss-advance"))
+    self.animateAction = transition.playAnimationForever(self, display.getAnimationCache("boss-advance"))
+    
+    self.dizzyEffect = cc.Node:create():addTo(self)
+    self.dizzyEffect:setPosition(80,75)
+    local dizzyEffectLeft = display.newSprite('#dizzy_effect.png',-22,0):addTo(self.dizzyEffect)
+    dizzyEffectLeft:runAction(cc.RepeatForever:create(cc.RotateBy:create(1,360)))
+    local dizzyEffectRight = display.newSprite('#dizzy_effect.png',22,0):addTo(self.dizzyEffect)
+    dizzyEffectRight:runAction(cc.RepeatForever:create(cc.RotateBy:create(1,360)))
+    self.dizzyEffect:setVisible(false)
     
 --    self.advanceTimer = self:getScheduler():scheduleScriptFunc(handler(self, self.advance), gamePara.bossMoveInterval, false)
     local beatBackListener = cc.EventListenerCustom:create("beat_back_boss", function (event) self:recede(event.stepCnt) end)
@@ -92,10 +100,19 @@ function Boss:shockDizzy(second)
     
     if self.advanceAction then self:stopAction(self.advanceAction) end
     
+    if self.animateAction then
+        self:stopAction(self.animateAction)
+        self.animateAction = nil
+        self:setSpriteFrame('she0002.png')
+    end
+    
+    self.dizzyEffect:setVisible(true)
     self.dizzyAction = cc.Sequence:create(
         cc.JumpBy:create(second,cc.p(0,0),30,20),
         cc.CallFunc:create(function()
             self.dizzy = false
+            self.dizzyEffect:setVisible(false)
+            self.animateAction = transition.playAnimationForever(self, display.getAnimationCache("boss-advance"))
             self:advance()
         end))
         

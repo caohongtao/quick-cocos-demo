@@ -437,7 +437,7 @@ function PlayLayer:rollMap(event)
             cc.Director:getInstance():getEventDispatcher():dispatchEvent(dropEvent)
 
             
-            self:removeLines({bossPos = cc.p(display.cx, 2*display.cy)})
+            self:removeLines({bossPos = cc.p(display.cx, 1.2*display.cy)})
         end))
 
     self.map:runAction(moveAction)

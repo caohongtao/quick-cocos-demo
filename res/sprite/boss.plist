@@ -4,10 +4,23 @@
     <dict>
         <key>frames</key>
         <dict>
+            <key>dizzy_effect.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,2},{26,28}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{26,28}}</string>
+                <key>sourceSize</key>
+                <string>{26,28}</string>
+            </dict>
             <key>she0001.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,2},{150,450}}</string>
+                <string>{{30,2},{150,450}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -20,7 +33,7 @@
             <key>she0002.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{154,2},{150,450}}</string>
+                <string>{{182,2},{150,450}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -33,7 +46,7 @@
             <key>she0003.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{306,2},{150,450}}</string>
+                <string>{{334,2},{150,450}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -79,7 +92,7 @@
             <key>size</key>
             <string>{512,1024}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:7de64115d8465c6c9775adeb9b5b96bb:05490df3f3d1497b30972f30ab1c2cda:130860349884e9db32a7002f801c74f9$</string>
+            <string>$TexturePacker:SmartUpdate:8060e22fb82208ea07895a8164e7637c:5826f1f3b81097196ddc5b2025fb2c4e:130860349884e9db32a7002f801c74f9$</string>
             <key>textureFileName</key>
             <string>boss.png</string>
         </dict>
