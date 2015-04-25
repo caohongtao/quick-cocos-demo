@@ -17,27 +17,26 @@ function GameLayer:ctor()
     cc.SpriteFrameCache:getInstance():addSpriteFrames('sprite/crush.plist', 'sprite/crush.png')
     cc.SpriteFrameCache:getInstance():addSpriteFrames('sprite/fart.plist', 'sprite/fart.png')
     cc.SpriteFrameCache:getInstance():addSpriteFrames('sprite/explode.plist', 'sprite/explode.png')
+
+    local pauseListener = cc.EventListenerCustom:create("pause game", handler(self,self.pauseGame))
+    local dieListener = cc.EventListenerCustom:create("player die", handler(self,self.playerDie))
+    local adjustMapListener = cc.EventListenerCustom:create("adjust map", handler(self,self.adjustMapStrategy))
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(pauseListener, self)
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(dieListener, self)
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(adjustMapListener, self)
     
     local backgroudLayer = BackgroundLayer.new()
     backgroudLayer:setPosition(display.left,display.bottom)
     backgroudLayer:setAnchorPoint(0,0)
     self:addChild(backgroudLayer)
     
+    self:adjustMapStrategy({stage = 1})
     local playLayer = PlayLayer.new()
     self:addChild(playLayer)
     
     local hubLayer = HubLayer.new()
     self:addChild(hubLayer)
 
-    local pauseListener = cc.EventListenerCustom:create("pause game", handler(self,self.pauseGame))
-    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(pauseListener, self)
-    
-    local dieListener = cc.EventListenerCustom:create("player die", handler(self,self.playerDie))
-    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(dieListener, self)
-    
-    local adjustMapListener = cc.EventListenerCustom:create("adjust map", handler(self,self.adjustMapStrategy))
-    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(adjustMapListener, self)    
-    
     audio.stopMusic()
     audio.playMusic('audio/gameSceneBG.mp3',true)
     audio.setMusicVolume(0.2)
@@ -86,8 +85,19 @@ function GameLayer:captureScreen()
 end
 
 function GameLayer:adjustMapStrategy(event)
-    local deepth = event.deepth
+    local mode = mapStrategys.sequence[event.stage]
+    local strategy = mapStrategys[mode][math.random(1,#mapStrategys[mode])]
     
+    local totalProbability = 0
+    for k, v in pairs(elements) do
+        local probability = strategy[k]
+        if not v.isBrick then
+            probability = probability * DataManager.getCurrProperty('luck') * 10
+        end
+        totalProbability = totalProbability + probability
+        v.IntervalEnd = totalProbability
+    end
+    mapStrategys.totalProbability = totalProbability
 end
 
 function GameLayer:stub()

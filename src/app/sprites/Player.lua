@@ -300,6 +300,7 @@ function Player:rebirth()
 end
 
 function Player:increaseDeepth()
+    self.mapStage = 1
     local current = coroutine.running()
     
     local dropSpeed = gamePara.baseDropDuration / DataManager.getCurrProperty('speed')
@@ -321,6 +322,13 @@ function Player:increaseDeepth()
             event.type = 'deepth'
             event.data = self.deepth
             cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
+            
+            if math.ceil(self.deepth / 100) > self.mapStage then
+            	self.mapStage = self.mapStage + 1
+                local event = cc.EventCustom:new("adjust map")
+                event.stage = self.mapStage
+                cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
+            end
         end
         
         coroutine.yield()

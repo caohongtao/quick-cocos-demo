@@ -84,19 +84,8 @@ function Element:create(row, col ,type)
 end
 
 function Element:getTypeAccordProbability()
-    if not totalProbability then
-        totalProbability = 0
-        for _, element in pairs(elements) do
-            local probability = element.probability
-            if not element.isBrick then
-                probability = probability * DataManager.getCurrProperty('luck') * 10
-            end
-            totalProbability = totalProbability + probability
-            element.IntervalEnd = totalProbability
-		end
-	end
 	
-    local random = math.random(0,totalProbability)
+    local random = math.random(0,mapStrategys.totalProbability)
     for _, element in pairs(elements) do
         if random <= element.IntervalEnd then
         	return element

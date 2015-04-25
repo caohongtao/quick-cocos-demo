@@ -73,6 +73,7 @@ function PlayLayer:showElementInfo()
 end
 
 function PlayLayer:initMap()
+
     Element:addAnimation()
     --以宽度为基准缩放
     local elActualSize = (display.width - self.mapOriginPoint.x * 2) / self.mapSize.x
