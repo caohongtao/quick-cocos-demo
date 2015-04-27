@@ -134,7 +134,7 @@ function PlayLayer:removeAndDrop(block)
 
                     --                neighbour.touched = true
                     if (key == 'up') or
-                        (key ~= 'up' and neighbour.m_type == curr.m_type) then
+                        (key ~= 'up' and curr.m_type.isBrick and neighbour.m_type == curr.m_type) then
 
                         table.insert(unSupportedQueue,neighbour)
                     end
@@ -268,17 +268,17 @@ function PlayLayer:checkNeedSupported(el)
     row, col = self:positionToMatrix(elPos.x, elPos.y - self.elSize.height / 2 - JUDGE_RANGE)
     local down = self.m_elements[row][col]
 
-    --2.下方有supported的元素，或者左,右,上有supported的且type一样的元素，或已经掉到最后一行，都停止掉落
+    --2.下方有supported的元素，或者左,右,上有supported的且type一样(且为砖块)的元素，或已经掉到最后一行，都停止掉落
     local isSopported = false
-    if left and left.m_type == el.m_type and left:isStable()then
+    if left and (left.m_type == el.m_type and el.m_type.isBrick) and left:isStable()then
         isSopported = true
     end
 
-    if right and right.m_type == el.m_type and right:isStable() then
+    if right and (right.m_type == el.m_type and el.m_type.isBrick) and right:isStable() then
         isSopported = true
     end
 
-    if up and up.m_type == el.m_type and up:isStable() then
+    if up and (up.m_type == el.m_type and el.m_type.isBrick) and up:isStable() then
         isSopported = true
     end
 
@@ -315,7 +315,7 @@ function PlayLayer:checkNeedSupported(el)
                 if neighbour then
 
                     if (key == 'up' and not neighbour:isStable()) or
-                        (key ~= 'up' and not neighbour:isStable() and neighbour.m_type == curr.m_type) then
+                        (key ~= 'up' and not neighbour:isStable() and (neighbour.m_type == curr.m_type and curr.m_type.isBrick)) then
 
                         table.insert(supportedQueue,neighbour)
                     end
@@ -384,7 +384,9 @@ function PlayLayer:checkDroppingElements()
     end)
 
     self:forEachElementOfMatrix(self.m_elements, function (el)
-        self:checkNeedRemove(el)
+        if el.m_type.isBrick then
+            self:checkNeedRemove(el)
+        end
     end)
 end
 
@@ -575,11 +577,15 @@ function PlayLayer:digAt(event)
         
     --挖单个元素
     else
+        --地面上的元素
         if target:isStable() then
-            --地面上的元素
-            self:removeAndDrop(self:getBlock(target))
+            if target.m_type.isBrick then
+                self:removeAndDrop(self:getBlock(target))
+            else
+                self:removeAndDrop({target})
+            end
+        --正在shake或者drop的元素,只删除单个而不是整块，并且不检查上方是否需要掉落
         else
-            --正在shake或者drop的元素,只删除单个而不是整块，并且不检查上方是否需要掉落
             self:removeElement(target)
         end
 
