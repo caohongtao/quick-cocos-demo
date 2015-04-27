@@ -8,8 +8,8 @@ function QuestLayer:ctor()
        cc(self):addComponent("components.behavior.EventProtocol"):exportMethods()
 
     -- 开始游戏按键
-        cc.ui.UIPushButton.new({normal="img/replay1.png",
-                                pressed ="img/replay2.png",
+        cc.ui.UIPushButton.new({normal="ui/congxinkaishi.png",
+--                                pressed ="img/replay2.png",
                                 scale9 = false})
                                 
         :setButtonSize(140, 45)

@@ -159,7 +159,8 @@ function Player:reduceOxygen()
     end
     
     if self.oxygenVol == 30 then
-        audio.playSound('audio/alert.mp3')
+        local event = cc.EventCustom:new("alert oxygen")
+        cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
     end
     
     local event = cc.EventCustom:new("update hub")
@@ -167,7 +168,6 @@ function Player:reduceOxygen()
     event.data = self.oxygenVol
     cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
 end
-
 
 function Player:drop()
     if not self.dropping then

@@ -150,17 +150,17 @@ elements = {
     stone1 = {
         texture = "stone1.png",
         probability = 1,
-        needDigTime = 1,
+        needDigTime = 3,
     },
     stone2 = {
         texture = "stone2.png",
         probability = 1,
-        needDigTime = 2,
+        needDigTime = 4,
     },
     stone3 = {
         texture = "stone3.png",
         probability = 1,
-        needDigTime = 3,
+        needDigTime = 5,
     },
 }
 

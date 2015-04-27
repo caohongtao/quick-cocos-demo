@@ -94,6 +94,10 @@ function HubLayer:ctor()
     local updateHubListener = cc.EventListenerCustom:create("update hub", handler(self,self.updateDate))
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(updateHubListener, self)
     
+    local alertOxygenListener = cc.EventListenerCustom:create("alert oxygen", handler(self,self.alertOxygen))
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(alertOxygenListener, self)
+        
+    
     self:setTouchSwallowEnabled(false)
 end
 
@@ -215,4 +219,17 @@ function HubLayer:updateDate(event)
         self.skillColaLabel:setString(DataManager.get(DataManager.ITEM_3))
     end
 
+end
+
+function HubLayer:alertOxygen()
+    local duration = 0.6
+    self.oxygenLabel:runAction(cc.Sequence:create(
+        cc.ScaleBy:create(duration,2),
+        cc.ScaleBy:create(duration,0.5),
+        cc.ScaleBy:create(duration,2),
+        cc.ScaleBy:create(duration,0.5),
+        cc.ScaleBy:create(duration,2),
+        cc.ScaleBy:create(duration,0.5)
+    ))
+    audio.playSound('audio/alert.mp3')
 end

@@ -7,8 +7,8 @@ function MainUILayer:ctor()
        cc(self):addComponent("components.behavior.EventProtocol"):exportMethods()
    
          -- 开始游戏按键
-         self._b = cc.ui.UIPushButton.new({normal="ui/replay1.png",
-        pressed ="ui/replay2.png",
+         self._b = cc.ui.UIPushButton.new({normal="ui/congxinkaishi.png",
+--        pressed ="ui/replay2.png",
         scale9 = false})
 
         :setButtonSize(140, 45)
