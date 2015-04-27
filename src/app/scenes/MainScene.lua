@@ -62,6 +62,8 @@ function MainScene:gameStart(event)
     self:addChild(self.gameLayer)
     self.uiLayer:setVisible(false)
 
+    audio.rewindMusic()
+    audio.resumeMusic()
 end
 
 

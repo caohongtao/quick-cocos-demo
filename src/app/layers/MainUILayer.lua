@@ -35,6 +35,9 @@ function MainUILayer:ctor()
     
 
 --            self:dispatchEvent({name = "GAME_START"})
+            audio.playMusic('audio/gameSceneBG.mp3',true)
+            audio.setMusicVolume(0.2)
+            audio.pauseMusic()
             self:getParent():dispatchEvent({name = "GAME_START"})
         end)
 
