@@ -323,7 +323,7 @@ function Player:increaseDeepth()
             event.data = self.deepth
             cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
             
-            if math.ceil(self.deepth / 100) > self.mapStage then
+            if math.ceil(self.deepth / 500) > self.mapStage then
             	self.mapStage = self.mapStage + 1
                 local event = cc.EventCustom:new("adjust map")
                 event.stage = self.mapStage

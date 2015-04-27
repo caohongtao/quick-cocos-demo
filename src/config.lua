@@ -185,22 +185,36 @@ gamePara = {
 mapStrategys = {
 --蓝砖，绿砖，黄砖，紫砖，红砖，氧气，银钻，金钻，宝箱，金币，宝石，炸弹，蘑菇，坚果，可乐，玩具
     easy = {
-        {blue = 100,green = 100,yellow = 0,purple = 0,red = 0,oxygen = 1,silverDrill = 0,goldenDrill = 0,box = 0,coin = 1,gem = 1,timebomb = 0,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1 = 1,stone2 = 1,stone3 = 1,},
-        {blue = 0,green = 100,yellow = 100,purple = 0,red = 0,oxygen = 1,silverDrill = 0,goldenDrill = 0,box = 0,coin = 1,gem = 1,timebomb = 0,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1 = 1,stone2 = 1,stone3 = 1,},
-        {blue = 0,green = 0,yellow = 0,purple = 100,red = 100,oxygen = 1,silverDrill = 0,goldenDrill = 0,box = 0,coin = 1,gem = 1,timebomb = 0,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1 = 1,stone2 = 1,stone3 = 1,},
-        {blue = 0,green = 100,yellow = 0,purple = 0,red = 100,oxygen = 1,silverDrill = 0,goldenDrill = 0,box = 0,coin = 1,gem = 1,timebomb = 0,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1 = 1,stone2 = 1,stone3 = 1,},
+        {blue = 100,green = 100,yellow = 100,purple = 0,red = 0,oxygen = 2,silverDrill = 2,goldenDrill = 1,box = 1,coin = 2,gem = 1,timebomb = 1,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1=5,stone2=0,stone3=0},
+        {blue = 100,green = 100,yellow = 0,purple = 100,red = 0,oxygen = 2,silverDrill = 2,goldenDrill = 1,box = 1,coin = 2,gem = 1,timebomb = 1,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1=5,stone2=0,stone3=0},
+        {blue = 100,green = 100,yellow = 0,purple = 0,red = 100,oxygen = 2,silverDrill = 2,goldenDrill = 1,box = 1,coin = 2,gem = 1,timebomb = 1,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1=5,stone2=0,stone3=0},
+        {blue = 100,green = 0,yellow = 0,purple = 100,red = 100,oxygen = 2,silverDrill = 2,goldenDrill = 1,box = 1,coin = 2,gem = 1,timebomb = 1,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1=5,stone2=0,stone3=0},
+        {blue = 100,green = 100,yellow = 100,purple = 0,red = 0,oxygen = 2,silverDrill = 2,goldenDrill = 1,box = 1,coin = 1,gem = 1,timebomb = 1,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1=5,stone2=0,stone3=0},
+        {blue = 0,green = 100,yellow = 0,purple = 100,red = 100,oxygen = 2,silverDrill = 2,goldenDrill = 1,box = 2,coin = 1,gem = 1,timebomb = 1,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1=5,stone2=0,stone3=0},
+        {blue = 0,green = 0,yellow = 100,purple = 100,red = 100,oxygen = 2,silverDrill = 2,goldenDrill = 1,box = 2,coin = 1,gem = 1,timebomb = 1,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1=5,stone2=0,stone3=0},
+        {blue = 0,green = 100,yellow = 100,purple = 0,red = 100,oxygen = 2,silverDrill = 2,goldenDrill = 1,box = 2,coin = 1,gem = 1,timebomb = 1,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1=5,stone2=0,stone3=0},
+
     },
     normal = {
-        {blue = 100,green = 100,yellow = 100,purple = 0,red = 0,oxygen = 1,silverDrill = 0,goldenDrill = 0,box = 0,coin = 1,gem = 1,timebomb = 0,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1 = 1,stone2 = 1,stone3 = 1,},
-        {blue = 100,green = 100,yellow = 100,purple = 0,red = 0,oxygen = 1,silverDrill = 0,goldenDrill = 0,box = 0,coin = 1,gem = 1,timebomb = 0,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1 = 1,stone2 = 1,stone3 = 1,},
-        {blue = 100,green = 100,yellow = 100,purple = 0,red = 0,oxygen = 1,silverDrill = 0,goldenDrill = 0,box = 0,coin = 1,gem = 1,timebomb = 0,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1 = 1,stone2 = 1,stone3 = 1,},
-        {blue = 100,green = 100,yellow = 100,purple = 0,red = 0,oxygen = 1,silverDrill = 0,goldenDrill = 0,box = 0,coin = 1,gem = 1,timebomb = 0,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1 = 1,stone2 = 1,stone3 = 1,},
+        {blue = 0,green = 100,yellow = 100,purple = 100,red = 100,oxygen = 2,silverDrill = 1,goldenDrill = 1,box = 1,coin = 2,gem = 1,timebomb = 1,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1=5,stone2=5,stone3=3},
+        {blue = 100,green = 0,yellow = 100,purple = 100,red = 100,oxygen = 2,silverDrill = 1,goldenDrill = 1,box = 1,coin = 2,gem = 1,timebomb = 1,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1=5,stone2=5,stone3=3},
+        {blue = 100,green = 100,yellow = 0,purple = 100,red = 100,oxygen = 2,silverDrill = 1,goldenDrill = 1,box = 2,coin = 2,gem = 1,timebomb = 1,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1=5,stone2=5,stone3=3},
+        {blue = 100,green = 100,yellow = 100,purple = 0,red = 100,oxygen = 2,silverDrill = 1,goldenDrill = 1,box = 2,coin = 1,gem = 1,timebomb = 1,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1=5,stone2=5,stone3=3},
+        {blue = 100,green = 100,yellow = 100,purple = 100,red = 0,oxygen = 2,silverDrill = 1,goldenDrill = 1,box = 1,coin = 1,gem = 1,timebomb = 1,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1=5,stone2=5,stone3=3},
     },
     hard = {
-        {blue = 1,green = 1,yellow = 1,purple = 1,red = 1,oxygen = 1,silverDrill = 1,goldenDrill = 1,box = 1,coin = 1,gem = 1,timebomb = 1,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1 = 1,stone2 = 1,stone3 = 1,},
-        {blue = 1,green = 1,yellow = 1,purple = 1,red = 1,oxygen = 1,silverDrill = 1,goldenDrill = 1,box = 1,coin = 1,gem = 1,timebomb = 1,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1 = 1,stone2 = 1,stone3 = 1,},
-        {blue = 1,green = 1,yellow = 1,purple = 1,red = 1,oxygen = 1,silverDrill = 1,goldenDrill = 1,box = 1,coin = 1,gem = 1,timebomb = 1,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1 = 1,stone2 = 1,stone3 = 1,},
-        {blue = 1,green = 1,yellow = 1,purple = 1,red = 1,oxygen = 1,silverDrill = 1,goldenDrill = 1,box = 1,coin = 1,gem = 1,timebomb = 1,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1 = 1,stone2 = 1,stone3 = 1,},
+        {blue = 100,green = 100,yellow = 100,purple = 100,red = 100,oxygen = 1,silverDrill = 1,goldenDrill = 1,box = 1,coin = 1,gem = 1,timebomb = 1,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1=15,stone2=10,stone3=5},
     },
+
+    happy = {
+        {blue = 100,green = 100,yellow = 0,pgreen = 0,red = 0,oxygen = 1,silverDrill = 1,goldenDrill = 2,box = 3,coin = 3,gem = 1,timebomb = 1,mushroom = 3,nut = 3,cola = 3,toy = 4,stone1=3,stone2=2,stone3=1},
+        {blue = 100,green = 0,yellow = 0,purple = 0,red = 100,oxygen = 1,silverDrill = 1,goldenDrill = 2,box = 3,coin = 3,gem = 1,timebomb = 1,mushroom = 3,nut = 3,cola = 3,toy = 4,stone1=3,stone2=2,stone3=1},
+        {blue = 0,green = 100,yellow = 0,purple = 100,red = 0,oxygen = 1,silverDrill = 1,goldenDrill = 2,box = 3,coin = 3,gem = 1,timebomb = 1,mushroom = 3,nut = 3,cola = 3,toy = 4,stone1=3,stone2=2,stone3=1},
+        {blue = 0,green = 0,yellow = 100,purple = 0,red = 100,oxygen = 1,silverDrill = 2,goldenDrill = 1,box = 3,coin = 3,gem = 1,timebomb = 3,mushroom = 1,nut = 1,cola = 1,toy = 4,stone1=3,stone2=2,stone3=1},
+        {blue = 100,green = 0,yellow = 0,purple = 100,red = 0,oxygen = 2,silverDrill = 2,goldenDrill = 1,box = 3,coin = 3,gem = 3,timebomb = 3,mushroom = 1,nut = 1,cola = 1,toy = 4,stone1=3,stone2=2,stone3=1},
+        {blue = 0,green = 100,yellow = 0,purple = 0,red = 100,oxygen = 2,silverDrill = 2,goldenDrill = 1,box = 3,coin = 3,gem = 3,timebomb = 3,mushroom = 1,nut = 1,cola = 1,toy = 4,stone1=3,stone2=2,stone3=1},
+        {blue = 0,green = 0,yellow = 100,purple = 100,red = 0,oxygen = 2,silverDrill = 2,goldenDrill = 1,box = 3,coin = 3,gem = 3,timebomb = 3,mushroom = 1,nut = 1,cola = 1,toy = 4,stone1=3,stone2=2,stone3=1},
+    },
+
     sequence = {'easy','normal','hard','easy','normal','hard','easy','normal','hard','easy','normal','hard','easy','normal','easy','normal','hard','hard','easy','normal','hard','easy','normal','hard',}
 }

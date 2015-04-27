@@ -56,7 +56,7 @@
                 <key>sourceSize</key>
                 <string>{54,54}</string>
             </dict>
-            <key>coin.png</key>
+            <key>box_opened.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,58},{54,54}}</string>
@@ -69,7 +69,7 @@
                 <key>sourceSize</key>
                 <string>{54,54}</string>
             </dict>
-            <key>cola.png</key>
+            <key>coin.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{58,58},{54,54}}</string>
@@ -82,7 +82,7 @@
                 <key>sourceSize</key>
                 <string>{54,54}</string>
             </dict>
-            <key>gem.png</key>
+            <key>cola.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{114,58},{54,54}}</string>
@@ -95,7 +95,7 @@
                 <key>sourceSize</key>
                 <string>{54,54}</string>
             </dict>
-            <key>goldenDrill.png</key>
+            <key>gem.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{170,58},{54,54}}</string>
@@ -108,7 +108,7 @@
                 <key>sourceSize</key>
                 <string>{54,54}</string>
             </dict>
-            <key>green1.png</key>
+            <key>goldenDrill.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,114},{54,54}}</string>
@@ -121,7 +121,7 @@
                 <key>sourceSize</key>
                 <string>{54,54}</string>
             </dict>
-            <key>green2.png</key>
+            <key>green1.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{58,114},{54,54}}</string>
@@ -134,7 +134,7 @@
                 <key>sourceSize</key>
                 <string>{54,54}</string>
             </dict>
-            <key>green3.png</key>
+            <key>green2.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{114,114},{54,54}}</string>
@@ -147,7 +147,7 @@
                 <key>sourceSize</key>
                 <string>{54,54}</string>
             </dict>
-            <key>mushroom.png</key>
+            <key>green3.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{170,114},{54,54}}</string>
@@ -160,7 +160,7 @@
                 <key>sourceSize</key>
                 <string>{54,54}</string>
             </dict>
-            <key>nut.png</key>
+            <key>mushroom.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,170},{54,54}}</string>
@@ -173,7 +173,7 @@
                 <key>sourceSize</key>
                 <string>{54,54}</string>
             </dict>
-            <key>oxygen.png</key>
+            <key>nut.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{58,170},{54,54}}</string>
@@ -186,7 +186,7 @@
                 <key>sourceSize</key>
                 <string>{54,54}</string>
             </dict>
-            <key>purple1.png</key>
+            <key>oxygen.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{114,170},{54,54}}</string>
@@ -199,7 +199,7 @@
                 <key>sourceSize</key>
                 <string>{54,54}</string>
             </dict>
-            <key>purple2.png</key>
+            <key>purple1.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{170,170},{54,54}}</string>
@@ -212,7 +212,7 @@
                 <key>sourceSize</key>
                 <string>{54,54}</string>
             </dict>
-            <key>purple3.png</key>
+            <key>purple2.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,226},{54,54}}</string>
@@ -225,7 +225,7 @@
                 <key>sourceSize</key>
                 <string>{54,54}</string>
             </dict>
-            <key>red1.png</key>
+            <key>purple3.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{58,226},{54,54}}</string>
@@ -238,7 +238,7 @@
                 <key>sourceSize</key>
                 <string>{54,54}</string>
             </dict>
-            <key>red2.png</key>
+            <key>red1.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{114,226},{54,54}}</string>
@@ -251,7 +251,7 @@
                 <key>sourceSize</key>
                 <string>{54,54}</string>
             </dict>
-            <key>red3.png</key>
+            <key>red2.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{170,226},{54,54}}</string>
@@ -264,7 +264,7 @@
                 <key>sourceSize</key>
                 <string>{54,54}</string>
             </dict>
-            <key>silverDrill.png</key>
+            <key>red3.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,282},{54,54}}</string>
@@ -277,7 +277,7 @@
                 <key>sourceSize</key>
                 <string>{54,54}</string>
             </dict>
-            <key>stone1.png</key>
+            <key>silverDrill.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{58,282},{54,54}}</string>
@@ -290,7 +290,7 @@
                 <key>sourceSize</key>
                 <string>{54,54}</string>
             </dict>
-            <key>stone2.png</key>
+            <key>stone1.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{114,282},{54,54}}</string>
@@ -303,7 +303,7 @@
                 <key>sourceSize</key>
                 <string>{54,54}</string>
             </dict>
-            <key>stone3.png</key>
+            <key>stone2.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{170,282},{54,54}}</string>
@@ -316,7 +316,7 @@
                 <key>sourceSize</key>
                 <string>{54,54}</string>
             </dict>
-            <key>timebomb.png</key>
+            <key>stone3.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,338},{54,54}}</string>
@@ -329,7 +329,7 @@
                 <key>sourceSize</key>
                 <string>{54,54}</string>
             </dict>
-            <key>toy.png</key>
+            <key>timebomb.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{58,338},{54,54}}</string>
@@ -342,7 +342,7 @@
                 <key>sourceSize</key>
                 <string>{54,54}</string>
             </dict>
-            <key>yellow1.png</key>
+            <key>toy.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{114,338},{54,54}}</string>
@@ -355,7 +355,7 @@
                 <key>sourceSize</key>
                 <string>{54,54}</string>
             </dict>
-            <key>yellow2.png</key>
+            <key>yellow1.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{170,338},{54,54}}</string>
@@ -368,10 +368,23 @@
                 <key>sourceSize</key>
                 <string>{54,54}</string>
             </dict>
-            <key>yellow3.png</key>
+            <key>yellow2.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,394},{54,54}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{54,54}}</string>
+                <key>sourceSize</key>
+                <string>{54,54}</string>
+            </dict>
+            <key>yellow3.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{58,394},{54,54}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -391,7 +404,7 @@
             <key>size</key>
             <string>{256,512}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:d6a55b8bd9aab9b9cde8ecc1513c0a95:c42224ec590235fac9561e49d3caad55:cc4d159020aeb80598522deed8e12f2e$</string>
+            <string>$TexturePacker:SmartUpdate:d421d8e6612fddf63ae6ba361abbb7cc:81cccaf2682db73d145232e9b11a9145:cc4d159020aeb80598522deed8e12f2e$</string>
             <key>textureFileName</key>
             <string>elements.png</string>
         </dict>
