@@ -1,8 +1,8 @@
 BackgroundLayer = class("BackgroundLayer",  function()
     return display.newLayer("BackgroundLayer")
 end)
-local FAR_SPEED     = 80
-local MIDDLE_SPEED  = 120
+local FAR_SPEED     = 160
+local MIDDLE_SPEED  = 260
 function BackgroundLayer:ctor()
     self.needScroll = false
         

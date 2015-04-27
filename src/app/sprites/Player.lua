@@ -171,7 +171,7 @@ end
 
 function Player:drop()
     if not self.dropping then
-        self.dropping = true
+--        self.dropping = true
         
         local event = cc.EventCustom:new("roll_map")
         event.playerPos = self:convertToWorldSpaceAR(cc.p(0,0))

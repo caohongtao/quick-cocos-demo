@@ -423,11 +423,11 @@ function PlayLayer:rollMap(event)
     local diff = cc.p(0, lines*self.elSize.height)
     local dropSpeed = gamePara.baseDropDuration / DataManager.getCurrProperty('speed')
     local duration = diff.y / 100 * dropSpeed
---
---    local eventDispatcher = cc.Director:getInstance():getEventDispatcher()
---    local dropEvent = cc.EventCustom:new("Dropping")
---    dropEvent.active = true
---    eventDispatcher:dispatchEvent(dropEvent)
+
+    local eventDispatcher = cc.Director:getInstance():getEventDispatcher()
+    local dropEvent = cc.EventCustom:new("Dropping")
+    dropEvent.active = true
+    eventDispatcher:dispatchEvent(dropEvent)
 
     local moveAction = cc.Sequence:create(
         cc.MoveBy:create(duration,diff),
