@@ -29,7 +29,20 @@ function MainScene:ctor()
     audio.preloadSound('audio/dig.wav')
     audio.preloadSound('audio/getProp.wav')
     
-    audio.playMusic('audio/mainSceneBG.mp3',true)
+    --cocos的简单声音引擎测出bug(当两次连续调用playMusic播放同一首music时，第二次会播放不出来。此现象只在android客户端出现。因此此处封装特殊函数，记录正在播放的music)
+    audio.myPlayMusic = function(file, isLoop)
+        if file == audio.__currMusic then
+            if not audio.isMusicPlaying() then
+                audio.rewindMusic()
+                audio.resumeMusic()
+            end
+        else
+            audio.playMusic(file,isLoop)
+            audio.__currMusic = file
+        end
+    end
+    
+    audio.myPlayMusic('audio/mainSceneBG.mp3',true)
     audio.setMusicVolume(0.2)
 
     cc(self):addComponent("components.behavior.EventProtocol"):exportMethods()
@@ -61,9 +74,6 @@ function MainScene:gameStart(event)
     self.gameLayer = GameLayer.new()
     self:addChild(self.gameLayer)
     self.uiLayer:setVisible(false)
-
-    audio.rewindMusic()
-    audio.resumeMusic()
 end
 
 
@@ -152,7 +162,7 @@ function MainScene:jump2main()
     
     self.uiLayer:setVisible(true)
     
-    
+    audio.myPlayMusic('audio/mainSceneBG.mp3',true)
 end
 
 

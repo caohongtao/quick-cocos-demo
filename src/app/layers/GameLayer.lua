@@ -37,6 +37,7 @@ function GameLayer:ctor()
     local hubLayer = HubLayer.new()
     self:addChild(hubLayer)
 
+    audio.myPlayMusic('audio/gameSceneBG.mp3',true)
 end
 
 function GameLayer:pauseGame()

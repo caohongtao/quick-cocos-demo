@@ -358,7 +358,7 @@ end
 function Player:checkBossCapture(event)
     local bossPos = event.bossPos
     local distance = self:convertToNodeSpaceAR(bossPos)
-    if distance.y < 0 then
+    if distance.y < 6 then
     	self:die()
     end
 end
