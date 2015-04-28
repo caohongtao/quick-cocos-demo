@@ -170,7 +170,7 @@ gamePara = {
     
     baseDropDuration    = 0.2,--移动100像素用时
     baseMoveDuration    = 0.2,
-    baseDigDuration     = 0.3,
+    baseDigDuration     = 0.1,
     
     bossMoveInterval    = 0.5,
     bossMoveStep        = 20,--像素

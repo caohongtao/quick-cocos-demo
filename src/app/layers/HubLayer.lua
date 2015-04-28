@@ -61,31 +61,30 @@ local BOTTOM_BAR = {
     oxygenLabel = {
         UILabelType = cc.ui.UILabel.LABEL_TYPE_BM,
         font        = "fonts/r.fnt",
-        scale       = 0.4,
 --        size        = 60,
         color       = cc.c3b(0, 0, 160),
-        x           = display.cx+7,
-        y           = 22,
+        x           = 65,
+        y           = 20,
     },
     skill1 = {
         normal = "ui/jineng1.png",
         pressed = "ui/jineng2.png",
-        pos = {x=9,y=12},
+        pos = {x=141,y=12},
     },
     skill2 = {
         normal = "ui/jineng2.png",
         pressed = "ui/jineng3.png",
-        pos = {x=63,y=12},
+        pos = {x=217,y=12},
     },
     skill3 = {
         normal = "ui/jineng3.png",
         pressed = "ui/jineng1.png",
-        pos = {x=112,y=12},
+        pos = {x=284,y=12},
     },
     buy = {
         normal = "ui/plusup.png",
         pressed = "ui/plusdown.png",
-        pos = {x=458,y=30},
+        pos = {x=458,y=32},
     },
     gemLabel = {
         UILabelType = cc.ui.UILabel.LABEL_TYPE_BM,
@@ -94,8 +93,8 @@ local BOTTOM_BAR = {
         text        = "0",
 --        size        = 30,
         color       = display.COLOR_WHITE,
-        x           = 360,
-        y           = 22,
+        x           = 380,
+        y           = 24,
     },
 }
 function HubLayer:ctor()
@@ -155,7 +154,7 @@ function HubLayer:createBottomBar()
         
     --氧气
     self.oxygenProcess = cc.ProgressTimer:create(cc.Sprite:create('ui/oxygenBar.png')):addTo(self)
-    self.oxygenProcess:setScale(1.7,1.2)
+    self.oxygenProcess:setScale(1.2,1)
     self.oxygenProcess:setType(cc.PROGRESS_TIMER_TYPE_BAR)
     self.oxygenProcess:setPosition(cc.p(BOTTOM_BAR.oxygenLabel.x,BOTTOM_BAR.oxygenLabel.y))
     self.oxygenProcess:setMidpoint(cc.p(0,0.5))
@@ -166,11 +165,11 @@ function HubLayer:createBottomBar()
     oxygenProcessCover:setPosition(cc.p(BOTTOM_BAR.oxygenLabel.x,BOTTOM_BAR.oxygenLabel.y))
     
     self.oxygenLabel = cc.ui.UILabel.new(BOTTOM_BAR.oxygenLabel)
-        :align(display.CENTER, BOTTOM_BAR.oxygenLabel.x, BOTTOM_BAR.oxygenLabel.y + 5)
+        :align(display.CENTER, BOTTOM_BAR.oxygenLabel.x, BOTTOM_BAR.oxygenLabel.y + 3)
         :addTo(self)
     
     self.oxygenLabel:setString(DataManager.getCurrProperty('hp'))
-    self.oxygenLabel:setScale(BOTTOM_BAR.oxygenLabel.scale)
+    self.oxygenLabel:setScale(0.4)
     
     --技能蘑菇
     cc.ui.UIPushButton.new({normal = BOTTOM_BAR.skill1.normal,

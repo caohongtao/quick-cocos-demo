@@ -1,7 +1,7 @@
 Player = class("Player",  function()
     return display.newSprite()
 end)
-local BORN_HEIGHT = 5.5  --人物诞生时候的位置，BORN_HEIGHT个元素的高度。确保出生在某个元素位置。则移动，降落时都按照整行整列计算，就能保确保人物位置一直在某元素的位置。
+local BORN_HEIGHT = 8.5  --人物诞生时候的位置，BORN_HEIGHT个元素的高度。确保出生在某个元素位置。则移动，降落时都按照整行整列计算，就能保确保人物位置一直在某元素的位置。
 local FART_DURATION = 2
 local COLA_JET_DURATION, COLA_JET_FRAMES = 0.2, 6
 
@@ -42,7 +42,7 @@ function Player:ctor(size)
     
     
     cc.SpriteFrameCache:getInstance():addSpriteFrames('sprite/player.plist', 'sprite/player.png')
-    self:setSpriteFrame('yanshu0001.png')
+    self:setSpriteFrame('yanshu0010.png')
     self:setScale(size.width/self:getContentSize().width)
     self:setAnchorPoint(0.5,0.5)
     self:setPosition(display.cx, size.height * BORN_HEIGHT)
@@ -186,12 +186,7 @@ function Player:dig(target, dir)
 
     --播放dig动画
     self.digging = true
-    
-    self.oxygenVol = self.oxygenVol - 1
-    local event = cc.EventCustom:new("update hub")
-    event.type = 'oxygen'
-    event.data = self.oxygenVol
-    cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
+    self:reduceOxygen()
     
     transition.playAnimationOnce(self, display.getAnimationCache("player-dig"))
     local duration = gamePara.baseDigDuration / DataManager.getCurrProperty('speed')
@@ -446,7 +441,7 @@ end
 
 function Player:addAnimation()
     local animationNames = {"dig",}-- "dead"}
-    local animationFrameNum = {20,10}
+    local animationFrameNum = {10,10}
     local duration = gamePara.baseDigDuration / DataManager.getCurrProperty('speed')
     local animationDelay = {duration / animationFrameNum[1], 0.2}
 

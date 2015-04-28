@@ -679,13 +679,13 @@ end
 --        end
 --    end)
 --end
-
+--
 function PlayLayer:initTouchListener()
-    local RADIUS = 25
+    local RADIUS = 32
     local btnPos = {
-            left  = {x=188, y = 76,},
-            down  = {x=258, y = 68,},
-            right = {x=330, y = 76,},
+            left  = {x=150, y = 107,},
+            down  = {x=252, y = 102,},
+            right = {x=358, y = 103,},
           }
     local left  = display.newSprite('ui/leftArrow.png',btnPos.left.x,btnPos.left.y):addTo(self)
     left:setScale(RADIUS*2/left:getContentSize().height)
@@ -723,6 +723,52 @@ function PlayLayer:initTouchListener()
             eventDispatcher:dispatchEvent(touchEvent)
             return true
         end
+    end)
+end
+
+function PlayLayer:initTouchListener2()
+    self:setTouchEnabled(true)
+    self:setTouchMode(cc.TOUCH_MODE_ONE_BY_ONE)
+    self:addNodeEventListener(cc.NODE_TOUCH_EVENT, function(event)
+
+            local OFFSET = 30
+            local touchDir = nil        
+            if event.name == "began"  then 
+
+                if  self._ismoved  ~=true then 
+                    self._ismoved  = true
+                    self._prevX = event.x
+                    self._prevY = event.y    
+                end         
+            end
+
+            if event.name == "moved"  then 
+                if  self._ismoved  ~=true then 
+                    self._ismoved  = true
+                    self._prevX = event.prevX
+                    self._prevY = event.prevY    
+                end     
+            end   
+
+
+            if event.name == "ended" then
+                if math.abs(self._prevX - event.x) < math.abs(self._prevY - event.y)  and  self._prevY - event.y > OFFSET then
+                    touchDir = 'down'
+                elseif event.x < self._prevX  and  self._prevX - event.x > OFFSET then
+                    touchDir = 'left'
+                elseif event.x > self._prevX  and   event.x - self._prevX > OFFSET then
+                    touchDir = 'right'
+                end
+
+                if touchDir then
+                    local eventDispatcher = cc.Director:getInstance():getEventDispatcher()
+                    local touchEvent = cc.EventCustom:new('handle_touch')
+                    touchEvent.touchDir = touchDir
+                    eventDispatcher:dispatchEvent(touchEvent)    
+                end
+                self._ismoved  = false
+            end
+            return true
     end)
 end
 

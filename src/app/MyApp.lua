@@ -1,6 +1,7 @@
 require("config")
 require("cocos.init")
 require("framework.init")
+scheduler = require("framework.scheduler")
 
 local MyApp = class("MyApp", cc.mvc.AppBase)
 

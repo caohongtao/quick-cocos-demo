@@ -46,7 +46,7 @@
             <key>yanshu0004.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{458,2},{150,200}}</string>
+                <string>{{2,204},{150,200}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -59,7 +59,7 @@
             <key>yanshu0005.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{610,2},{150,200}}</string>
+                <string>{{154,204},{150,200}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -72,7 +72,7 @@
             <key>yanshu0006.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{762,2},{150,200}}</string>
+                <string>{{306,204},{150,200}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -85,7 +85,7 @@
             <key>yanshu0007.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,204},{150,200}}</string>
+                <string>{{2,406},{150,200}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -98,7 +98,7 @@
             <key>yanshu0008.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{154,204},{150,200}}</string>
+                <string>{{154,406},{150,200}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -111,7 +111,7 @@
             <key>yanshu0009.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{306,204},{150,200}}</string>
+                <string>{{306,406},{150,200}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -124,137 +124,7 @@
             <key>yanshu0010.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{458,204},{150,200}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{150,200}}</string>
-                <key>sourceSize</key>
-                <string>{150,200}</string>
-            </dict>
-            <key>yanshu0011.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{610,204},{150,200}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{150,200}}</string>
-                <key>sourceSize</key>
-                <string>{150,200}</string>
-            </dict>
-            <key>yanshu0012.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{762,204},{150,200}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{150,200}}</string>
-                <key>sourceSize</key>
-                <string>{150,200}</string>
-            </dict>
-            <key>yanshu0013.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{2,406},{150,200}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{150,200}}</string>
-                <key>sourceSize</key>
-                <string>{150,200}</string>
-            </dict>
-            <key>yanshu0014.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{154,406},{150,200}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{150,200}}</string>
-                <key>sourceSize</key>
-                <string>{150,200}</string>
-            </dict>
-            <key>yanshu0015.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{306,406},{150,200}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{150,200}}</string>
-                <key>sourceSize</key>
-                <string>{150,200}</string>
-            </dict>
-            <key>yanshu0016.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{458,406},{150,200}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{150,200}}</string>
-                <key>sourceSize</key>
-                <string>{150,200}</string>
-            </dict>
-            <key>yanshu0017.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{610,406},{150,200}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{150,200}}</string>
-                <key>sourceSize</key>
-                <string>{150,200}</string>
-            </dict>
-            <key>yanshu0018.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{762,406},{150,200}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{150,200}}</string>
-                <key>sourceSize</key>
-                <string>{150,200}</string>
-            </dict>
-            <key>yanshu0019.png</key>
-            <dict>
-                <key>frame</key>
                 <string>{{2,608},{150,200}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{150,200}}</string>
-                <key>sourceSize</key>
-                <string>{150,200}</string>
-            </dict>
-            <key>yanshu0020.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{154,608},{150,200}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -272,9 +142,9 @@
             <key>realTextureFileName</key>
             <string>player.png</string>
             <key>size</key>
-            <string>{1024,1024}</string>
+            <string>{512,1024}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:69619faff5078883c7ad6c4871ee8c47:732ac06d7b225f44fe046fd0d6f595d8:6f6c59c3c6b7e98e5fb22e47122cb74a$</string>
+            <string>$TexturePacker:SmartUpdate:eb98525242268db7c5bca34504193ed2:3d9b9e01c7cf047c6cdaa68a9e0c5811:6f6c59c3c6b7e98e5fb22e47122cb74a$</string>
             <key>textureFileName</key>
             <string>player.png</string>
         </dict>

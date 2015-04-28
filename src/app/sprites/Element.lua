@@ -174,7 +174,7 @@ function Element:die()
         local curPos = self:convertToWorldSpaceAR(cc.p(0,0))
         fake:setPosition(curPos.x,curPos.y)
         fake:setScale(self:getScaleX(),self:getScaleY())
-        fake:addTo(cc.Director:getInstance():getRunningScene())
+        fake:addTo(self:getParent():getParent())
         fake:setGlobalZOrder(10)
 
         fake:runAction(cc.Sequence:create(
