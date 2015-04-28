@@ -439,7 +439,7 @@ function PlayLayer:rollMap(event)
             cc.Director:getInstance():getEventDispatcher():dispatchEvent(dropEvent)
 
             
-            self:removeLines({bossPos = cc.p(display.cx, 1.2*display.cy)})
+            self:removeLines({bossPos = cc.p(display.cx, 1.3*display.cy)})
         end))
 
     self.map:runAction(moveAction)
@@ -489,7 +489,14 @@ function PlayLayer:removeLines(event)
     for row = self.mapSize.y, self.mapSize.y - (cnt-1), -1 do
         for col=1, self.mapSize.x do
             if self.m_elements[row][col] then
-                self.m_elements[row][col]:removeFromParent(true)
+                local el = self.m_elements[row][col]
+                cc.Director:getInstance():getActionManager():removeAllActionsFromTarget(el)
+                el:runAction(cc.Sequence:create(
+                    cc.FadeOut:create(0.2 * (self.mapSize.y + 1 - row)),
+                    cc.CallFunc:create(function()
+                        el:removeFromParent(true)
+                    end)))
+--                self.m_elements[row][col]:removeFromParent(true)
             end
             if self.m_droppingElements[row][col] then
                 self.m_droppingElements[row][col]:removeFromParent(true)
