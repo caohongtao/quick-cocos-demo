@@ -14,7 +14,10 @@ DataManager.ITEM_1    ="item_1"
 DataManager.ITEM_2    ="item_2"
 DataManager.ITEM_3    ="item_3"
 DataManager.SAVES     ="save_animal"
-DataManager.GAIN_BOX     ="gain_box"
+DataManager.GAIN_BOX  ="gain_box"
+DataManager.MUSIC_ON  ="music_on"  
+DataManager.SOUND_ON  ="sound_on" 
+
 function DataManager.init()
     GameState.init(onState, "gameInfo.dat", "key_diGET")
     DataManager.load()
@@ -57,7 +60,8 @@ function createDataFile()
              item_3   = 0, -- 道具可乐数量
              save_animal = 0, -- 救起小动物的总数量
              gain_box =  0,   -- 收集宝箱的总数量
-             
+             music_on = 1,
+             sound_on = 1,
              _tmp_rounds = 0,
              _tmp_grounds = 0,
              _tmp_use_item_1 = 0,
