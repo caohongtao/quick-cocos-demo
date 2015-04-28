@@ -3,6 +3,8 @@ Player = class("Player",  function()
 end)
 local BORN_HEIGHT = 5.5  --人物诞生时候的位置，BORN_HEIGHT个元素的高度。确保出生在某个元素位置。则移动，降落时都按照整行整列计算，就能保确保人物位置一直在某元素的位置。
 local FART_DURATION = 2
+local COLA_JET_DURATION, COLA_JET_FRAMES = 0.2, 6
+
 function Player:ctor(size)
     self.moving = false
     self.dropping = false
@@ -416,12 +418,13 @@ function Player:castSkill(event)
         e.type = 'skillCola'
         cc.Director:getInstance():getEventDispatcher():dispatchEvent(e)
         
-        local cola = display.newSprite('#cola.png',40,40)
-        cola:setScale(3)
+        local cola = display.newSprite('ui/jineng3.png',40,40)
+        cola:setScale(4)
         cola:addTo(self)
-        local paticle = cc.ParticleSun:create()
-        paticle:setPosition(40,40)
-        paticle:addTo(cola)
+        local jet = display.newSprite('#cola_jet_0001.png',20,-200):addTo(cola)
+        jet:setRotation(90)
+        jet:setScale(1.6,0.6)
+        transition.playAnimationForever(jet,display.getAnimationCache("cola_jet"))
         
         --向上挖掘得立即释放，救命。
         local temp = self.digThrough
@@ -458,4 +461,9 @@ function Player:addAnimation()
     local frames = display.newFrames("pi%04d.png", 1, 10)
     local animation = display.newAnimation(frames, FART_DURATION / 10)
     display.setAnimationCache("player-fart", animation)
+
+    --cola jet
+    frames = display.newFrames("cola_jet_%04d.png", 1, COLA_JET_FRAMES)
+    animation = display.newAnimation(frames, COLA_JET_DURATION / COLA_JET_FRAMES)
+    display.setAnimationCache("cola_jet", animation)
 end

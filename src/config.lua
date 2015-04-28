@@ -193,7 +193,7 @@ mapStrategys = {
         {blue = 0,green = 100,yellow = 0,purple = 100,red = 100,oxygen = 2,silverDrill = 2,goldenDrill = 1,box = 2,coin = 1,gem = 1,timebomb = 1,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1=5,stone2=0,stone3=0},
         {blue = 0,green = 0,yellow = 100,purple = 100,red = 100,oxygen = 2,silverDrill = 2,goldenDrill = 1,box = 2,coin = 1,gem = 1,timebomb = 1,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1=5,stone2=0,stone3=0},
         {blue = 0,green = 100,yellow = 100,purple = 0,red = 100,oxygen = 2,silverDrill = 2,goldenDrill = 1,box = 2,coin = 1,gem = 1,timebomb = 1,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1=5,stone2=0,stone3=0},
-
+--        {blue = 0,green = 100,yellow = 100,purple = 0,red = 100,oxygen = 2,silverDrill = 2,goldenDrill = 1,box = 2,coin = 1,gem = 1,timebomb = 1,mushroom = 100,nut = 100,cola = 100,toy = 1,stone1=5,stone2=0,stone3=0},--test data
     },
     normal = {
         {blue = 0,green = 100,yellow = 100,purple = 100,red = 100,oxygen = 2,silverDrill = 1,goldenDrill = 1,box = 1,coin = 2,gem = 1,timebomb = 1,mushroom = 1,nut = 1,cola = 1,toy = 1,stone1=5,stone2=5,stone3=3},

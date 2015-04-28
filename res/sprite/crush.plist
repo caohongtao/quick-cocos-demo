@@ -7,132 +7,80 @@
             <key>crush_0001.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,2},{300,300}}</string>
+                <string>{{2,2},{180,150}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{300,300}}</string>
+                <string>{{0,0},{180,150}}</string>
                 <key>sourceSize</key>
-                <string>{300,300}</string>
+                <string>{180,150}</string>
             </dict>
             <key>crush_0002.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{304,2},{300,300}}</string>
+                <string>{{184,2},{180,150}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{300,300}}</string>
+                <string>{{0,0},{180,150}}</string>
                 <key>sourceSize</key>
-                <string>{300,300}</string>
+                <string>{180,150}</string>
             </dict>
             <key>crush_0003.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{606,2},{300,300}}</string>
+                <string>{{2,154},{180,150}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{300,300}}</string>
+                <string>{{0,0},{180,150}}</string>
                 <key>sourceSize</key>
-                <string>{300,300}</string>
+                <string>{180,150}</string>
             </dict>
             <key>crush_0004.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,304},{300,300}}</string>
+                <string>{{184,154},{180,150}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{300,300}}</string>
+                <string>{{0,0},{180,150}}</string>
                 <key>sourceSize</key>
-                <string>{300,300}</string>
+                <string>{180,150}</string>
             </dict>
             <key>crush_0005.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{304,304},{300,300}}</string>
+                <string>{{2,306},{180,150}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{300,300}}</string>
+                <string>{{0,0},{180,150}}</string>
                 <key>sourceSize</key>
-                <string>{300,300}</string>
+                <string>{180,150}</string>
             </dict>
             <key>crush_0006.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{606,304},{300,300}}</string>
+                <string>{{184,306},{180,150}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{300,300}}</string>
+                <string>{{0,0},{180,150}}</string>
                 <key>sourceSize</key>
-                <string>{300,300}</string>
-            </dict>
-            <key>crush_0007.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{2,606},{300,300}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{300,300}}</string>
-                <key>sourceSize</key>
-                <string>{300,300}</string>
-            </dict>
-            <key>crush_0008.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{304,606},{300,300}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{300,300}}</string>
-                <key>sourceSize</key>
-                <string>{300,300}</string>
-            </dict>
-            <key>crush_0009.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{606,606},{300,300}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{300,300}}</string>
-                <key>sourceSize</key>
-                <string>{300,300}</string>
-            </dict>
-            <key>crush_0010.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{2,908},{300,300}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{300,300}}</string>
-                <key>sourceSize</key>
-                <string>{300,300}</string>
+                <string>{180,150}</string>
             </dict>
         </dict>
         <key>metadata</key>
@@ -142,9 +90,9 @@
             <key>realTextureFileName</key>
             <string>crush.png</string>
             <key>size</key>
-            <string>{1024,2048}</string>
+            <string>{512,512}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:c539e72a2fb5919588fee8e092093fce:1dd63531133234becdca544106ce0c14:2129659acb93445568f81d9c7085bffa$</string>
+            <string>$TexturePacker:SmartUpdate:5e23adc23399b6e8bf2312dd991009d8:344e47337ea0f6a1472705cf5c6e53eb:2129659acb93445568f81d9c7085bffa$</string>
             <key>textureFileName</key>
             <string>crush.png</string>
         </dict>

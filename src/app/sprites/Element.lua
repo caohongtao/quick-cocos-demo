@@ -1,7 +1,7 @@
 Element = class("Element",  function()
     return display.newSprite()
 end)
-local CRUSH_DURATION, CRUSH_FRAMES = 1, 10
+local CRUSH_DURATION, CRUSH_FRAMES = 1, 6
 local EXPLODE_DURATION, EXPLODE_FRAMES = 0.6, 4
 
 function Element:ctor()
@@ -175,13 +175,25 @@ function Element:die()
         fake:setPosition(curPos.x,curPos.y)
         fake:setScale(self:getScaleX(),self:getScaleY())
         fake:addTo(cc.Director:getInstance():getRunningScene())
+        fake:setGlobalZOrder(10)
 
         fake:runAction(cc.Sequence:create(
-            cc.Spawn:create(cc.EaseIn:create(cc.MoveTo:create(1,dest), 0.5),cc.ScaleTo:create(1,0.3)),
+            cc.Spawn:create(cc.EaseIn:create(cc.MoveTo:create(1,dest), 0.5),cc.ScaleTo:create(1,0.6)),
             cc.CallFunc:create(function()
-                fake:removeFromParent(true)
+                fake:setSpriteFrame('gain_prop_0001.png')
+                fake:setScale(1.8)
+                
+--                local ccbf = ccBlendFunc:new()
+--                ccbf.src = GL_SRC_ALPHA, GL_ONE
+--                ccbf.dst = GL_ONE
+--                fake:setBlendFunc(ccbf)
+                
+                transition.playAnimationOnce(fake,display.getAnimationCache("gain-prop"),true)
+--                fake:removeFromParent(true)
+                gainProp()
+                self:removeFromParent(true)
             end)))
-        self:removeFromParent(true)
+        self:setVisible(false)
     end
     
     if self.m_type.isBrick then
@@ -199,20 +211,15 @@ function Element:die()
             end)))
         self:removeFromParent(true)
     elseif self.m_type == elements.coin then
-        gainProp()
-        createFakeAndMoveTo(cc.p(display.right-90, display.top-30))
+        createFakeAndMoveTo(cc.p(display.right-75, display.top-30))
     elseif self.m_type == elements.gem then
-        gainProp()
         createFakeAndMoveTo(cc.p(display.right-100,display.bottom+40))
     elseif self.m_type == elements.mushroom then
-        gainProp()
-        createFakeAndMoveTo(cc.p(140,display.bottom+50))
+        createFakeAndMoveTo(cc.p(32,display.bottom+35))
     elseif self.m_type == elements.nut then
-        gainProp()
-        createFakeAndMoveTo(cc.p(210,display.bottom+50))
+        createFakeAndMoveTo(cc.p(88,display.bottom+35))
     elseif self.m_type == elements.cola then
-        gainProp()
-        createFakeAndMoveTo(cc.p(280,display.bottom+50))
+        createFakeAndMoveTo(cc.p(123,display.bottom+35))
     elseif self.m_type == elements.timebomb then
         self:setLocalZOrder(1)
         self:runAction(cc.Sequence:create(cc.TintTo:create(2,255,0,0),
@@ -278,4 +285,10 @@ function Element:addAnimation()
     frames = display.newFrames("explode%04d.png", 1, EXPLODE_FRAMES)
     animation = display.newAnimation(frames, EXPLODE_DURATION / EXPLODE_FRAMES)
     display.setAnimationCache("bomb-explode", animation)
+
+    --gain prop
+    frames = display.newFrames("gain_prop_%04d.png", 1, EXPLODE_FRAMES)
+    animation = display.newAnimation(frames, EXPLODE_DURATION / EXPLODE_FRAMES)
+    display.setAnimationCache("gain-prop", animation)
+
 end

@@ -681,7 +681,7 @@ end
 --end
 
 function PlayLayer:initTouchListener()
-    local RADIUS = 30
+    local RADIUS = 25
     local btnPos = {
             left  = {x=188, y = 76,},
             down  = {x=258, y = 68,},

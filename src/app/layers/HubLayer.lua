@@ -19,36 +19,36 @@ local UP_BAR = {
     },
     score = {
         text        = "0",
---        UILabelType = cc.ui.UILabel.LABEL_TYPE_BM,
---        font        = "fonts/r.fnt",
-        font        = "Times New Roman",
-        size        = 30,
+        UILabelType = cc.ui.UILabel.LABEL_TYPE_BM,
+        font        = "fonts/r.fnt",
+        scale       = 0.6,
+--        size        = 30,
         color       = display.COLOR_WHITE,
-        x           = 120,
-        y           = display.height-42,
+        x           = 115,
+        y           = display.height-32,
     },
     deepth = {
         text        = "0",
---        UILabelType = cc.ui.UILabel.LABEL_TYPE_BM,
---        font        = "fonts/r.fnt",
-        font        = "Times New Roman",
+        UILabelType = cc.ui.UILabel.LABEL_TYPE_BM,
+        font        = "fonts/r.fnt",
+        scale       = 0.6,
         align       = cc.TEXT_ALIGNMENT_RIGHT,
-        size        = 30,
+--        size        = 30,
         color       = display.COLOR_WHITE,
         x           = 220,
-        y           = display.height-42,
+        y           = display.height-32,
     },
     coin = {
         text        = "0",
---        UILabelType = cc.ui.UILabel.LABEL_TYPE_BM,
---        font        = "fonts/r.fnt",
-        font        = "Times New Roman",
-        size        = 30,
+        UILabelType = cc.ui.UILabel.LABEL_TYPE_BM,
+        font        = "fonts/r.fnt",
+        scale       = 0.6,
+--        size        = 30,
         color       = display.COLOR_WHITE,
         textAlign   = cc.TEXT_ALIGNMENT_LEFT,
         textValign  = cc.VERTICAL_TEXT_ALIGNMENT_TOP,
-        x           = 400,
-        y           = display.height-42,
+        x           = 385,
+        y           = display.height-32,
     },
 }
 
@@ -61,7 +61,8 @@ local BOTTOM_BAR = {
     oxygenLabel = {
         UILabelType = cc.ui.UILabel.LABEL_TYPE_BM,
         font        = "fonts/r.fnt",
-        size        = 60,
+        scale       = 0.4,
+--        size        = 60,
         color       = cc.c3b(0, 0, 160),
         x           = display.cx+7,
         y           = 22,
@@ -74,12 +75,12 @@ local BOTTOM_BAR = {
     skill2 = {
         normal = "ui/jineng2.png",
         pressed = "ui/jineng3.png",
-        pos = {x=65,y=12},
+        pos = {x=63,y=12},
     },
     skill3 = {
         normal = "ui/jineng3.png",
         pressed = "ui/jineng1.png",
-        pos = {x=110,y=12},
+        pos = {x=112,y=12},
     },
     buy = {
         normal = "ui/plusup.png",
@@ -89,11 +90,12 @@ local BOTTOM_BAR = {
     gemLabel = {
         UILabelType = cc.ui.UILabel.LABEL_TYPE_BM,
         font        = "fonts/r.fnt",
+        scale       = 0.6,
         text        = "0",
-        size        = 30,
+--        size        = 30,
         color       = display.COLOR_WHITE,
         x           = 360,
-        y           = 16,
+        y           = 22,
     },
 }
 function HubLayer:ctor()
@@ -132,14 +134,17 @@ function HubLayer:createUpBar()
     self.scoreLabel = cc.ui.UILabel.new(UP_BAR.score)
         :align(display.LEFT_BOTTOM)
         :addTo(self)
+    self.scoreLabel:setScale(UP_BAR.score.scale)
         
     self.deepthLabel = cc.ui.UILabel.new(UP_BAR.deepth)
         :align(display.LEFT_BOTTOM)
         :addTo(self)
+    self.deepthLabel:setScale(UP_BAR.deepth.scale)
         
     self.coinLabel = cc.ui.UILabel.new(UP_BAR.coin)
         :align(display.LEFT_BOTTOM)
         :addTo(self)
+    self.coinLabel:setScale(UP_BAR.coin.scale)
 end
 
 function HubLayer:createBottomBar()
@@ -161,11 +166,11 @@ function HubLayer:createBottomBar()
     oxygenProcessCover:setPosition(cc.p(BOTTOM_BAR.oxygenLabel.x,BOTTOM_BAR.oxygenLabel.y))
     
     self.oxygenLabel = cc.ui.UILabel.new(BOTTOM_BAR.oxygenLabel)
-        :align(display.CENTER)
+        :align(display.CENTER, BOTTOM_BAR.oxygenLabel.x, BOTTOM_BAR.oxygenLabel.y + 5)
         :addTo(self)
     
     self.oxygenLabel:setString(DataManager.getCurrProperty('hp'))
-    self.oxygenLabel:setScale(0.6)
+    self.oxygenLabel:setScale(BOTTOM_BAR.oxygenLabel.scale)
     
     --技能蘑菇
     cc.ui.UIPushButton.new({normal = BOTTOM_BAR.skill1.normal,
@@ -174,9 +179,10 @@ function HubLayer:createBottomBar()
         :onButtonClicked(function(event) self:castSkill(elements.mushroom) end)
         :align(display.LEFT_BOTTOM, BOTTOM_BAR.skill1.pos.x, BOTTOM_BAR.skill1.pos.y)
         :addTo(self)
-    self.skillMushroomLabel = cc.ui.UILabel.new({font = "Times New Roman", color = display.COLOR_BLACK, size = 20,})
-        :align(display.LEFT_BOTTOM, BOTTOM_BAR.skill1.pos.x, BOTTOM_BAR.skill1.pos.y)
+    self.skillMushroomLabel = cc.ui.UILabel.new({UILabelType = cc.ui.UILabel.LABEL_TYPE_BM, font = "fonts/r.fnt",})
+        :align(display.LEFT_BOTTOM, BOTTOM_BAR.skill1.pos.x, BOTTOM_BAR.skill1.pos.y+3)
         :addTo(self)
+    self.skillMushroomLabel:setScale(0.4)
     self.skillMushroomLabel:setString(DataManager.get(DataManager.ITEM_1))
     
     --技能栗子
@@ -186,9 +192,10 @@ function HubLayer:createBottomBar()
         :onButtonClicked(function(event) self:castSkill(elements.nut) end)
         :align(display.LEFT_BOTTOM, BOTTOM_BAR.skill2.pos.x, BOTTOM_BAR.skill2.pos.y)
         :addTo(self)
-    self.skillNutLabel = cc.ui.UILabel.new({font = "Times New Roman", color = display.COLOR_BLACK, size = 20,})
-        :align(display.LEFT_BOTTOM, BOTTOM_BAR.skill2.pos.x, BOTTOM_BAR.skill2.pos.y)
+    self.skillNutLabel = cc.ui.UILabel.new({UILabelType = cc.ui.UILabel.LABEL_TYPE_BM, font = "fonts/r.fnt",})
+        :align(display.LEFT_BOTTOM, BOTTOM_BAR.skill2.pos.x, BOTTOM_BAR.skill2.pos.y+3)
         :addTo(self)
+    self.skillNutLabel:setScale(0.4)
     self.skillNutLabel:setString(DataManager.get(DataManager.ITEM_2))
 
     --技能可乐
@@ -198,9 +205,10 @@ function HubLayer:createBottomBar()
         :onButtonClicked(function(event) self:castSkill(elements.cola) end)
         :align(display.LEFT_BOTTOM, BOTTOM_BAR.skill3.pos.x, BOTTOM_BAR.skill3.pos.y)
         :addTo(self)
-    self.skillColaLabel = cc.ui.UILabel.new({font = "Times New Roman", color = display.COLOR_BLACK, size = 20,})
-        :align(display.LEFT_BOTTOM, BOTTOM_BAR.skill3.pos.x, BOTTOM_BAR.skill3.pos.y)
+    self.skillColaLabel = cc.ui.UILabel.new({UILabelType = cc.ui.UILabel.LABEL_TYPE_BM, font = "fonts/r.fnt",})
+        :align(display.LEFT_BOTTOM, BOTTOM_BAR.skill3.pos.x, BOTTOM_BAR.skill3.pos.y+3)
         :addTo(self)
+    self.skillColaLabel:setScale(0.4)
     self.skillColaLabel:setString(DataManager.get(DataManager.ITEM_3))
         
     --宝石
@@ -216,6 +224,7 @@ function HubLayer:createBottomBar()
     self.gemLabel = cc.ui.UILabel.new(BOTTOM_BAR.gemLabel)
         :align(display.LEFT_BOTTOM)
         :addTo(self)
+    self.gemLabel:setScale(BOTTOM_BAR.gemLabel.scale)
 end
 
 function HubLayer:castSkill(skillType)
