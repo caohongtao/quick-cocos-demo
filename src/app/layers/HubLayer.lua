@@ -15,19 +15,24 @@ local UP_BAR = {
     pause = {
         normal = "ui/stopup.png",
         pressed = "ui/stopdown.png",
-        pos = {x=6,y=display.height-50},
+        pos = {x=33,y=display.height-35},
     },
     score = {
         text        = "0",
+--        UILabelType = cc.ui.UILabel.LABEL_TYPE_BM,
+--        font        = "fonts/r.fnt",
         font        = "Times New Roman",
         size        = 30,
         color       = display.COLOR_WHITE,
-        x           = 100,
+        x           = 120,
         y           = display.height-42,
     },
     deepth = {
         text        = "0",
+--        UILabelType = cc.ui.UILabel.LABEL_TYPE_BM,
+--        font        = "fonts/r.fnt",
         font        = "Times New Roman",
+        align       = cc.TEXT_ALIGNMENT_RIGHT,
         size        = 30,
         color       = display.COLOR_WHITE,
         x           = 220,
@@ -35,6 +40,8 @@ local UP_BAR = {
     },
     coin = {
         text        = "0",
+--        UILabelType = cc.ui.UILabel.LABEL_TYPE_BM,
+--        font        = "fonts/r.fnt",
         font        = "Times New Roman",
         size        = 30,
         color       = display.COLOR_WHITE,
@@ -52,34 +59,36 @@ local BOTTOM_BAR = {
     align = display.LEFT_BOTTOM,
 
     oxygenLabel = {
-        font        = "Times New Roman",
+        UILabelType = cc.ui.UILabel.LABEL_TYPE_BM,
+        font        = "fonts/r.fnt",
         size        = 60,
         color       = cc.c3b(0, 0, 160),
-        x           = 50,
-        y           = 50,
+        x           = display.cx+7,
+        y           = 22,
     },
     skill1 = {
         normal = "ui/jineng1.png",
         pressed = "ui/jineng2.png",
-        pos = {x=125,y=5},
+        pos = {x=9,y=12},
     },
     skill2 = {
         normal = "ui/jineng2.png",
         pressed = "ui/jineng3.png",
-        pos = {x=195,y=5},
+        pos = {x=65,y=12},
     },
     skill3 = {
         normal = "ui/jineng3.png",
         pressed = "ui/jineng1.png",
-        pos = {x=265,y=5},
+        pos = {x=110,y=12},
     },
     buy = {
         normal = "ui/plusup.png",
         pressed = "ui/plusdown.png",
-        pos = {x=420,y=11},
+        pos = {x=458,y=30},
     },
     gemLabel = {
-        font        = "Times New Roman",
+        UILabelType = cc.ui.UILabel.LABEL_TYPE_BM,
+        font        = "fonts/r.fnt",
         text        = "0",
         size        = 30,
         color       = display.COLOR_WHITE,
@@ -111,7 +120,7 @@ function HubLayer:createUpBar()
     cc.ui.UIPushButton.new({normal = UP_BAR.pause.normal,
         pressed = UP_BAR.pause.pressed,
         scale9 = true,})
-        :align(display.LEFT_BOTTOM, UP_BAR.pause.pos.x, UP_BAR.pause.pos.y)
+        :align(display.CENTER, UP_BAR.pause.pos.x, UP_BAR.pause.pos.y)
         :onButtonClicked(function(event)
             print("pause game")
             local pauseEvent = cc.EventCustom:new("pause game")
@@ -134,14 +143,29 @@ function HubLayer:createUpBar()
 end
 
 function HubLayer:createBottomBar()
-    --底图及氧气
+    --底图
     cc.ui.UIImage.new(BOTTOM_BAR.texture)
         :align(BOTTOM_BAR.align, BOTTOM_BAR.x, BOTTOM_BAR.y)
         :addTo(self)
+        
+    --氧气
+    self.oxygenProcess = cc.ProgressTimer:create(cc.Sprite:create('ui/oxygenBar.png')):addTo(self)
+    self.oxygenProcess:setScale(1.7,1.2)
+    self.oxygenProcess:setType(cc.PROGRESS_TIMER_TYPE_BAR)
+    self.oxygenProcess:setPosition(cc.p(BOTTOM_BAR.oxygenLabel.x,BOTTOM_BAR.oxygenLabel.y))
+    self.oxygenProcess:setMidpoint(cc.p(0,0.5))
+    self.oxygenProcess:setBarChangeRate(cc.p(1,0))
+    self.oxygenProcess:setPercentage(100)
+    
+    local oxygenProcessCover = cc.Sprite:create('ui/oxygenBarCover.png'):addTo(self)
+    oxygenProcessCover:setPosition(cc.p(BOTTOM_BAR.oxygenLabel.x,BOTTOM_BAR.oxygenLabel.y))
+    
     self.oxygenLabel = cc.ui.UILabel.new(BOTTOM_BAR.oxygenLabel)
         :align(display.CENTER)
         :addTo(self)
+    
     self.oxygenLabel:setString(DataManager.getCurrProperty('hp'))
+    self.oxygenLabel:setScale(0.6)
     
     --技能蘑菇
     cc.ui.UIPushButton.new({normal = BOTTOM_BAR.skill1.normal,
@@ -150,7 +174,7 @@ function HubLayer:createBottomBar()
         :onButtonClicked(function(event) self:castSkill(elements.mushroom) end)
         :align(display.LEFT_BOTTOM, BOTTOM_BAR.skill1.pos.x, BOTTOM_BAR.skill1.pos.y)
         :addTo(self)
-    self.skillMushroomLabel = cc.ui.UILabel.new({font = "Times New Roman", color = display.COLOR_BLACK, size = 40,})
+    self.skillMushroomLabel = cc.ui.UILabel.new({font = "Times New Roman", color = display.COLOR_BLACK, size = 20,})
         :align(display.LEFT_BOTTOM, BOTTOM_BAR.skill1.pos.x, BOTTOM_BAR.skill1.pos.y)
         :addTo(self)
     self.skillMushroomLabel:setString(DataManager.get(DataManager.ITEM_1))
@@ -162,7 +186,7 @@ function HubLayer:createBottomBar()
         :onButtonClicked(function(event) self:castSkill(elements.nut) end)
         :align(display.LEFT_BOTTOM, BOTTOM_BAR.skill2.pos.x, BOTTOM_BAR.skill2.pos.y)
         :addTo(self)
-    self.skillNutLabel = cc.ui.UILabel.new({font = "Times New Roman", color = display.COLOR_BLACK, size = 40,})
+    self.skillNutLabel = cc.ui.UILabel.new({font = "Times New Roman", color = display.COLOR_BLACK, size = 20,})
         :align(display.LEFT_BOTTOM, BOTTOM_BAR.skill2.pos.x, BOTTOM_BAR.skill2.pos.y)
         :addTo(self)
     self.skillNutLabel:setString(DataManager.get(DataManager.ITEM_2))
@@ -174,7 +198,7 @@ function HubLayer:createBottomBar()
         :onButtonClicked(function(event) self:castSkill(elements.cola) end)
         :align(display.LEFT_BOTTOM, BOTTOM_BAR.skill3.pos.x, BOTTOM_BAR.skill3.pos.y)
         :addTo(self)
-    self.skillColaLabel = cc.ui.UILabel.new({font = "Times New Roman", color = display.COLOR_BLACK, size = 40,})
+    self.skillColaLabel = cc.ui.UILabel.new({font = "Times New Roman", color = display.COLOR_BLACK, size = 20,})
         :align(display.LEFT_BOTTOM, BOTTOM_BAR.skill3.pos.x, BOTTOM_BAR.skill3.pos.y)
         :addTo(self)
     self.skillColaLabel:setString(DataManager.get(DataManager.ITEM_3))
@@ -186,7 +210,7 @@ function HubLayer:createBottomBar()
         :onButtonClicked(function(event)
                 print('buy')
             end)
-        :align(display.LEFT_BOTTOM, BOTTOM_BAR.buy.pos.x, BOTTOM_BAR.buy.pos.y)
+        :align(display.CENTER, BOTTOM_BAR.buy.pos.x, BOTTOM_BAR.buy.pos.y)
         :addTo(self)
         
     self.gemLabel = cc.ui.UILabel.new(BOTTOM_BAR.gemLabel)
@@ -207,6 +231,7 @@ function HubLayer:updateDate(event)
         self.deepthLabel:setString(event.data)
     elseif event.type == 'oxygen' then
         self.oxygenLabel:setString(event.data)
+        self.oxygenProcess:setPercentage(event.data/DataManager.getCurrProperty('hp')*100)
     elseif event.type == 'coin' then
         self.coinLabel:setString(event.data)
     elseif event.type == 'gem' then

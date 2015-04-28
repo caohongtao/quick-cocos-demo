@@ -681,22 +681,23 @@ end
 --end
 
 function PlayLayer:initTouchListener()
-    local RADIUS = 40
+    local RADIUS = 30
     local btnPos = {
-            left  = {x=100, y = 120,},
-            right = {x=200, y = 120,},
-            down  = {x=400, y = 120,},
+            left  = {x=188, y = 76,},
+            down  = {x=258, y = 68,},
+            right = {x=330, y = 76,},
           }
-    local left  = display.newSprite('ui/player_ctl_btn.png',btnPos.left.x,btnPos.left.y):addTo(self)
+    local left  = display.newSprite('ui/leftArrow.png',btnPos.left.x,btnPos.left.y):addTo(self)
     left:setScale(RADIUS*2/left:getContentSize().height)
-    left:setRotation(180)
+    left:setGlobalZOrder(10)
     
-    local right = display.newSprite('ui/player_ctl_btn.png',btnPos.right.x,btnPos.right.y):addTo(self)
+    local right = display.newSprite('ui/rightArrow.png',btnPos.right.x,btnPos.right.y):addTo(self)
     right:setScale(RADIUS*2/right:getContentSize().height)
+    right:setGlobalZOrder(10)
         
-    local down  = display.newSprite('ui/player_ctl_btn.png',btnPos.down.x,btnPos.down.y):addTo(self)
+    local down  = display.newSprite('ui/downArrow.png',btnPos.down.x,btnPos.down.y):addTo(self)
     down:setScale(RADIUS*2/down:getContentSize().height)
-    down:setRotation(90)
+    down:setGlobalZOrder(10)
         
 
     self:setTouchEnabled(true)
