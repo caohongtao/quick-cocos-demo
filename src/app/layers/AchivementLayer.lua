@@ -2,6 +2,9 @@ local AchivementLayer   = class("AchivementLayer", function()
     return display.newLayer("AchivementLayer")
 end)
 
+
+local SHOW_LIST_LEN = 4
+
 function AchivementLayer:ctor(event)
 
     cc(self):addComponent("components.behavior.EventProtocol"):exportMethods()
@@ -48,7 +51,7 @@ function AchivementLayer:showData()
     
     if  node then  node:removeAllChildren() else node = display.newNode():addTo(self.panel,5,self._achivements_tag)  end 
     
-    local i = 2
+    local i = SHOW_LIST_LEN-1
     for k,v in pairs(self._shownList) do
 
         cc.ui.UILabel.new({
@@ -122,46 +125,46 @@ function AchivementLayer:reflushData(event)
     for k, v in pairs(s_data.achivement) do
         if v.finished ~=true  then
             if v.type ==1 then
-                if DataManager.get(DataManager.GOLD) >= v.sum then v.achived = true  if #self._shownList<3 then table.insert(self._shownList,v) end end
+                if DataManager.get(DataManager.GOLD) >= v.sum then v.achived = true  if #self._shownList<SHOW_LIST_LEN then table.insert(self._shownList,v) end end
             elseif v.type ==2 then
-                if DataManager.get(DataManager.TOPGROUD) >= v.sum then v.achived = true if #self._shownList<3 then table.insert(self._shownList,v)end end
+                if DataManager.get(DataManager.TOPGROUD) >= v.sum then v.achived = true if #self._shownList<SHOW_LIST_LEN then table.insert(self._shownList,v)end end
             elseif v.type ==3 then
-                if DataManager.get(DataManager.TOP_SCORE) >= v.sum then v.achived = true if #self._shownList<3 then table.insert(self._shownList,v)end  end
+                if DataManager.get(DataManager.TOP_SCORE) >= v.sum then v.achived = true if #self._shownList<SHOW_LIST_LEN then table.insert(self._shownList,v)end  end
             elseif v.type ==4 then
-                if DataManager.get(DataManager.SAVES) >= v.sum then v.achived = true if #self._shownList<3 then table.insert(self._shownList,v)end  end
+                if DataManager.get(DataManager.SAVES) >= v.sum then v.achived = true if #self._shownList<SHOW_LIST_LEN then table.insert(self._shownList,v)end  end
             elseif v.type ==5 then
-                if DataManager.get(DataManager.GAIN_BOX) >= v.sum then v.achived = true if #self._shownList<3 then table.insert(self._shownList,v)end  end
+                if DataManager.get(DataManager.GAIN_BOX) >= v.sum then v.achived = true if #self._shownList<SHOW_LIST_LEN then table.insert(self._shownList,v)end  end
             elseif v.type ==6 then
-                if event and event.relive >= v.sum then v.achived = true if #self._shownList<3 then table.insert(self._shownList,v)end  end
+                if event and event.relive >= v.sum then v.achived = true if #self._shownList<SHOW_LIST_LEN then table.insert(self._shownList,v)end  end
             elseif v.type ==7 then
-                if event and  event.use1 >= v.sum then v.achived = true if #self._shownList<3 then table.insert(self._shownList,v)end  end
+                if event and  event.use1 >= v.sum then v.achived = true if #self._shownList<SHOW_LIST_LEN then table.insert(self._shownList,v)end  end
             elseif v.type ==8 then
-                if event and  event.use2 >= v.sum then v.achived = true if #self._shownList<3 then table.insert(self._shownList,v)end  end
+                if event and  event.use2 >= v.sum then v.achived = true if #self._shownList<SHOW_LIST_LEN then table.insert(self._shownList,v)end  end
             elseif v.type ==9 then
-                if event and  event.use3 >= v.sum then v.achived = true if #self._shownList<3 then table.insert(self._shownList,v)end  end
+                if event and  event.use3 >= v.sum then v.achived = true if #self._shownList<SHOW_LIST_LEN then table.insert(self._shownList,v)end  end
             elseif v.type ==10 then
-                if DataManager.get(DataManager.SPEEDLV) >= v.sum then v.achived = true if #self._shownList<3 then table.insert(self._shownList,v)end  end
+                if DataManager.get(DataManager.SPEEDLV) >= v.sum then v.achived = true if #self._shownList<SHOW_LIST_LEN then table.insert(self._shownList,v)end  end
             elseif v.type ==11 then
-                if DataManager.get(DataManager.POWERLV) >= v.sum then v.achived = true if #self._shownList<3 then table.insert(self._shownList,v)end  end
+                if DataManager.get(DataManager.POWERLV) >= v.sum then v.achived = true if #self._shownList<SHOW_LIST_LEN then table.insert(self._shownList,v)end  end
             elseif v.type ==12 then
-                if DataManager.get(DataManager.HPLV) >= v.sum then v.achived = true if #self._shownList<3 then table.insert(self._shownList,v)end  end
+                if DataManager.get(DataManager.HPLV) >= v.sum then v.achived = true if #self._shownList<SHOW_LIST_LEN then table.insert(self._shownList,v)end  end
             elseif v.type ==13 then
-                if DataManager.get(DataManager.LUCKLV) >= v.sum then v.achived = true if #self._shownList<3 then table.insert(self._shownList,v)end  end
+                if DataManager.get(DataManager.LUCKLV) >= v.sum then v.achived = true if #self._shownList<SHOW_LIST_LEN then table.insert(self._shownList,v)end  end
             end
         end
     end
 
-    if #self._shownList<3 then
+    if #self._shownList<SHOW_LIST_LEN then
         for k, v in pairs(s_data.achivement) do
             if v.finished ~=true and v.achived ~=true then table.insert(self._shownList,v) end
-            if #self._shownList == 3 then break end
+            if #self._shownList == SHOW_LIST_LEN then break end
         end
     end
 
 
-    if #self._shownList < 3 then
-        for i=0,2-#self._shownList do
-            table.insert(self._shownList,s_data.achivement[#s_data.achivement-i])
+    if #self._shownList < SHOW_LIST_LEN then
+        for i=1,SHOW_LIST_LEN-#self._shownList do
+            table.insert(self._shownList,s_data.achivement[#s_data.achivement-1-i])
         end
     end
 end

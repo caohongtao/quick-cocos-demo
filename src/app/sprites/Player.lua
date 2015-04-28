@@ -310,16 +310,10 @@ function Player:increaseDeepth()
         
         if self.dropping then
             self.deepth = self.deepth+1
-            self.score = self.score+10
-            local event = cc.EventCustom:new("update hub")
-            event.type = 'score'
-            event.data = self.score
-            cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
             local event = cc.EventCustom:new("update hub")
             event.type = 'deepth'
             event.data = self.deepth
-            cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
-            
+            cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)            
             if math.ceil(self.deepth / 200) > self.mapStage then
             	self.mapStage = self.mapStage + 1
                 local event = cc.EventCustom:new("adjust map")

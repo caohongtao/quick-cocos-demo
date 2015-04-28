@@ -162,6 +162,10 @@ end
 function Element:die()
     cc.Director:getInstance():getActionManager():removeAllActionsFromTarget(self)
     
+    local event = cc.EventCustom:new("update hub")
+    event.type = 'score'
+    cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
+    
     local function gainProp()
         local event = cc.EventCustom:new("gain_prop")
         event.element = self
@@ -210,6 +214,7 @@ function Element:die()
                 crush:removeFromParent(true)
             end)))
         self:removeFromParent(true)
+        
     elseif self.m_type == elements.coin then
         createFakeAndMoveTo(cc.p(display.right-75, display.top-30))
     elseif self.m_type == elements.gem then

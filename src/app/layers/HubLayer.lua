@@ -234,7 +234,7 @@ end
 
 function HubLayer:updateDate(event)
     if event.type == 'score' then
-        self.scoreLabel:setString(event.data)
+        self.scoreLabel:setString(self.scoreLabel:getString() + 1)
     elseif event.type == 'deepth' then
         self.deepthLabel:setString(event.data)
     elseif event.type == 'oxygen' then
