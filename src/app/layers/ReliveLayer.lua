@@ -4,8 +4,8 @@ local Relive   = class("Relive", function()
 end)
 
 ----原地复活界面
-function Relive:ctor(event)
- 
+function Relive:ctor(settlementInfo)
+    self.settlementInfo = settlementInfo
        cc(self):addComponent("components.behavior.EventProtocol"):exportMethods()
 
     -- 开始游戏按键
@@ -22,8 +22,11 @@ function Relive:ctor(event)
         cc.ui.UIImage.new("ui/Diamonds.png")
         :align(display.LEFT_BOTTOM, 72 ,126)
         :addTo(panel)
-
-
+        self.needDiamondLabel = cc.ui.UILabel.new({UILabelType = cc.ui.UILabel.LABEL_TYPE_BM, font = "fonts/r.fnt",})
+            :align(display.LEFT_BOTTOM, 160, 145)
+            :addTo(panel)
+--        self.needDiamondLabel:setScale(0.6)
+        self.needDiamondLabel:setString(math.pow(2,self.settlementInfo.relive))
         ---- 再来一局                 
         cc.ui.UIPushButton.new({normal="ui/button.png",
                                 pressed ="ui/button2.png",
@@ -48,7 +51,7 @@ function Relive:ctor(event)
                                 scale9 = false})                                
         :onButtonClicked(function()
             -- 扣除point
-            if DataManager.addPoint(-10) then 
+            if DataManager.addPoint(-math.pow(2,self.settlementInfo.relive)) then 
 --                self:dispatchEvent({name = "JUMP_BACK_GAME",params=event})
                 cc.Director:getInstance():popScene()
 

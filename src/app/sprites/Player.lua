@@ -273,6 +273,7 @@ function Player:rebirth()
     
     self.dead = false
     self.oxygenVol = DataManager.getCurrProperty('hp')
+    self.rebirthTimes = self.rebirthTimes + 1
     audio.resumeMusic()
 
     --向上挖掘

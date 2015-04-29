@@ -224,6 +224,7 @@ function HubLayer:createBottomBar()
         :align(display.LEFT_BOTTOM)
         :addTo(self)
     self.gemLabel:setScale(BOTTOM_BAR.gemLabel.scale)
+    self.gemLabel:setString(DataManager.data[DataManager.POINT])
 end
 
 function HubLayer:castSkill(skillType)

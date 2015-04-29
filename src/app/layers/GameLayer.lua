@@ -62,10 +62,9 @@ function GameLayer:playerDie(event)
     deadScene:addChild(self:captureScreen())
 
 --    local deadLayer = DeadLayer.new()
-    local deadLayer = Relive.new()
+    local deadLayer = Relive.new(event.settlement)
     
     deadLayer.gameScene = self
-    deadLayer.settlementInfo = event.settlement
     deadScene:addChild(deadLayer)
 
     cc.Director:getInstance():pushScene(deadScene)
