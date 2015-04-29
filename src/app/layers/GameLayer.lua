@@ -34,11 +34,11 @@ function GameLayer:ctor()
     self:addChild(backgroudLayer)
     
     self:adjustMapStrategy({stage = 1})
-    local playLayer = PlayLayer.new()
-    self:addChild(playLayer)
+    self.playLayer = PlayLayer.new()
+    self:addChild(self.playLayer)
     
-    local hubLayer = HubLayer.new()
-    self:addChild(hubLayer)
+    self.hubLayer = HubLayer.new()
+    self:addChild(self.hubLayer)
 
     audio.myPlayMusic('audio/gameSceneBG.mp3',true)
 end
@@ -106,6 +106,28 @@ function GameLayer:stub()
     DataManager.set(DataManager.LUCKLV, 4)
     DataManager.set(DataManager.POWERLV, 0)
     DataManager.save()
+end
+
+function GameLayer:init()
+    -- body
+    self.playLayer:init()
+
+end
+
+function GameLayer:pauseGameLayer()
+    local queue = {self}
+    while #queue > 0 do
+        local nodes = queue[1]:getChildren()   
+        for _, node in ipairs(nodes) do
+            if node == self.pauseLayer then
+                node:setVisible(true)
+            else
+                table.insert(queue,node)
+            end
+        end
+        queue[1]:pause()
+        table.remove(queue,1)
+    end
 end
 
 return GameLayer

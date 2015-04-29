@@ -98,17 +98,22 @@ local BOTTOM_BAR = {
     },
 }
 function HubLayer:ctor()
-    self:createUpBar()
+    -- self:createUpBar()
     self:createBottomBar()
     
+    self:setTouchSwallowEnabled(false)
+    
+    self:init()
+end
+
+function HubLayer:init()
+     self:createUpBar()
+
     local updateHubListener = cc.EventListenerCustom:create("update hub", handler(self,self.updateDate))
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(updateHubListener, self)
-    
+
     local alertOxygenListener = cc.EventListenerCustom:create("alert oxygen", handler(self,self.alertOxygen))
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(alertOxygenListener, self)
-        
-    
-    self:setTouchSwallowEnabled(false)
 end
 
 function HubLayer:createUpBar()

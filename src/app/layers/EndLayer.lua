@@ -57,7 +57,8 @@ function EndLayer:ctor(event)
         --     event.target:setScale(1.0)
         -- end)
         :onButtonClicked(function()
-            self:dispatchEvent({name = "JUMP_ACHIVEMENT",params=event})           
+            cc.Director:getInstance():getEventDispatcher():dispatchEvent(cc.EventCustom:new("JUMP_MAIN"))
+            self:release()    
         end)
         :align(display.LEFT_BOTTOM, 373,450)
         :addTo(panel)
@@ -109,9 +110,8 @@ function EndLayer:ctor(event)
         -- 添加scrollview 存放任务列表
 end
 
-
-
-
-
+function EndLayer:release()
+    self:removeFromParent(true)    
+end
 
 return EndLayer

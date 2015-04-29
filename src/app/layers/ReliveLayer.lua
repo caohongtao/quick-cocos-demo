@@ -32,11 +32,21 @@ function Relive:ctor(settlementInfo)
                                 pressed ="ui/button2.png",
                                 scale9 = false})                                
         :onButtonClicked(function()
---            self:dispatchEvent({name = "JUMP_END",params=event})           
-            local event = {name = "GAME_END", params = self.settlementInfo}
+--            self:dispatchEvent({name = "JUMP_END",params=event})         
+            local dropEvent = cc.EventCustom:new("Dropping")
+            dropEvent.active = false
+            cc.Director:getInstance():getEventDispatcher():dispatchEvent(dropEvent)
+            
+--              
+--            local event = cc.EventCustom:new("GAME_END")
+--            event.params = self.settlementInfo
             cc.Director:getInstance():popScene()
             self.gameScene:performWithDelay(function()
-                cc.Director:getInstance():getRunningScene():dispatchEvent(event)   
+--                cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
+                local event = cc.EventCustom:new("GAME_END")
+                event.params = settlementInfo
+                cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)   
+                
             end,0.1)
         end)
         :align(display.LEFT_BOTTOM, 35,30)        

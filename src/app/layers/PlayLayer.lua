@@ -3,7 +3,7 @@ PlayLayer = class("PlayLayer",  function()
 end)
 local JUDGE_RANGE = 6 -- 跟相邻元素相交或者相距在一定的范围内，都认为紧贴相邻。
 function PlayLayer:ctor()
-    self.map = cc.Node:create()
+    self.map = nil
     self.mapSize = cc.p(MAP_WIDTH,MAP_HEIGHT)
     self.mapOriginPoint = cc.p(display.left+MAP_START_X, display.bottom+MAP_START_Y)
 
@@ -14,11 +14,6 @@ function PlayLayer:ctor()
     
     self.zPos = 0 --记录层数让后生成的元素显示层级在后。
 
-    self:init()
-end
-
-function PlayLayer:init()
-
     cc.SpriteFrameCache:getInstance():addSpriteFrames('sprite/elements.plist', 'sprite/elements.png')
 
     self:initMap()
@@ -27,8 +22,13 @@ function PlayLayer:init()
     self.player = Player.new(self.elSize)
     self:addChild(self.player)
 
-    local boss = Boss.new(self.player, self.elSize.height)
-    self.map:addChild(boss,1)
+    self.boss = Boss.new(self.player)
+    self.map:addChild(self.boss,1)
+
+--    self:init()
+end
+
+function PlayLayer:init()
 
     local detectListener = cc.EventListenerCustom:create("detect_map", handler(self,self.detectMap))
     local digListener = cc.EventListenerCustom:create("dig_at", handler(self,self.digAt))
@@ -47,6 +47,8 @@ function PlayLayer:init()
 --    self:scheduleUpdateWithPriorityLua(handler(self, self.showElementInfo), 0);
 
     self:initTouchListener()
+    
+    self.boss:init()
 end
 
 function PlayLayer:unscheduleAllTimers()
@@ -73,7 +75,8 @@ function PlayLayer:showElementInfo()
 end
 
 function PlayLayer:initMap()
-
+    self.map = cc.Node:create()
+    
     Element:addAnimation()
     --以宽度为基准缩放
     local elActualSize = (display.width - self.mapOriginPoint.x * 2) / self.mapSize.x

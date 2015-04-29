@@ -26,10 +26,11 @@ function MainScene:ctor()
     
     self:initAudio()
 
-    cc(self):addComponent("components.behavior.EventProtocol"):exportMethods()
-    self:addEventListener("GAME_START",handler(self,self.gameStart))
-    self:addEventListener("GAME_END",handler(self,self.gameEnd))
-    self:addEventListener("GAME_BACK",handler(self,self.gameBack))
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(cc.EventListenerCustom:create("GAME_START", handler(self,self.gameStart)),self)
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(cc.EventListenerCustom:create("GAME_END", handler(self,self.gameEnd)),self)
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(cc.EventListenerCustom:create("JUMP_MAIN", handler(self,self.jump2main)),self)
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(cc.EventListenerCustom:create("GAME_BACK", handler(self,self.gameBack)),self)
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(cc.EventListenerCustom:create("GAME_REPLAY", handler(self,self.gameReplay)),self)
 end
 
 function MainScene:initAudio()
@@ -82,10 +83,30 @@ end
 function MainScene:gameStart(event)
     self:removeGameLayer()
     self.gameLayer = GameLayer.new()
+    self.gameLayer:setPosition(0,- display.height)
     self:addChild(self.gameLayer)
-    self.uiLayer:setVisible(false)
+    self.uiLayer:hideUI()
+    -- self.uiLayer:setVisible(false)
+
+    -- 开始一个卷动动画
+    local _time = 2
+    self.uiLayer:runAction(cca.moveTo(1.5,0,display.height))
+    self.gameLayer:runAction(cca.seq({cca.moveTo(1.5,0,0),
+                                    cca.callFunc(function ()
+                                            print("gameLayer init")   
+                                            self.gameLayer:init()  
+                                            self.uiLayer:setVisible(false)
+                                        end),
+
+                                    }))   
 end
 
+function MainScene:gameReplay(event)
+    self:removeGameLayer()
+    self.gameLayer = GameLayer.new()
+    self:addChild(self.gameLayer)
+    self.gameLayer:init()  
+end
 
 function MainScene:testLayer(event)
     local backgroudLayer = BackgroundLayer.new()
@@ -125,13 +146,12 @@ end
 
 function MainScene:gameEnd(event)
     -- 弹出结算面板    
-    print("出 结算")
-    self:removeGameLayer()
+    print("----------出 结算--------------")
+
+    self.gameLayer:pauseGameLayer()
     
     self.endLayer = EndLayer.new(event.params)
     self:addChild(self.endLayer)
-
-    self.endLayer:addEventListener("JUMP_ACHIVEMENT",handler(self,self.jump2achivement))  
 end
 
 -- 切换成绩面板
@@ -168,9 +188,9 @@ function MainScene:jump2main()
 
     print("  回到主界面")
 
-    if self.levelLayer then
-        self.levelLayer:setVisible(false)
-    end
+    self:removeGameLayer()
+    self.uiLayer:showUI()
+    self.uiLayer:setPosition(0,0)
     
     self.uiLayer:setVisible(true)
     
