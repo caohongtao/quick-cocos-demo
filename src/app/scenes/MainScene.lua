@@ -24,31 +24,40 @@ function MainScene:ctor()
 
     self:addChild(self.uiLayer)
     
-    audio.preloadMusic('audio/mainSceneBG.mp3')
-    audio.preloadMusic('audio/gameSceneBG.mp3')
-    audio.preloadSound('audio/dig.wav')
-    audio.preloadSound('audio/getProp.wav')
-    
-    --cocos的简单声音引擎测出bug(当两次连续调用playMusic播放同一首music时，第二次会播放不出来。此现象只在android客户端出现。因此此处封装特殊函数，记录正在播放的music)
-    audio.myPlayMusic = function(file, isLoop)
-        if file == audio.__currMusic then
-            if not audio.isMusicPlaying() then
-                audio.rewindMusic()
-                audio.resumeMusic()
-            end
-        else
-            audio.playMusic(file,isLoop)
-            audio.__currMusic = file
-        end
-    end
-    
-    audio.myPlayMusic('audio/mainSceneBG.mp3',true)
-    audio.setMusicVolume(0.2)
+    self:initAudio()
 
     cc(self):addComponent("components.behavior.EventProtocol"):exportMethods()
     self:addEventListener("GAME_START",handler(self,self.gameStart))
     self:addEventListener("GAME_END",handler(self,self.gameEnd))
     self:addEventListener("GAME_BACK",handler(self,self.gameBack))
+end
+
+function MainScene:initAudio()
+
+    audio.preloadMusic('audio/mainSceneBG.mp3')
+    audio.preloadMusic('audio/gameSceneBG.mp3')
+    audio.preloadSound('audio/dig.wav')
+    audio.preloadSound('audio/getProp.wav')
+    
+    audio.setSoundsVolume(DataManager.get(DataManager.SOUND_ON) == 0 and 0 or 1.0)
+    audio.setMusicVolume(DataManager.get(DataManager.MUSIC_ON) == 0 and 0 or 0.3)
+    
+    --cocos的简单声音引擎测出bug(当两次连续调用playMusic播放同一首music时，第二次会播放不出来。此现象只在android客户端出现。因此此处封装特殊函数，记录正在播放的music)
+    audio.myPlayMusic = function(file, isLoop)
+        if DataManager.get(DataManager.MUSIC_ON) == 0 then return end
+
+        if file == audio.__currMusic then
+--            if not audio.isMusicPlaying() then
+                audio.rewindMusic()
+                audio.resumeMusic()
+--            end
+        else
+            audio.playMusic(file,isLoop)
+            audio.__currMusic = file
+        end
+    end
+
+    audio.myPlayMusic('audio/mainSceneBG.mp3',true)
 end
 
 function MainScene:removeGameLayer()

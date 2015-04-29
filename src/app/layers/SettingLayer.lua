@@ -74,10 +74,12 @@ function SettingLayer:musicOffOn()
        DataManager.set(DataManager.MUSIC_ON,0) 
         _img = "ui/off.png" 
         -- 关闭正在播放的music
-        audio.stopAllSounds()
+        audio.setMusicVolume(0)
     else 
         DataManager.set(DataManager.MUSIC_ON,1) 
         _img = "ui/on.png" 
+        audio.setMusicVolume(0.3)
+        audio.myPlayMusic('audio/mainSceneBG.mp3', true)
     end
     self.music_btn:setButtonImage(cc.ui.UIPushButton.NORMAL, _img, true)
     self.music_btn:setButtonImage(cc.ui.UIPushButton.PRESSED, _img, true)    
@@ -90,9 +92,11 @@ function SettingLayer:soundOffOn()
     if DataManager.get(DataManager.SOUND_ON) == 1 then
        DataManager.set(DataManager.SOUND_ON,0) 
         _img = "ui/off.png" 
+        audio.setSoundsVolume(0)
     else 
         DataManager.set(DataManager.SOUND_ON,1) 
         _img = "ui/on.png" 
+        audio.setSoundsVolume(1.0)
     end
     self.sound_btn:setButtonImage(cc.ui.UIPushButton.NORMAL, _img, true)
     self.sound_btn:setButtonImage(cc.ui.UIPushButton.PRESSED, _img, true)    
