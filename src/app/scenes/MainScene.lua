@@ -48,6 +48,7 @@ function MainScene:ctor()
     cc(self):addComponent("components.behavior.EventProtocol"):exportMethods()
     self:addEventListener("GAME_START",handler(self,self.gameStart))
     self:addEventListener("GAME_END",handler(self,self.gameEnd))
+    self:addEventListener("GAME_BACK",handler(self,self.gameBack))
 end
 
 function MainScene:removeGameLayer()
@@ -158,13 +159,19 @@ function MainScene:jump2main()
 
     print("  回到主界面")
 
-    self.levelLayer:setVisible(false)
+    if self.levelLayer then
+        self.levelLayer:setVisible(false)
+    end
     
     self.uiLayer:setVisible(true)
     
     audio.myPlayMusic('audio/mainSceneBG.mp3',true)
 end
 
+function MainScene:gameBack()
+	self:removeGameLayer()
+	self:jump2main()
+end
 
 function MainScene:onEnter()
 
