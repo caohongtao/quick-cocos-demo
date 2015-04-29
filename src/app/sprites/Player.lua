@@ -188,7 +188,15 @@ function Player:dig(target, dir)
     self.digging = true
     self:reduceOxygen()
     
-    transition.playAnimationOnce(self, display.getAnimationCache("player-dig"))
+    if 'down' == dir then
+        transition.playAnimationOnce(self, display.getAnimationCache("player-dig"), false, function () self:setSpriteFrame('yanshu0010.png') end)
+    elseif 'left' == dir then
+        transition.playAnimationOnce(self, display.getAnimationCache("player-side"), false, function () self:setSpriteFrame('yanshu0010.png') end)
+    elseif 'right' == dir then
+        self:setFlippedX(true)
+        transition.playAnimationOnce(self, display.getAnimationCache("player-side"), false, function () self:setSpriteFrame('yanshu0010.png') self:setFlippedX(false) end)
+    end
+    
     local duration = gamePara.baseDigDuration / DataManager.getCurrProperty('speed')
     self:runAction(cc.Sequence:create(
         cc.DelayTime:create(duration),
@@ -435,14 +443,14 @@ function Player:castSkill(event)
 end
 
 function Player:addAnimation()
-    local animationNames = {"dig",}-- "dead"}
+    local animationNames = {"dig","side"}
     local animationFrameNum = {10,10}
     local duration = gamePara.baseDigDuration / DataManager.getCurrProperty('speed')
-    local animationDelay = {duration / animationFrameNum[1], 0.2}
+    local animationDelay = {duration / animationFrameNum[1], duration / animationFrameNum[2]}
 
     --鼹鼠
     for i = 1, #animationNames do
-        local frames = display.newFrames("yanshu%04d.png", 1, animationFrameNum[i])
+        local frames = display.newFrames("yanshu0"..(i-1).."%02d.png", 1, animationFrameNum[i])
         local animation = display.newAnimation(frames, animationDelay[i])
         display.setAnimationCache("player-" .. animationNames[i], animation)
     end
