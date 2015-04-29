@@ -18,7 +18,6 @@ function Player:ctor(size)
     self.score = 0
     self.boxes = 0
     self.coins = 0
-    self.gems = 0
     self.toys = 0
     self.rebirthTimes = 0
     self.skill1Times = 0
@@ -119,10 +118,9 @@ function Player:gainProp(el)
         cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
     elseif el.m_type == elements.gem then
         print('gem')
-        self.gems = self.gems + 1
+        DataManager.set(DataManager.POINT, DataManager.get(DataManager.POINT) + 1)
         local event = cc.EventCustom:new("update hub")
         event.type = 'gem'
-        event.data = self.gems
         cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
     elseif el.m_type == elements.bomb then
 --        cc.BezierTo:create(t,points)
@@ -266,7 +264,7 @@ function Player:die()
                                             box = self.boxes,
                                             golds = self.coins,
                                             grounds = self.deepth,
-                                            points =  self.gems,
+--                                            points =  self.gems,
                                             relive = self.rebirthTimes,
                                         }
                                         

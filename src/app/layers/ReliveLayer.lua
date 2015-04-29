@@ -58,6 +58,10 @@ function Relive:ctor(settlementInfo)
                 self.gameScene:performWithDelay(function()
                     local resumeEvent = cc.EventCustom:new("player rebirth")
                     cc.Director:getInstance():getEventDispatcher():dispatchEvent(resumeEvent)
+                    
+                    local event = cc.EventCustom:new("update hub")
+                    event.type = 'gem'
+                    cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
                 end,0.1)
             else
                 -- 钻石不足

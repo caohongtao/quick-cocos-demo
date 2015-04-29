@@ -244,7 +244,7 @@ function HubLayer:updateDate(event)
     elseif event.type == 'coin' then
         self.coinLabel:setString(event.data)
     elseif event.type == 'gem' then
-        self.gemLabel:setString(event.data)
+        self.gemLabel:setString(DataManager.data[DataManager.POINT])
     elseif event.type == 'skillMushroom' then
         self.skillMushroomLabel:setString(DataManager.get(DataManager.ITEM_1))
     elseif event.type == 'skillNut' then
