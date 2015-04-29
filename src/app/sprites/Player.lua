@@ -53,7 +53,7 @@ function Player:ctor(size)
     self.nut_buff_effect:setVisible(false)
     transition.playAnimationForever(self.nut_buff_effect,display.getAnimationCache("nut_buff"))
     
-    self.reduceOxygenTimer = self:getScheduler():scheduleScriptFunc(handler(self, self.reduceOxygen), 1, false)
+--    self.reduceOxygenTimer = self:getScheduler():scheduleScriptFunc(handler(self, self.reduceOxygen), 1, false)
     self:scheduleUpdateWithPriorityLua(handler(self, self.update), 0)
 
     coroutine.resume(coroutine.create(handler(self,self.increaseDeepth)))
@@ -61,7 +61,7 @@ end
 
 function Player:unscheduleAllTimers()
     self:unscheduleUpdate()
-    self:getScheduler():unscheduleScriptEntry(self.reduceOxygenTimer)
+--    self:getScheduler():unscheduleScriptEntry(self.reduceOxygenTimer)
 end
 
 function Player:detectMap(dir)
@@ -194,7 +194,6 @@ function Player:dig(target, dir)
 
     --播放dig动画
     self.digging = true
-    self:reduceOxygen()
     
     if 'down' == dir then
         transition.playAnimationOnce(self, display.getAnimationCache("player-dig"), false, function () self:setSpriteFrame('yanshu0010.png') end)
@@ -220,6 +219,7 @@ function Player:dig(target, dir)
         event.effect = dir
         cc.Director:getInstance():getEventDispatcher():dispatchEvent(event)
     else
+        self:reduceOxygen()
         audio.playSound('audio/dig.wav')
         target.m_needDigTime = target.m_needDigTime - self.digForce
         if target.m_needDigTime > 0 then
