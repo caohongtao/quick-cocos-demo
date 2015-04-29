@@ -2,9 +2,9 @@ Player = class("Player",  function()
     return display.newSprite()
 end)
 local BORN_HEIGHT = 8.5  --人物诞生时候的位置，BORN_HEIGHT个元素的高度。确保出生在某个元素位置。则移动，降落时都按照整行整列计算，就能保确保人物位置一直在某元素的位置。
-local FART_DURATION = 2
+local FART_DURATION, FART_FRAMES = 2, 10
 local COLA_JET_DURATION, COLA_JET_FRAMES = 0.2, 6
-
+local NUT_BUFF_DURATION, NUT_BUFF_FRAMES = 0.6, 6
 function Player:ctor(size)
     self.moving = false
     self.dropping = false
@@ -46,6 +46,12 @@ function Player:ctor(size)
     self:setAnchorPoint(0.5,0.5)
     self:setPosition(display.cx, size.height * BORN_HEIGHT)
     self:addAnimation()
+    
+    self.nut_buff_effect = display.newSprite('#nut_buff_0001.png',75,100):addTo(self)
+    self.nut_buff_effect:setScale(4)
+    self.nut_buff_effect:setOpacity(100)
+    self.nut_buff_effect:setVisible(false)
+    transition.playAnimationForever(self.nut_buff_effect,display.getAnimationCache("nut_buff"))
     
     self.reduceOxygenTimer = self:getScheduler():scheduleScriptFunc(handler(self, self.reduceOxygen), 1, false)
     self:scheduleUpdateWithPriorityLua(handler(self, self.update), 0)
@@ -101,11 +107,15 @@ function Player:gainProp(el)
     elseif el.m_type == elements.silverDrill then
         print('silverDrill')
         self.digForce = self.digForce * 2
-        self:performWithDelay(function() self.digForce = self.digForce / 2 end, 10)
+        self:performWithDelay(function()
+            self.digForce = self.digForce / 2
+        end, 10)
     elseif el.m_type == elements.goldenDrill then
         print('goldenDrill')
         self.digForce = self.digForce * 4
-        self:performWithDelay(function() self.digForce = self.digForce / 4 end, 10)
+        self:performWithDelay(function()
+            self.digForce = self.digForce / 4
+        end, 10)
     elseif el.m_type == elements.box then
         print('box')
         self.boxes = self.boxes + 1
@@ -235,10 +245,23 @@ function Player:move(dir)
     end
     self.moving = true
     
+    if 'left' == dir then
+--        transition.playAnimationOnce(self, display.getAnimationCache("player-side"), false, function () self:setSpriteFrame('yanshu0010.png') end)
+        self:setSpriteFrame('yanshu0101.png')
+    elseif 'right' == dir then
+        self:setFlippedX(true)
+--        transition.playAnimationOnce(self, display.getAnimationCache("player-side"), false, function () self:setSpriteFrame('yanshu0010.png') self:setFlippedX(false) end)
+        self:setSpriteFrame('yanshu0101.png')
+    end
+    
     local duration = gamePara.baseMoveDuration / DataManager.getCurrProperty('speed')
     self:runAction(cc.Sequence:create(
         cc.MoveBy:create(duration,delta),
-        cc.CallFunc:create(function() self.moving = false end)))
+        cc.CallFunc:create(function()
+            self.moving = false
+            self:setSpriteFrame('yanshu0010.png')
+            if 'right' == dir then self:setFlippedX(false) end
+        end)))
 end
 
 function Player:die()
@@ -395,15 +418,10 @@ function Player:castSkill(event)
         cc.Director:getInstance():getEventDispatcher():dispatchEvent(e)
 
         self.digThrough = true
-        if not self.digThroughEffect then
-            self.digThroughEffect = cc.ParticleFlower:create()
-            self.digThroughEffect:setPosition(80,60)
-            self:addChild(self.digThroughEffect)
-        end
-        self.digThroughEffect:setVisible(true)
+        self.nut_buff_effect:setVisible(true)
         self:performWithDelay(function()
             self.digThrough = false
-            self.digThroughEffect:setVisible(false)
+            self.nut_buff_effect:setVisible(false)
         end, gamePara.propDuration)
     elseif event.skillType == elements.cola then
         local skillCnt = DataManager.get(DataManager.ITEM_3)
@@ -455,11 +473,16 @@ function Player:addAnimation()
     
     --屁
     local frames = display.newFrames("pi%04d.png", 1, 10)
-    local animation = display.newAnimation(frames, FART_DURATION / 10)
+    local animation = display.newAnimation(frames, FART_DURATION / FART_FRAMES)
     display.setAnimationCache("player-fart", animation)
 
     --cola jet
     frames = display.newFrames("cola_jet_%04d.png", 1, COLA_JET_FRAMES)
     animation = display.newAnimation(frames, COLA_JET_DURATION / COLA_JET_FRAMES)
     display.setAnimationCache("cola_jet", animation)
+    
+    --power buff
+    frames = display.newFrames("nut_buff_%04d.png", 1, NUT_BUFF_FRAMES)
+    animation = display.newAnimation(frames, NUT_BUFF_DURATION / NUT_BUFF_FRAMES)
+    display.setAnimationCache("nut_buff", animation)
 end

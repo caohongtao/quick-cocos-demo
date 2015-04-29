@@ -12,13 +12,14 @@ local GameLayer = class("GameLayer", function()
 end)
 
 function GameLayer:ctor()
-    self:stub()
+--    self:stub()
     
     cc.SpriteFrameCache:getInstance():addSpriteFrames('sprite/crush.plist', 'sprite/crush.png')
     cc.SpriteFrameCache:getInstance():addSpriteFrames('sprite/fart.plist', 'sprite/fart.png')
     cc.SpriteFrameCache:getInstance():addSpriteFrames('sprite/explode.plist', 'sprite/explode.png')
     cc.SpriteFrameCache:getInstance():addSpriteFrames('sprite/gain_prop.plist', 'sprite/gain_prop.png')
     cc.SpriteFrameCache:getInstance():addSpriteFrames('sprite/cola_jet.plist', 'sprite/cola_jet.png')
+    cc.SpriteFrameCache:getInstance():addSpriteFrames('sprite/nut_buff.plist', 'sprite/nut_buff.png')
 
     local pauseListener = cc.EventListenerCustom:create("pause game", handler(self,self.pauseGame))
     local dieListener = cc.EventListenerCustom:create("player die", handler(self,self.playerDie))
